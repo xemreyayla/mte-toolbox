@@ -1,0 +1,63 @@
+# Derleme dosyaları ve geçici dosyalar
+*.pro.user
+*.pro.user.*
+*.pro.user#*
+*.qmake.stash
+Makefile*
+*.a
+*.o
+*.obj
+*.lo
+*.la
+*.so
+*.dll
+*.dylib
+*.lib
+*.exp
+*.pdb
+*.suo
+*.user
+*.swp
+*.bak
+
+# Qt Creator ve IDE'ye özgü dosyalar
+/.idea/
+/.vscode/
+/*.user
+/.user*
+/.moc/
+/ui_*.h
+
+# Derleme klasörleri
+/debug/
+*/debug/
+*/debug_shared/
+*/release/
+*/release_shared/
+
+# Geçici dosyalar
+*.log
+*.tmp
+*.bak
+
+# Qt'ye ait derleme dosyaları
+*.qrc.user
+
+# Dış kütüphaneler
+/libs/
+
+# CMake kullanıyorsanız:
+CMakeLists.txt.user
+CMakeCache.txt
+*.cmake
+
+# Windows özel dosyalar
+Thumbs.db
+ehthumbs.db
+
+# MacOS özel dosyalar
+.DS_Store
+
+# Diğer geçici dosyalar
+*.orig
+
