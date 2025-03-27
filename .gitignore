@@ -27,6 +27,10 @@ Makefile*
 /.user*
 /.moc/
 /ui_*.h
+build/
+logs/
+*.txt
+
 
 # Derleme klasörleri
 /debug/
