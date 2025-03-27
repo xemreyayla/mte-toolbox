@@ -9,9 +9,15 @@
 #include <QPushButton>
 #include <QMessageBox>
 #include <QList>
-#include <QDebug>
+#include <QtLogging>
 #include <QAbstractItemView>
 #include <QMessageBox>
+#include <QPlainTextEdit>
+#include <QFile>
+#include <QDateTime>
+#include <QTextStream>
+
+
 
 
 QT_BEGIN_NAMESPACE
@@ -37,8 +43,13 @@ private slots:
 
     void resizecomboBox();
 
+
 private:
+    void logMessageToGuiAndFile(const QString &msg);
+
     Ui::MainWindow *ui;
+    QFile logFile; //logları yazmak için dosya nesnesi
+    QTextStream logStream;
     QSerialPort *serialPort;
 };
 
