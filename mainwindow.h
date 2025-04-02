@@ -16,7 +16,8 @@
 #include <QFile>
 #include <QDateTime>
 #include <QTextStream>
-
+#include <QApplication>
+#include <QByteArray>
 
 
 
@@ -37,20 +38,21 @@ private slots:
     void showUtilitiesPage();
     void showConfigurationPage();
     void showConnectionPage();
-
     void refreshPorts();
     void connectToDevice();
-
     void resizecomboBox();
+    void fetchOSInfo();
+
 
 
 private:
+    QSerialPort *serialPort = nullptr;
     void logMessageToGuiAndFile(const QString &msg);
 
     Ui::MainWindow *ui;
     QFile logFile; //logları yazmak için dosya nesnesi
     QTextStream logStream;
-    QSerialPort *serialPort;
+
 };
 
 #endif // MAINWINDOW_H
