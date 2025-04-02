@@ -10,6 +10,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);//arayüzdeki tüm bileşenleri mainwindow içine yerleştir
     resizecomboBox();
 
+    qApp->setStyleSheet(
+        "QMessageBox QLabel { color: white; }"
+        "QPushButton { color: white; }"
+        "QLabel { color: white; }"
+        );
+
     // Butonlara tıklanınca ilgili sayfalara geçiş yap
     connect(ui->deviceinfoButton, &QPushButton::clicked, this, &MainWindow::showDeviceInfoPage);
     connect(ui->utilitiesButton, &QPushButton::clicked, this, &MainWindow::showUtilitiesPage);
@@ -30,13 +36,12 @@ void MainWindow::logMessageToGuiAndFile(const QString &msg){
     QString logMessage = QString("[DEBUG] [%1] %2").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"),msg);
     ui->plainTextEdit->appendPlainText(logMessage);//guiye yazdır
     ui->plainTextEdit->setReadOnly(true); //Sadece okunabilir duruma getir
+    if (ui->plainTextEdit->document()->blockCount() > 15000){ //içeriği temizle
+        ui->plainTextEdit->clear();
+    }
     logStream << logMessage << Qt::endl;
     logStream.flush();
-
 }
-
-
-
 
 void MainWindow::showConnectionPage(){
     qDebug() << "showConnectionPage() called";
@@ -47,7 +52,52 @@ void MainWindow::showConnectionPage(){
 void MainWindow::showDeviceInfoPage() {
     qDebug() << "showDeviceInfoPage() called";
     ui->stackedWidget->setCurrentIndex(0);
+
+    fetchOSInfo();  // Sonra OS bilgisini al
 }
+
+void MainWindow::fetchOSInfo(){
+    if (!serialPort) { // serialport nesnesin başlama kontrolü, nullptr ise hata mesajları loglanır
+        logMessageToGuiAndFile("Error: Serial port is not initialized.");
+        return;
+    }
+    if (!serialPort->isOpen()){ //serialport nesnesi açık değilse hata mesajı loglanır
+        logMessageToGuiAndFile("Error: Serial port is not open.");
+        return;
+    }
+
+    QString command = "lsb_release -d\n"; // kullanılacak olan komut command değişkenine tanımlanmıştır,
+    serialPort->write(command.toUtf8());
+
+    if (!serialPort->waitForBytesWritten(3000)){
+        logMessageToGuiAndFile("Error: Command write timeout.");
+        return;
+    }
+
+    QByteArray responseData;
+    while (serialPort->waitForReadyRead(1000)) {
+        responseData.append(serialPort->readAll());
+    }
+
+    if (responseData.isEmpty()) {
+        logMessageToGuiAndFile("Error: No data received.");
+        return;
+    }
+
+    QString response(responseData);
+    logMessageToGuiAndFile("Device Response: " + response);
+
+    static const QRegularExpression re("Description:\\s*(.+)"); //Description: ifadesinden sonra gelen ifadeleri yakala, düzenli görünüm için
+    QRegularExpressionMatch match = re.match(response); //Düzenli ifade ile eşleşme kontrolü
+    if (match.hasMatch()) {
+        QString osInfo = match.captured(1).trimmed();
+        ui->osLabel->setText(osInfo); //OS bilgisi alınır oslabel üzerinde gösterilir
+    } else {
+        logMessageToGuiAndFile("Error: OS information not found.");
+        ui->osLabel->setText("Unknown OS");
+    }
+}
+
 
 void MainWindow::showUtilitiesPage() {
     qDebug() << "showUtilitiesPage() called";
@@ -59,8 +109,6 @@ void MainWindow::showConfigurationPage() {
     ui->stackedWidget->setCurrentIndex(2);
 }
 
-
-
 void MainWindow::resizecomboBox(){
    QAbstractItemView *view = ui->serialportscomboBox->view();
 
@@ -71,19 +119,21 @@ void MainWindow::resizecomboBox(){
    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
 
-void MainWindow::connectToDevice(){
+void MainWindow::connectToDevice() {
+    if (!serialPort) {
+        serialPort = new QSerialPort(this);  // Eğer daha önce başlatılmamışsa, yeni bir nesne oluşturuyoruz
+    }
+
     logMessageToGuiAndFile("connectToDevice() called");
 
     QString selectedPortName = ui->serialportscomboBox->currentText();
     logMessageToGuiAndFile("Selected Port: " + selectedPortName);
 
-    if(selectedPortName.isEmpty() || selectedPortName == "No available ports"){
+    if (selectedPortName.isEmpty() || selectedPortName == "No available ports") {
         logMessageToGuiAndFile("Error: Port not selected or unavailable");
         QMessageBox::warning(this, "Error", "Port not available or selected");
         return;
     }
-
-    QSerialPort *serialPort = new QSerialPort(this);
 
     serialPort->setPortName(selectedPortName);
     serialPort->setBaudRate(QSerialPort::Baud115200);
@@ -91,14 +141,10 @@ void MainWindow::connectToDevice(){
     serialPort->setParity(QSerialPort::NoParity);
     serialPort->setStopBits(QSerialPort::OneStop);
     serialPort->setFlowControl(QSerialPort::NoFlowControl);
-
     logMessageToGuiAndFile("Serial port settings configured");
-
-
 
     if (!serialPort->open(QIODevice::ReadWrite)) {
         qInfo() << "Seri port açılamadı. Hata kodu: " << serialPort->error();
-
         QString errorMessage;
         switch (serialPort->error()) {
         case QSerialPort::NoError:
@@ -132,7 +178,6 @@ void MainWindow::connectToDevice(){
             errorMessage = "An unknown error occurred.";
             break;
         }
-
         logMessageToGuiAndFile("Error message: " + errorMessage);
         QMessageBox::critical(this, "Connection Error", "Failed to connect to the port.\n" + errorMessage);
         return;
@@ -164,12 +209,15 @@ void MainWindow::refreshPorts(){
         ui->serialportscomboBox->clear();
         ui->serialportscomboBox->addItems(portList);
     }
-
-
 }
+
 
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    if (serialPort){
+        serialPort->close();
+        delete serialPort;
+    }
 }
