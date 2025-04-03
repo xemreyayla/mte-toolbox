@@ -7,7 +7,6 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QPushButton>
-#include <QMessageBox>
 #include <QList>
 #include <QtLogging>
 #include <QAbstractItemView>

@@ -56,47 +56,77 @@ void MainWindow::showDeviceInfoPage() {
     fetchOSInfo();  // Sonra OS bilgisini al
 }
 
-void MainWindow::fetchOSInfo(){
-    if (!serialPort) { // serialport nesnesin başlama kontrolü, nullptr ise hata mesajları loglanır
+void MainWindow::fetchOSInfo() {
+    if (!serialPort) {
         logMessageToGuiAndFile("Error: Serial port is not initialized.");
         return;
     }
-    if (!serialPort->isOpen()){ //serialport nesnesi açık değilse hata mesajı loglanır
+    if (!serialPort->isOpen()) {
         logMessageToGuiAndFile("Error: Serial port is not open.");
         return;
     }
 
-    QString command = "lsb_release -d\n"; // kullanılacak olan komut command değişkenine tanımlanmıştır,
-    serialPort->write(command.toUtf8());
+    QStringList commands = {
+        "uname -o\n", // Operating System
+        "uname -s\n", // Kernel name
+        "uname -n\n", // Network node hostname
+        "uname -v\n", // Kernel version
+        "uname -m\n", // Machine hardware name
+        "uname -p\n", // Processor type
+        "uname -i\n", // Hardware platform
+        "uname -r\n"  // Kernel release (sürümü)
+    };
 
-    if (!serialPort->waitForBytesWritten(3000)){
-        logMessageToGuiAndFile("Error: Command write timeout.");
-        return;
+    QStringList results;
+    for (const QString& command : commands) {
+        serialPort->write(command.toUtf8());
+        if (!serialPort->waitForBytesWritten(3000)) {
+            logMessageToGuiAndFile("Error: Command write timeout.");
+            return;
+        }
+
+        QByteArray responseData;
+        while (serialPort->waitForReadyRead(1000)) {
+            responseData.append(serialPort->readAll());
+        }
+
+        if (responseData.isEmpty()) {
+            logMessageToGuiAndFile("Error: No data received for command: " + command);
+            return;
+        }
+
+        QString info = QString::fromUtf8(responseData).trimmed();
+        info.remove(QRegularExpression("\\x1B\\[[0-9;?]*[a-zA-Z]")); // ANSI escape codes
+        info.remove(QRegularExpression(".*@.*:~#")); // Terminal prompt
+
+        QStringList lines = info.split("\n", Qt::SkipEmptyParts);
+        if (!lines.isEmpty()) {
+            results.append(lines.last().trimmed());
+        } else {
+            results.append("Unknown");
+        }
     }
 
-    QByteArray responseData;
-    while (serialPort->waitForReadyRead(1000)) {
-        responseData.append(serialPort->readAll());
-    }
+    // Log and update the UI with all the collected information
+    logMessageToGuiAndFile("Operating System: " + results[0]);
+    logMessageToGuiAndFile("Kernel Name: " + results[1]);
+    logMessageToGuiAndFile("Host Name: " + results[2]);
+    logMessageToGuiAndFile("Kernel Version: " + results[3]);
+    logMessageToGuiAndFile("Machine Hardware: " + results[4]);
+    logMessageToGuiAndFile("Processor Type: " + results[5]);
+    logMessageToGuiAndFile("Hardware Platform: " + results[6]);
+    logMessageToGuiAndFile("Kernel Release: " + results[7]);
 
-    if (responseData.isEmpty()) {
-        logMessageToGuiAndFile("Error: No data received.");
-        return;
-    }
-
-    QString response(responseData);
-    logMessageToGuiAndFile("Device Response: " + response);
-
-    static const QRegularExpression re("Description:\\s*(.+)"); //Description: ifadesinden sonra gelen ifadeleri yakala, düzenli görünüm için
-    QRegularExpressionMatch match = re.match(response); //Düzenli ifade ile eşleşme kontrolü
-    if (match.hasMatch()) {
-        QString osInfo = match.captured(1).trimmed();
-        ui->osLabel->setText(osInfo); //OS bilgisi alınır oslabel üzerinde gösterilir
-    } else {
-        logMessageToGuiAndFile("Error: OS information not found.");
-        ui->osLabel->setText("Unknown OS");
-    }
+    ui->osLabel->setText(results[0]);
+    ui->kernelnOLabel->setText(results[1]);
+    ui->nodenOLabel->setText(results[2]);
+    ui->kernelvOLabel->setText(results[3]);
+    ui->machinehOLabel->setText(results[4]);
+    ui->processtOLabel->setText(results[5]);
+    ui->hardwarepOlabel->setText(results[6]);
+    ui->kernelrOLabel->setText(results[7]);
 }
+
 
 
 void MainWindow::showUtilitiesPage() {
