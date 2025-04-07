@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+
 #include <QMainWindow>
 #include <QSerialPortInfo>
 #include <QSerialPort>
@@ -16,8 +17,12 @@
 #include <QDateTime>
 #include <QTextStream>
 #include <QApplication>
-#include <QByteArray>
-
+/*#include <QByteArray>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QJsonDocument>
+#include <QJsonObject>*/
 
 
 QT_BEGIN_NAMESPACE
@@ -41,13 +46,15 @@ private slots:
     void connectToDevice();
     void resizecomboBox();
     void fetchOSInfo();
+    void readData();
 
 
 
 private:
+    //QNetworkAccessManager *manager;
     QSerialPort *serialPort = nullptr;
     void logMessageToGuiAndFile(const QString &msg);
-
+    bool firstTimeDeviceInfoShown = true;
     Ui::MainWindow *ui;
     QFile logFile; //logları yazmak için dosya nesnesi
     QTextStream logStream;
