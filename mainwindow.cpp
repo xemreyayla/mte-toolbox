@@ -5,38 +5,43 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , logFile("logfile.txt")//QFile nesnesi oluştur, log kayıtlarının dosyada tutulmasını sağlar
+    , logFile("logfile.txt")
 {
-    ui->setupUi(this);//arayüzdeki tüm bileşenleri mainwindow içine yerleştir
+    ui->setupUi(this);
     resizecomboBox();
+
 
     qApp->setStyleSheet(
         "QMessageBox QLabel { color: white; }"
         "QPushButton { color: white; }"
         "QLabel { color: white; }"
-        );
+    );
 
-    // Butonlara tıklanınca ilgili sayfalara geçiş yap
     connect(ui->deviceinfoButton, &QPushButton::clicked, this, &MainWindow::showDeviceInfoPage);
     connect(ui->utilitiesButton, &QPushButton::clicked, this, &MainWindow::showUtilitiesPage);
     connect(ui->configurationButton, &QPushButton::clicked, this, &MainWindow::showConfigurationPage);
     connect(ui->connectionButton, &QPushButton::clicked, this, &MainWindow::showConnectionPage);
     connect(ui->connectportsButton, &QPushButton::clicked, this, &MainWindow::connectToDevice);
     connect(ui->refreshButton, &QPushButton::clicked, this, &MainWindow::refreshPorts);
-
-    logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);// yazma modu, text formatında, append et
-    logStream.setDevice(&logFile); //LogFile ile bağlantı kur
-
+    logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
+    logStream.setDevice(&logFile);
 
     refreshPorts();
+    logMessageToGuiAndFile("MainWindow initialized.");
+
+    /*manager = new QNetworkAccessManager(this);
+    connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::onJsonReceived);
+
+    QUrl url("http://10.151.11.48:8081/");
+    QNetworkRequest request(url);
+    manager->get(request);*/
 }
 
 void MainWindow::logMessageToGuiAndFile(const QString &msg){
-
     QString logMessage = QString("[DEBUG] [%1] %2").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"),msg);
-    ui->plainTextEdit->appendPlainText(logMessage);//guiye yazdır
-    ui->plainTextEdit->setReadOnly(true); //Sadece okunabilir duruma getir
-    if (ui->plainTextEdit->document()->blockCount() > 15000){ //içeriği temizle
+    ui->plainTextEdit->appendPlainText(logMessage);
+    ui->plainTextEdit->setReadOnly(true);
+    if (ui->plainTextEdit->document()->blockCount() > 15000){
         ui->plainTextEdit->clear();
     }
     logStream << logMessage << Qt::endl;
@@ -44,117 +49,65 @@ void MainWindow::logMessageToGuiAndFile(const QString &msg){
 }
 
 void MainWindow::showConnectionPage(){
+    logMessageToGuiAndFile("showConnectionPage() called");
     qDebug() << "showConnectionPage() called";
     ui->stackedWidget->setCurrentIndex(3);
-
 }
 
 void MainWindow::showDeviceInfoPage() {
+    logMessageToGuiAndFile("showDeviceInfoPage() called");
     qDebug() << "showDeviceInfoPage() called";
+
+    if (!firstTimeDeviceInfoShown) {
+        // Sadece ikinci ve sonraki tıklamalarda temizle
+        ui->osLabel->clear();
+        ui->kernelnOLabel->clear();
+        ui->nodenOLabel->clear();
+        ui->kernelvOLabel->clear();
+        ui->machinehOLabel->clear();
+        ui->hardwarepOlabel->clear();
+        ui->kernelrOLabel->clear();
+        ui->prettyNameLabel->clear();
+        ui->versionLabel->clear();
+        ui->buildInfoPlainTextEdit->clear();
+        ui->plainTextEdit->clear();
+    }
+
+    firstTimeDeviceInfoShown = false;
+
     ui->stackedWidget->setCurrentIndex(0);
-
-    fetchOSInfo();  // Sonra OS bilgisini al
+    fetchOSInfo();
+    readData();
 }
-
-void MainWindow::fetchOSInfo() {
-    if (!serialPort) {
-        logMessageToGuiAndFile("Error: Serial port is not initialized.");
-        return;
-    }
-    if (!serialPort->isOpen()) {
-        logMessageToGuiAndFile("Error: Serial port is not open.");
-        return;
-    }
-
-    QStringList commands = {
-        "uname -o\n", // Operating System
-        "uname -s\n", // Kernel name
-        "uname -n\n", // Network node hostname
-        "uname -v\n", // Kernel version
-        "uname -m\n", // Machine hardware name
-        "uname -p\n", // Processor type
-        "uname -i\n", // Hardware platform
-        "uname -r\n"  // Kernel release (sürümü)
-    };
-
-    QStringList results;
-    for (const QString& command : commands) {
-        serialPort->write(command.toUtf8());
-        if (!serialPort->waitForBytesWritten(3000)) {
-            logMessageToGuiAndFile("Error: Command write timeout.");
-            return;
-        }
-
-        QByteArray responseData;
-        while (serialPort->waitForReadyRead(1000)) {
-            responseData.append(serialPort->readAll());
-        }
-
-        if (responseData.isEmpty()) {
-            logMessageToGuiAndFile("Error: No data received for command: " + command);
-            return;
-        }
-
-        QString info = QString::fromUtf8(responseData).trimmed();
-        info.remove(QRegularExpression("\\x1B\\[[0-9;?]*[a-zA-Z]")); // ANSI escape codes
-        info.remove(QRegularExpression(".*@.*:~#")); // Terminal prompt
-
-        QStringList lines = info.split("\n", Qt::SkipEmptyParts);
-        if (!lines.isEmpty()) {
-            results.append(lines.last().trimmed());
-        } else {
-            results.append("Unknown");
-        }
-    }
-
-    // Log and update the UI with all the collected information
-    logMessageToGuiAndFile("Operating System: " + results[0]);
-    logMessageToGuiAndFile("Kernel Name: " + results[1]);
-    logMessageToGuiAndFile("Host Name: " + results[2]);
-    logMessageToGuiAndFile("Kernel Version: " + results[3]);
-    logMessageToGuiAndFile("Machine Hardware: " + results[4]);
-    logMessageToGuiAndFile("Processor Type: " + results[5]);
-    logMessageToGuiAndFile("Hardware Platform: " + results[6]);
-    logMessageToGuiAndFile("Kernel Release: " + results[7]);
-
-    ui->osLabel->setText(results[0]);
-    ui->kernelnOLabel->setText(results[1]);
-    ui->nodenOLabel->setText(results[2]);
-    ui->kernelvOLabel->setText(results[3]);
-    ui->machinehOLabel->setText(results[4]);
-    ui->processtOLabel->setText(results[5]);
-    ui->hardwarepOlabel->setText(results[6]);
-    ui->kernelrOLabel->setText(results[7]);
-}
-
 
 
 void MainWindow::showUtilitiesPage() {
+    logMessageToGuiAndFile("showUtilitiesPage() called");
     qDebug() << "showUtilitiesPage() called";
     ui->stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::showConfigurationPage() {
+    logMessageToGuiAndFile("showConfigurationPage() called");
     qDebug() << "showConfigurationPage() called";
     ui->stackedWidget->setCurrentIndex(2);
 }
 
 void MainWindow::resizecomboBox(){
-   QAbstractItemView *view = ui->serialportscomboBox->view();
-
-   QApplication::setStyle("Windows");
-
-   view->setMaximumHeight(200);
-   view->setMinimumHeight(150);
-   view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    logMessageToGuiAndFile("resizecomboBox() called");
+    QAbstractItemView *view = ui->serialportscomboBox->view();
+    QApplication::setStyle("Windows");
+    view->setMaximumHeight(200);
+    view->setMinimumHeight(150);
+    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 }
 
 void MainWindow::connectToDevice() {
-    if (!serialPort) {
-        serialPort = new QSerialPort(this);  // Eğer daha önce başlatılmamışsa, yeni bir nesne oluşturuyoruz
-    }
-
     logMessageToGuiAndFile("connectToDevice() called");
+
+    if (!serialPort) {
+        serialPort = new QSerialPort(this);
+    }
 
     QString selectedPortName = ui->serialportscomboBox->currentText();
     logMessageToGuiAndFile("Selected Port: " + selectedPortName);
@@ -174,42 +127,19 @@ void MainWindow::connectToDevice() {
     logMessageToGuiAndFile("Serial port settings configured");
 
     if (!serialPort->open(QIODevice::ReadWrite)) {
-        qInfo() << "Seri port açılamadı. Hata kodu: " << serialPort->error();
         QString errorMessage;
         switch (serialPort->error()) {
-        case QSerialPort::NoError:
-            errorMessage = "No error.";
-            break;
-        case QSerialPort::DeviceNotFoundError:
-            errorMessage = "Device not found.";
-            break;
-        case QSerialPort::PermissionError:
-            errorMessage = "Permission denied.";
-            break;
-        case QSerialPort::OpenError:
-            errorMessage = "Unable to open the port.";
-            break;
-        case QSerialPort::WriteError:
-            errorMessage = "Write error.";
-            break;
-        case QSerialPort::ReadError:
-            errorMessage = "Read error.";
-            break;
-        case QSerialPort::ResourceError:
-            errorMessage = "Resource error.";
-            break;
-        case QSerialPort::TimeoutError:
-            errorMessage = "Timeout error.";
-            break;
-        case QSerialPort::UnknownError:
-            errorMessage = "Unknown error.";
-            break;
-        default:
-            errorMessage = "An unknown error occurred.";
-            break;
+        case QSerialPort::DeviceNotFoundError: errorMessage = "Device not found."; break;
+        case QSerialPort::PermissionError: errorMessage = "Permission denied."; break;
+        case QSerialPort::OpenError: errorMessage = "Unable to open the port."; break;
+        case QSerialPort::WriteError: errorMessage = "Write error."; break;
+        case QSerialPort::ReadError: errorMessage = "Read error."; break;
+        case QSerialPort::ResourceError: errorMessage = "Resource error."; break;
+        case QSerialPort::TimeoutError: errorMessage = "Timeout error."; break;
+        default: errorMessage = "Unknown error."; break;
         }
         logMessageToGuiAndFile("Error message: " + errorMessage);
-        QMessageBox::critical(this, "Connection Error", "Failed to connect to the port.\n" + errorMessage);
+        QMessageBox::critical(this, "Connection Error", "Failed to connect.\n" + errorMessage);
         return;
     }
 
@@ -217,34 +147,166 @@ void MainWindow::connectToDevice() {
     QMessageBox::information(this, "Connection Successful", "Connected to " + selectedPortName + " successfully.");
 }
 
+void MainWindow::readData() {
+    logMessageToGuiAndFile("readData() called");
+
+    if (!serialPort || !serialPort->isOpen()) {
+        logMessageToGuiAndFile("Error: Serial port is not open.");
+        return;
+    }
+
+    QString command = "cat /etc/os-release\n";
+    serialPort->write(command.toUtf8());
+
+    if (!serialPort->waitForBytesWritten(100)) {
+        logMessageToGuiAndFile("Error: Command write timeout.");
+        return;
+    }
+
+    QByteArray responseData;
+    while (serialPort->waitForReadyRead(150)) {
+        responseData.append(serialPort->readAll());
+    }
+
+    if (responseData.isEmpty()) {
+        logMessageToGuiAndFile("Error: No data received.");
+        return;
+    }
+
+    qDebug() << "Response Data: " << QString::fromUtf8(responseData);  // Yanıtı kontrol et
+
+    QString osInfo = QString::fromUtf8(responseData).trimmed();
+    qDebug() << "Parsed osInfo: " << osInfo;  // `osInfo` verisini kontrol et
+
+    static const QRegularExpression re_pretty(R"(PRETTY_NAME=\"([^\"]+)\".*)");
+    static const QRegularExpression re_name(R"(NAME=\"([^\"]+)\".*)");
+    static const QRegularExpression re_version(R"(VERSION=\"([^\"]+)\".*)");
+    static const QRegularExpression re_build(R"(BUILD_[A-Z_]+[ ]*=\"?([^\"]+)\"?)");
+
+    QString prettyName, name, version, buildInfo;
+    QRegularExpressionMatch match;
+
+    // PRETTY_NAME, NAME, VERSION bilgilerini çekme
+    if ((match = re_pretty.match(osInfo)).hasMatch()) {
+        prettyName = match.captured(1);
+        qDebug() << "Found PRETTY_NAME: " << prettyName;  // DEBUG: PRETTY_NAME kontrolü
+    }
+
+    if ((match = re_name.match(osInfo)).hasMatch()) {
+        name = match.captured(1);
+        qDebug() << "Found NAME: " << name;  // DEBUG: NAME kontrolü
+    }
+
+    if ((match = re_version.match(osInfo)).hasMatch()) {
+        version = match.captured(1);
+        qDebug() << "Found VERSION: " << version;  // DEBUG: VERSION kontrolü
+    }
+
+    // BUILD bilgilerini çekme
+    QStringList buildList;
+    QRegularExpressionMatchIterator it = re_build.globalMatch(osInfo);
+    while (it.hasNext()) {
+        buildList.append(it.next().captured(1));
+    }
+    buildInfo = buildList.join("\n");
+
+    // Log mesajları
+    logMessageToGuiAndFile("OS Info:\n" + prettyName + "\n" + name + "\n" + version + "\n" + buildInfo);
+
+    // GUI Güncellemeleri
+    ui->prettyNameLabel->setText(prettyName.isEmpty() ? "Unknown OS" : prettyName);
+    ui->versionLabel->setText(version.isEmpty() ? "Unknown Version" : version);
+
+    // PlainTextEdit widget'ını sadece okunabilir yapma
+    ui->plainTextEdit->setReadOnly(true);
+    ui->buildInfoPlainTextEdit->setReadOnly(true);  // Bu satır eklenerek buildInfoPlainTextEdit'i de okunabilir hale getiriyoruz
+
+    ui->plainTextEdit->setPlainText(osInfo);  // osInfo'yu ekle
+    ui->buildInfoPlainTextEdit->appendPlainText(buildInfo);  // Build bilgilerini ekle
+}
+
+
+void MainWindow::fetchOSInfo() {
+    logMessageToGuiAndFile("fetchOSInfo() called");
+
+    if (!serialPort || !serialPort->isOpen()) {
+        logMessageToGuiAndFile("Error: Serial port is not open.");
+        return;
+    }
+
+    QStringList commands = {
+        "uname -o\n", "uname -s\n", "uname -n\n", "uname -v\n",
+        "uname -m\n", "uname -i\n", "uname -r\n"
+    };
+
+    QStringList results;
+    for (const QString& command : commands) {
+        serialPort->write(command.toUtf8());
+        if (!serialPort->waitForBytesWritten(50)) {
+            logMessageToGuiAndFile("Error: Command write timeout.");
+            return;
+        }
+
+        QByteArray responseData;
+        while (serialPort->waitForReadyRead(30)) {
+            responseData.append(serialPort->readAll());
+        }
+
+        if (responseData.isEmpty()) {
+            logMessageToGuiAndFile("Error: No data received for command: " + command);
+            return;
+        }
+
+        QString info = QString::fromUtf8(responseData).trimmed();
+        info.remove(QRegularExpression("\\x1B\\[[0-9;?]*[a-zA-Z]"));
+        info.remove(QRegularExpression(".*@.*:~#"));
+
+        QStringList lines = info.split("\n", Qt::SkipEmptyParts);
+        results.append(!lines.isEmpty() ? lines.last().trimmed() : "Unknown");
+    }
+
+    logMessageToGuiAndFile("Operating System: " + results[0]);
+    logMessageToGuiAndFile("Kernel Name: " + results[1]);
+    logMessageToGuiAndFile("Host Name: " + results[2]);
+    logMessageToGuiAndFile("Kernel Version: " + results[3]);
+    logMessageToGuiAndFile("Machine Hardware: " + results[4]);
+    logMessageToGuiAndFile("Hardware Platform: " + results[5]);
+    logMessageToGuiAndFile("Kernel Release: " + results[6]);
+
+    ui->osLabel->setText(results[0]);
+    ui->kernelnOLabel->setText(results[1]);
+    ui->nodenOLabel->setText(results[2]);
+    ui->kernelvOLabel->setText(results[3]);
+    ui->machinehOLabel->setText(results[4]);
+    ui->hardwarepOlabel->setText(results[5]);
+    ui->kernelrOLabel->setText(results[6]);
+}
+
+
+
 
 void MainWindow::refreshPorts(){
     logMessageToGuiAndFile("refreshPorts() called");
 
     QList<QString> portList;
     for (const QSerialPortInfo &port:QSerialPortInfo::availablePorts()){
-    portList.append(port.portName());
-    ui->serialportscomboBox->addItems(portList);
-    logMessageToGuiAndFile("Port added to comboBox: " + port.portName());
+        portList.append(port.portName());
+        logMessageToGuiAndFile("Port added to comboBox: " + port.portName());
     }
+
+    ui->serialportscomboBox->clear();
 
     if (portList.isEmpty()) {
         logMessageToGuiAndFile("No available ports found.");
-        ui->serialportscomboBox->clear();
-        ui->serialportscomboBox->addItem("No available ports");  // ComboBox'a hata mesajı ekle
-    }
-    else {
-        // Eğer portList'te port varsa, ComboBox'ı temizle ve listeyi ekle
+        ui->serialportscomboBox->addItem("No available ports");
+    } else {
         logMessageToGuiAndFile("Available ports loaded");
-        ui->serialportscomboBox->clear();
         ui->serialportscomboBox->addItems(portList);
     }
 }
 
-
-
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
+    logMessageToGuiAndFile("MainWindow destroyed.");
     delete ui;
     if (serialPort){
         serialPort->close();
