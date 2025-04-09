@@ -28,13 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     refreshPorts();
     logMessageToGuiAndFile("MainWindow initialized.");
-
-    /*manager = new QNetworkAccessManager(this);
-    connect(manager, &QNetworkAccessManager::finished, this, &MainWindow::onJsonReceived);
-
-    QUrl url("http://10.151.11.48:8081/");
-    QNetworkRequest request(url);
-    manager->get(request);*/
 }
 
 void MainWindow::logMessageToGuiAndFile(const QString &msg){
@@ -77,9 +70,9 @@ void MainWindow::showDeviceInfoPage() {
 
     ui->stackedWidget->setCurrentIndex(0);
     fetchOSInfo();
+    fetchIpData();
     readData();
 }
-
 
 void MainWindow::showUtilitiesPage() {
     logMessageToGuiAndFile("showUtilitiesPage() called");
@@ -189,17 +182,14 @@ void MainWindow::readData() {
     // PRETTY_NAME, NAME, VERSION bilgilerini çekme
     if ((match = re_pretty.match(osInfo)).hasMatch()) {
         prettyName = match.captured(1);
-        qDebug() << "Found PRETTY_NAME: " << prettyName;  // DEBUG: PRETTY_NAME kontrolü
     }
 
     if ((match = re_name.match(osInfo)).hasMatch()) {
         name = match.captured(1);
-        qDebug() << "Found NAME: " << name;  // DEBUG: NAME kontrolü
     }
 
     if ((match = re_version.match(osInfo)).hasMatch()) {
         version = match.captured(1);
-        qDebug() << "Found VERSION: " << version;  // DEBUG: VERSION kontrolü
     }
 
     // BUILD bilgilerini çekme
@@ -226,6 +216,95 @@ void MainWindow::readData() {
 }
 
 
+void MainWindow::fetchIpData() {
+    logMessageToGuiAndFile("fetchIpData() called");
+
+    if (!serialPort || !serialPort->isOpen()) {
+        logMessageToGuiAndFile("Error: Serial port is not open.");
+        return;
+    }
+
+    QString command = "cat /etc/mte/system_config.json\n";
+    serialPort->write(command.toUtf8());
+
+    if (!serialPort->waitForBytesWritten(200)) {
+        logMessageToGuiAndFile("Error: Command write timeout.");
+        return;
+    }
+
+    QByteArray responseData;
+    int timeout = 200;
+    QElapsedTimer timer;
+    timer.start();
+
+    while (timer.elapsed() < timeout) {
+        if (serialPort->waitForReadyRead(300)) {
+            responseData.append(serialPort->readAll());
+        }
+    }
+
+    if (responseData.isEmpty()) {
+        logMessageToGuiAndFile("Error: No data received.");
+        return;
+    }
+
+    QString jsonString = QString::fromUtf8(responseData).trimmed();
+    logMessageToGuiAndFile("Raw JSON (maybe messy):\n" + jsonString);
+
+    // Temizleme: JSON kısmını ayıkla
+    int startIndex = jsonString.indexOf('{');
+    int endIndex = jsonString.lastIndexOf('}');
+    if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+        jsonString = jsonString.mid(startIndex, endIndex - startIndex + 1);
+        logMessageToGuiAndFile("Cleaned JSON:\n" + jsonString);
+    } else {
+        logMessageToGuiAndFile("Error: JSON boundaries not found.");
+        return;
+    }
+
+    QJsonParseError parseError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8(), &parseError);
+
+
+    if (parseError.error != QJsonParseError::NoError) {
+        logMessageToGuiAndFile("JSON parse error: " + parseError.errorString());
+        return;
+    }
+
+    if (!jsonDoc.isObject()) {
+        logMessageToGuiAndFile("Error: JSON is not an object.");
+        return;
+    }
+
+    QJsonObject obj = jsonDoc.object();
+
+    QString utestSerial = obj.value("utest_serial_number").toString();
+    QString utestProduct = obj.value("utest_product_number").toString();
+    QString urepoVersion = obj.value("urepo_application_version").toString();
+    QString chipseeSerial = obj.value("chipsee_serial_number").toString();
+    QString chipseeProduct = obj.value("chipsee_product_number").toString();
+    qint64 lastModifiedUnix = obj.value("last_modified").toVariant().toLongLong();
+
+    QString lastModified = QDateTime::fromSecsSinceEpoch(lastModifiedUnix).toString("yyyy-MM-dd hh:mm:ss");
+
+    // Log
+    logMessageToGuiAndFile("Utest Serial: " + utestSerial);
+    logMessageToGuiAndFile("Utest Product: " + utestProduct);
+    logMessageToGuiAndFile("Urepo Version: " + urepoVersion);
+    logMessageToGuiAndFile("Chipsee Serial: " + chipseeSerial);
+    logMessageToGuiAndFile("Chipsee Product: " + chipseeProduct);
+    logMessageToGuiAndFile("Last Modified: " + lastModified);
+
+    // QLabel’lara yaz
+    ui->utestSerialLabel->setText(utestSerial);
+    ui->utestProductLabel->setText(utestProduct);
+    ui->appVersionLabel->setText(urepoVersion);
+    ui->chipseeSerialLabel->setText(chipseeSerial);
+    ui->chipseeProductLabel->setText(chipseeProduct);
+    ui->lastModifiedLabel->setText(lastModified);
+    logMessageToGuiAndFile("Received JSON:\n" + jsonString);
+}
+
 void MainWindow::fetchOSInfo() {
     logMessageToGuiAndFile("fetchOSInfo() called");
 
@@ -240,21 +319,31 @@ void MainWindow::fetchOSInfo() {
     };
 
     QStringList results;
+
     for (const QString& command : commands) {
+        serialPort->readAll(); // Önceki buffer'ı temizle
         serialPort->write(command.toUtf8());
-        if (!serialPort->waitForBytesWritten(50)) {
-            logMessageToGuiAndFile("Error: Command write timeout.");
+
+        if (!serialPort->waitForBytesWritten(100)) {
+            logMessageToGuiAndFile("Error: Command write timeout for: " + command);
             return;
         }
 
         QByteArray responseData;
-        while (serialPort->waitForReadyRead(30)) {
-            responseData.append(serialPort->readAll());
+        QElapsedTimer timer;
+        timer.start();
+        const int timeout = 200;
+
+        while (timer.elapsed() < timeout) {
+            if (serialPort->waitForReadyRead(100)) {
+                responseData.append(serialPort->readAll());
+            }
         }
 
         if (responseData.isEmpty()) {
             logMessageToGuiAndFile("Error: No data received for command: " + command);
-            return;
+            results.append("Unknown");
+            continue;
         }
 
         QString info = QString::fromUtf8(responseData).trimmed();
@@ -281,9 +370,6 @@ void MainWindow::fetchOSInfo() {
     ui->hardwarepOlabel->setText(results[5]);
     ui->kernelrOLabel->setText(results[6]);
 }
-
-
-
 
 void MainWindow::refreshPorts(){
     logMessageToGuiAndFile("refreshPorts() called");
