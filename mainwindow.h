@@ -17,12 +17,11 @@
 #include <QDateTime>
 #include <QTextStream>
 #include <QApplication>
-/*#include <QByteArray>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
+#include <QByteArray>
 #include <QJsonDocument>
-#include <QJsonObject>*/
+#include <QJsonObject>
+#include <QJsonValue>
+
 
 
 QT_BEGIN_NAMESPACE
@@ -47,11 +46,11 @@ private slots:
     void resizecomboBox();
     void fetchOSInfo();
     void readData();
-
+    void fetchIpData();
 
 
 private:
-    //QNetworkAccessManager *manager;
+
     QSerialPort *serialPort = nullptr;
     void logMessageToGuiAndFile(const QString &msg);
     bool firstTimeDeviceInfoShown = true;
