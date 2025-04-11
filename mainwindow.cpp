@@ -10,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     resizecomboBox();
 
-
     qApp->setStyleSheet(
         "QMessageBox QLabel { color: white; }"
         "QPushButton { color: white; }"
@@ -21,6 +20,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->utilitiesButton, &QPushButton::clicked, this, &MainWindow::showUtilitiesPage);
     connect(ui->configurationButton, &QPushButton::clicked, this, &MainWindow::showConfigurationPage);
     connect(ui->connectionButton, &QPushButton::clicked, this, &MainWindow::showConnectionPage);
+    connect(ui->consoleButton, &QPushButton::clicked, this, &MainWindow::showConsolePage);
+
+    // 'returnPressed' sinyalini 'rwConsole' fonksiyonuna bağla
+    connect(ui->consoleLineEdit, &QLineEdit::returnPressed, this, &MainWindow::rwConsole);
+
+
     connect(ui->connectportsButton, &QPushButton::clicked, this, &MainWindow::connectToDevice);
     connect(ui->refreshButton, &QPushButton::clicked, this, &MainWindow::refreshPorts);
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
@@ -44,12 +49,13 @@ void MainWindow::logMessageToGuiAndFile(const QString &msg){
 void MainWindow::showConnectionPage(){
     logMessageToGuiAndFile("showConnectionPage() called");
     qDebug() << "showConnectionPage() called";
-    ui->stackedWidget->setCurrentIndex(3);
+    ui->stackedWidget->setCurrentWidget(ui->ConnectionPage);
 }
 
 void MainWindow::showDeviceInfoPage() {
     logMessageToGuiAndFile("showDeviceInfoPage() called");
     qDebug() << "showDeviceInfoPage() called";
+    ui->stackedWidget->setCurrentWidget(ui->DeviceInfoPage);
 
     if (!firstTimeDeviceInfoShown) {
         // Sadece ikinci ve sonraki tıklamalarda temizle
@@ -67,8 +73,6 @@ void MainWindow::showDeviceInfoPage() {
     }
 
     firstTimeDeviceInfoShown = false;
-
-    ui->stackedWidget->setCurrentIndex(0);
     fetchOSInfo();
     fetchIpData();
     readData();
@@ -77,15 +81,22 @@ void MainWindow::showDeviceInfoPage() {
 void MainWindow::showUtilitiesPage() {
     logMessageToGuiAndFile("showUtilitiesPage() called");
     qDebug() << "showUtilitiesPage() called";
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentWidget(ui->UtilitiesPage);
 }
 
 void MainWindow::showConfigurationPage() {
     logMessageToGuiAndFile("showConfigurationPage() called");
     qDebug() << "showConfigurationPage() called";
-    ui->stackedWidget->setCurrentIndex(2);
+    ui->stackedWidget->setCurrentWidget(ui->ConfigurationPage);
 }
 
+void MainWindow::showConsolePage(){
+    logMessageToGuiAndFile("showConsolePage() called");
+    qDebug() << "showConsolePage() called";
+    ui->stackedWidget->setCurrentWidget(ui->ConsolePage);
+
+    rwConsole();
+}
 void MainWindow::resizecomboBox(){
     logMessageToGuiAndFile("resizecomboBox() called");
     QAbstractItemView *view = ui->serialportscomboBox->view();
@@ -200,16 +211,15 @@ void MainWindow::readData() {
     }
     buildInfo = buildList.join("\n");
 
+    ui->plainTextEdit->setReadOnly(true);
+    ui->buildInfoPlainTextEdit->setReadOnly(true);
+
     // Log mesajları
     logMessageToGuiAndFile("OS Info:\n" + prettyName + "\n" + name + "\n" + version + "\n" + buildInfo);
 
     // GUI Güncellemeleri
     ui->prettyNameLabel->setText(prettyName.isEmpty() ? "Unknown OS" : prettyName);
-    ui->versionLabel->setText(version.isEmpty() ? "Unknown Version" : version);
-
-    // PlainTextEdit widget'ını sadece okunabilir yapma
-    ui->plainTextEdit->setReadOnly(true);
-    ui->buildInfoPlainTextEdit->setReadOnly(true);  // Bu satır eklenerek buildInfoPlainTextEdit'i de okunabilir hale getiriyoruz
+    ui->versionLabel->setText(version.isEmpty() ? "Unknown Version" : version);  
 
     ui->plainTextEdit->setPlainText(osInfo);  // osInfo'yu ekle
     ui->buildInfoPlainTextEdit->appendPlainText(buildInfo);  // Build bilgilerini ekle
@@ -390,6 +400,65 @@ void MainWindow::refreshPorts(){
         ui->serialportscomboBox->addItems(portList);
     }
 }
+
+
+void MainWindow::rwConsole() {
+    logMessageToGuiAndFile("rwConsole() called");
+
+    if (!serialPort || !serialPort->isOpen()) {
+        logMessageToGuiAndFile("Error: Serial port is not open.");
+        QMessageBox::critical(this, "Error", "Serial port is not open. Please set up the serial port first. ");
+        return;
+    }
+
+    QString command = ui->consoleLineEdit->text(); // Kullanıcının girdiği komut
+
+    if (command.isEmpty()) {
+        logMessageToGuiAndFile("Error: No command entered.");
+        return;
+    }
+
+    // Komutu cihazına gönder
+    serialPort->write(command.toUtf8() + "\r\n");
+
+    if (!serialPort->waitForBytesWritten(100)) {
+        logMessageToGuiAndFile("Error: Command write timeout.");
+        return;
+    }
+
+    QByteArray responseData;
+    while (serialPort->waitForReadyRead(150)) {
+        responseData.append(serialPort->readAll());
+    }
+
+    if (responseData.isEmpty()) {
+        logMessageToGuiAndFile("Error: No data received.");
+        return;
+    }
+
+    // Gelen yanıtı GUI'de göster
+    QString response = QString::fromUtf8(responseData);
+
+    // Komutu ve yanıtı consolePlainTextEdit'e ekleyelim
+    ui->consolePlainTextEdit->appendPlainText("root@linaro-alip:~# " + command);  // Komut satırını ekle
+    ui->consolePlainTextEdit->appendPlainText(response);
+
+    // Komut satırını temizle
+    ui->consoleLineEdit->clear();
+
+    // consolePlainTextEdit'i sadece okunabilir hale getir
+    ui->consolePlainTextEdit->setReadOnly(true);
+
+    // Text cursor'ı en son mesaja kaydırmak için
+    QTextCursor cursor = ui->consolePlainTextEdit->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    ui->consolePlainTextEdit->setTextCursor(cursor);
+
+    // GUI güncellemelerinin hemen işlenmesini sağla
+    QApplication::processEvents();
+}
+
+
 
 MainWindow::~MainWindow() {
     logMessageToGuiAndFile("MainWindow destroyed.");
