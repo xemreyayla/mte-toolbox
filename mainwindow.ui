@@ -84,7 +84,7 @@
        <number>0</number>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="DeviceInfoPage">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -550,6 +550,47 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="ConsolePage">
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>-10</y>
+          <width>171</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>console page</string>
+        </property>
+       </widget>
+       <widget class="QPlainTextEdit" name="consolePlainTextEdit">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>531</width>
+          <height>281</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: white;</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="consoleLineEdit">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>330</y>
+          <width>531</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: white;</string>
+        </property>
+       </widget>
+      </widget>
       <widget class="QWidget" name="ConnectionPage">
        <layout class="QFormLayout" name="formLayout_6">
         <item row="0" column="0" colspan="2">
@@ -799,7 +840,55 @@ color: #ffffff;
        <string/>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="2">
+       <item row="0" column="1">
+        <widget class="QPushButton" name="deviceinfoButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    /* Temel Stil */
+    background-color: #f57c00;
+    color: #212121;
+	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
+    
+    /* Kenar Yumuşatma */
+    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
+    
+    /* Metin &amp; Padding */
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 12pt;
+    font-weight: bold;
+    padding: 10px 20px;
+    
+}
+
+QPushButton:hover {
+    background-color: #ff9800;  /* Daha açık turuncu */
+}
+
+QPushButton:pressed {
+    background-color: #e65100;  /* Daha koyu turuncu */
+}</string>
+         </property>
+         <property name="text">
+          <string>Device Info</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
         <widget class="QPushButton" name="configurationButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -843,7 +932,52 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string>Utilities</string>
+          <string>Configuraiton</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="5">
+        <widget class="QPushButton" name="consoleButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    /* Temel Stil */
+    background-color: #f57c00;
+    color: #212121;
+	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
+    
+    /* Kenar Yumuşatma */
+    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
+    
+    /* Metin &amp; Padding */
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 12pt;
+    font-weight: bold;
+    padding: 10px 20px;
+    
+}
+
+QPushButton:hover {
+    background-color: #ff9800;  /* Daha açık turuncu */
+}
+
+QPushButton:pressed {
+    background-color: #e65100;  /* Daha koyu turuncu */
+}</string>
+         </property>
+         <property name="text">
+          <string>Console</string>
          </property>
         </widget>
        </item>
@@ -895,7 +1029,7 @@ QPushButton:pressed {
          </property>
         </widget>
        </item>
-       <item row="0" column="3">
+       <item row="0" column="2">
         <widget class="QPushButton" name="utilitiesButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -939,55 +1073,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string>Configuraiton</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="deviceinfoButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    /* Temel Stil */
-    background-color: #f57c00;
-    color: #212121;
-	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
-    
-    /* Kenar Yumuşatma */
-    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
-    
-    /* Metin &amp; Padding */
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 12pt;
-    font-weight: bold;
-    padding: 10px 20px;
-    
-}
-
-QPushButton:hover {
-    background-color: #ff9800;  /* Daha açık turuncu */
-}
-
-QPushButton:pressed {
-    background-color: #e65100;  /* Daha koyu turuncu */
-}</string>
-         </property>
-         <property name="text">
-          <string>Device Info</string>
+          <string>Utilities</string>
          </property>
         </widget>
        </item>
