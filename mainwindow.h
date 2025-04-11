@@ -21,7 +21,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
-
+#include <QRegularExpression>
 
 
 QT_BEGIN_NAMESPACE
@@ -41,16 +41,16 @@ private slots:
     void showUtilitiesPage();
     void showConfigurationPage();
     void showConnectionPage();
+    void showConsolePage();
     void refreshPorts();
     void connectToDevice();
     void resizecomboBox();
     void fetchOSInfo();
     void readData();
     void fetchIpData();
-
+    void rwConsole();
 
 private:
-
     QSerialPort *serialPort = nullptr;
     void logMessageToGuiAndFile(const QString &msg);
     bool firstTimeDeviceInfoShown = true;
