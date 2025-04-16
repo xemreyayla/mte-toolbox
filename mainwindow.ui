@@ -84,7 +84,7 @@
        <number>0</number>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="DeviceInfoPage">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -537,59 +537,98 @@
        </widget>
       </widget>
       <widget class="QWidget" name="UtilitiesPage">
-       <layout class="QFormLayout" name="formLayout_4">
-        <item row="0" column="0" colspan="2">
-         <widget class="QLabel" name="utilitiesLabel">
-          <property name="styleSheet">
-           <string notr="true">color: white;</string>
-          </property>
+       <widget class="QLabel" name="utilitiesLabel">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>9</y>
+          <width>74</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: white;</string>
+        </property>
+        <property name="text">
+         <string>Utilities Page</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="sdFormatButton">
+        <property name="geometry">
+         <rect>
+          <x>610</x>
+          <y>60</y>
+          <width>161</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+    /* Temel Stil */
+    background-color: #d32f2f;  /* Kırmızı - Tehlike rengi */
+    color: #ffffff;  /* Beyaz yazı */
+    border: 1px solid rgba(100, 0, 0, 0.6);  /* Hafif koyu kırmızı kenarlık */
+
+    /* Kenar Yumuşatma */
+    border-radius: 8px;
+
+    /* Metin &amp; Padding */
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 11pt;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+
+QPushButton:hover {
+    background-color: #e53935;  /* Daha parlak kırmızı */
+}
+
+QPushButton:pressed {
+    background-color: #b71c1c;  /* Çok koyu kırmızı */
+}
+</string>
+        </property>
+        <property name="text">
+         <string>SD Card Format</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="ConsolePage">
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_11">
           <property name="text">
-           <string>Utilities Page</string>
+           <string>console page</string>
           </property>
          </widget>
         </item>
+        <item row="1" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QPlainTextEdit" name="consolePlainTextEdit">
+            <property name="styleSheet">
+             <string notr="true">color: white;
+background-color: black;
+font-family: DejaVu Sans Mono, Liberation Mono, Monospace;
+font-size: 11pt;
+</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="consoleLineEdit">
+            <property name="styleSheet">
+             <string notr="true">color: white;
+background-color: black;
+font-family: DejaVu Sans Mono, Liberation Mono, Monospace;
+font-size: 11pt;
+</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
        </layout>
-      </widget>
-      <widget class="QWidget" name="ConsolePage">
-       <widget class="QLabel" name="label_11">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>-10</y>
-          <width>171</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>console page</string>
-        </property>
-       </widget>
-       <widget class="QPlainTextEdit" name="consolePlainTextEdit">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>531</width>
-          <height>281</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: white;</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="consoleLineEdit">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>330</y>
-          <width>531</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: white;</string>
-        </property>
-       </widget>
       </widget>
       <widget class="QWidget" name="ConnectionPage">
        <layout class="QFormLayout" name="formLayout_6">
