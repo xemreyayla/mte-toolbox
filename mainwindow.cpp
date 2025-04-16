@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     // 'returnPressed' sinyalini 'rwConsole' fonksiyonuna bağla
     connect(ui->consoleLineEdit, &QLineEdit::returnPressed, this, &MainWindow::rwConsole);
 
-
+    connect(ui->sdFormatButton, &QPushButton::clicked, this, &MainWindow::sdFormatButton_clicked);
     connect(ui->connectportsButton, &QPushButton::clicked, this, &MainWindow::connectToDevice);
     connect(ui->refreshButton, &QPushButton::clicked, this, &MainWindow::refreshPorts);
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
@@ -82,6 +82,7 @@ void MainWindow::showUtilitiesPage() {
     logMessageToGuiAndFile("showUtilitiesPage() called");
     qDebug() << "showUtilitiesPage() called";
     ui->stackedWidget->setCurrentWidget(ui->UtilitiesPage);
+
 }
 
 void MainWindow::showConfigurationPage() {
@@ -435,29 +436,87 @@ void MainWindow::rwConsole() {
         logMessageToGuiAndFile("Error: No data received.");
         return;
     }
-
-    // Gelen yanıtı GUI'de göster
+    ui->consolePlainTextEdit->setReadOnly(true);
+    // Gelen yanıtı UTF-8 olarak çöz ve ANSI kaçış kodlarını temizle
     QString response = QString::fromUtf8(responseData);
+    QString cleanedResponse = cleanTerminalOutput(response);  // Temizlenmiş çıktıyı al
 
-    // Komutu ve yanıtı consolePlainTextEdit'e ekleyelim
-    ui->consolePlainTextEdit->appendPlainText("root@linaro-alip:~# " + command);  // Komut satırını ekle
-    ui->consolePlainTextEdit->appendPlainText(response);
+    // Komutu ve yanıtı consolePlainTextEdit'e ekle
+    ui->consolePlainTextEdit->appendPlainText("root@linaro-alip:~# " + command);
+    ui->consolePlainTextEdit->appendPlainText(cleanedResponse);
 
     // Komut satırını temizle
     ui->consoleLineEdit->clear();
 
-    // consolePlainTextEdit'i sadece okunabilir hale getir
-    ui->consolePlainTextEdit->setReadOnly(true);
-
-    // Text cursor'ı en son mesaja kaydırmak için
+    // Text cursor'ı en son mesaja kaydır
     QTextCursor cursor = ui->consolePlainTextEdit->textCursor();
     cursor.movePosition(QTextCursor::End);
     ui->consolePlainTextEdit->setTextCursor(cursor);
+
+    //if yazılacak
+    //ui->consolePlainTextEdit->clear();
 
     // GUI güncellemelerinin hemen işlenmesini sağla
     QApplication::processEvents();
 }
 
+QString MainWindow::removeAnsi(const QString &input) {
+    QRegularExpression ansiRegex("\x1B\\[[0-9;?]*[ -/]*[@-~]");
+    QString cleaned = input;
+    cleaned.replace(ansiRegex, "");
+    return cleaned;
+}
+QString MainWindow::cleanTerminalOutput(const QString &input) {
+    return removeAnsi(input).trimmed();
+}
+
+void MainWindow::sdFormatButton_clicked(){
+    logMessageToGuiAndFile("sdFormatButton_clicked() called");
+
+    // Eğer az önce formatlandıysa, kullanıcıyı uyar
+    if (sdCardFormattedRecently) {
+        QMessageBox::information(this, "Info", "The SD card has already been formatted recently.\nThere is no need to format it again.");
+        logMessageToGuiAndFile("User attempted to format again, but it was already recently formatted.");
+        return;
+    }
+
+    // Serial port kontrolü
+    if (!serialPort || !serialPort->isOpen()){
+        logMessageToGuiAndFile("Error: Serial port is not open.");
+        QMessageBox::critical(this, "Error", "Serial port is not open.");
+        return;
+    }
+
+    QString umountCommand = "umount /dev/mmcblk1p1\r\n";
+    QString formatCommand = "mkfs.vfat -F 32 -n FORMATTEDSD /dev/mmcblk1p1\r\n";
+
+    int bytesWritten = serialPort->write(umountCommand.toUtf8() + "\r\n");
+    if (bytesWritten == -1) {
+        logMessageToGuiAndFile("Error: Failed to write umount command.");
+        QMessageBox::critical(this, "Error", "Failed to send unmount command.");
+        return;
+    }
+
+    QThread::msleep(350); // opsiyonel gecikme
+
+    bytesWritten = serialPort->write(formatCommand.toUtf8() + "\r\n");
+    if (bytesWritten == -1) {
+        logMessageToGuiAndFile("Error: Failed to write format command.");
+        QMessageBox::critical(this, "Error", "Failed to send format command.");
+        return;
+    }
+
+    QMessageBox::information(this, "Information", "SD Card formatting successful.");
+    logMessageToGuiAndFile("Information: SD Card formatting successful");
+
+    // Durum değişkenini güncelle
+    sdCardFormattedRecently = true;
+    QTimer::singleShot(10000, this, [this]() {
+        sdCardFormattedRecently = false;
+        logMessageToGuiAndFile("Reset: SD card format flag cleared after timeout.");
+    });
+
+}
 
 
 MainWindow::~MainWindow() {
