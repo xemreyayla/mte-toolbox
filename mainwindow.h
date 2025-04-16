@@ -22,7 +22,9 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QRegularExpression>
-
+#include <QProcess>
+#include <QThread>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -49,15 +51,19 @@ private slots:
     void readData();
     void fetchIpData();
     void rwConsole();
+    void sdFormatButton_clicked();
 
 private:
-    QSerialPort *serialPort = nullptr;
-    void logMessageToGuiAndFile(const QString &msg);
-    bool firstTimeDeviceInfoShown = true;
     Ui::MainWindow *ui;
+    QSerialPort *serialPort = nullptr;
+    bool firstTimeDeviceInfoShown = true;
+    bool sdCardFormattedRecently = false;
     QFile logFile; //logları yazmak için dosya nesnesi
     QTextStream logStream;
-
+    QString removeAnsi(const QString &input);
+    QString cleanTerminalOutput(const QString &input);
+    void logMessageToGuiAndFile(const QString &msg);
+    //void startUnmount();
 };
 
 #endif // MAINWINDOW_H
