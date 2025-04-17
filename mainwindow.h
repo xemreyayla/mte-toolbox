@@ -26,6 +26,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QDir>
+#include <QProgressDialog>
 
 
 QT_BEGIN_NAMESPACE
