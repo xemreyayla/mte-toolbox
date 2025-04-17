@@ -163,13 +163,13 @@ void MainWindow::readData() {
     QString command = "cat /etc/os-release\n";
     serialPort->write(command.toUtf8());
 
-    if (!serialPort->waitForBytesWritten(100)) {
+    if (!serialPort->waitForBytesWritten(250)) {
         logMessageToGuiAndFile("Error: Command write timeout.");
         return;
     }
 
     QByteArray responseData;
-    while (serialPort->waitForReadyRead(150)) {
+    while (serialPort->waitForReadyRead(350)) {
         responseData.append(serialPort->readAll());
     }
 
@@ -215,105 +215,13 @@ void MainWindow::readData() {
     ui->plainTextEdit->setReadOnly(true);
     ui->buildInfoPlainTextEdit->setReadOnly(true);
 
-    // Log mesajları
     logMessageToGuiAndFile("OS Info:\n" + prettyName + "\n" + name + "\n" + version + "\n" + buildInfo);
 
-    // GUI Güncellemeleri
     ui->prettyNameLabel->setText(prettyName.isEmpty() ? "Unknown OS" : prettyName);
-    ui->versionLabel->setText(version.isEmpty() ? "Unknown Version" : version);  
+    ui->versionLabel->setText(version.isEmpty() ? "Unknown Version" : version);
 
     ui->plainTextEdit->setPlainText(osInfo);  // osInfo'yu ekle
     ui->buildInfoPlainTextEdit->appendPlainText(buildInfo);  // Build bilgilerini ekle
-}
-
-
-void MainWindow::fetchIpData() {
-    logMessageToGuiAndFile("fetchIpData() called");
-
-    if (!serialPort || !serialPort->isOpen()) {
-        logMessageToGuiAndFile("Error: Serial port is not open.");
-        return;
-    }
-
-    QString command = "cat /etc/mte/system_config.json\n";
-    serialPort->write(command.toUtf8());
-
-    if (!serialPort->waitForBytesWritten(200)) {
-        logMessageToGuiAndFile("Error: Command write timeout.");
-        return;
-    }
-
-    QByteArray responseData;
-    int timeout = 200;
-    QElapsedTimer timer;
-    timer.start();
-
-    while (timer.elapsed() < timeout) {
-        if (serialPort->waitForReadyRead(300)) {
-            responseData.append(serialPort->readAll());
-        }
-    }
-
-    if (responseData.isEmpty()) {
-        logMessageToGuiAndFile("Error: No data received.");
-        return;
-    }
-
-    QString jsonString = QString::fromUtf8(responseData).trimmed();
-    logMessageToGuiAndFile("Raw JSON (maybe messy):\n" + jsonString);
-
-    // Temizleme: JSON kısmını ayıkla
-    int startIndex = jsonString.indexOf('{');
-    int endIndex = jsonString.lastIndexOf('}');
-    if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-        jsonString = jsonString.mid(startIndex, endIndex - startIndex + 1);
-        logMessageToGuiAndFile("Cleaned JSON:\n" + jsonString);
-    } else {
-        logMessageToGuiAndFile("Error: JSON boundaries not found.");
-        return;
-    }
-
-    QJsonParseError parseError;
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8(), &parseError);
-
-
-    if (parseError.error != QJsonParseError::NoError) {
-        logMessageToGuiAndFile("JSON parse error: " + parseError.errorString());
-        return;
-    }
-
-    if (!jsonDoc.isObject()) {
-        logMessageToGuiAndFile("Error: JSON is not an object.");
-        return;
-    }
-
-    QJsonObject obj = jsonDoc.object();
-
-    QString utestSerial = obj.value("utest_serial_number").toString();
-    QString utestProduct = obj.value("utest_product_number").toString();
-    QString urepoVersion = obj.value("urepo_application_version").toString();
-    QString chipseeSerial = obj.value("chipsee_serial_number").toString();
-    QString chipseeProduct = obj.value("chipsee_product_number").toString();
-    qint64 lastModifiedUnix = obj.value("last_modified").toVariant().toLongLong();
-
-    QString lastModified = QDateTime::fromSecsSinceEpoch(lastModifiedUnix).toString("yyyy-MM-dd hh:mm:ss");
-
-    // Log
-    logMessageToGuiAndFile("Utest Serial: " + utestSerial);
-    logMessageToGuiAndFile("Utest Product: " + utestProduct);
-    logMessageToGuiAndFile("Urepo Version: " + urepoVersion);
-    logMessageToGuiAndFile("Chipsee Serial: " + chipseeSerial);
-    logMessageToGuiAndFile("Chipsee Product: " + chipseeProduct);
-    logMessageToGuiAndFile("Last Modified: " + lastModified);
-
-    // QLabel’lara yaz
-    ui->utestSerialLabel->setText(utestSerial);
-    ui->utestProductLabel->setText(utestProduct);
-    ui->appVersionLabel->setText(urepoVersion);
-    ui->chipseeSerialLabel->setText(chipseeSerial);
-    ui->chipseeProductLabel->setText(chipseeProduct);
-    ui->lastModifiedLabel->setText(lastModified);
-    logMessageToGuiAndFile("Received JSON:\n" + jsonString);
 }
 
 void MainWindow::fetchOSInfo() {
@@ -343,10 +251,10 @@ void MainWindow::fetchOSInfo() {
         QByteArray responseData;
         QElapsedTimer timer;
         timer.start();
-        const int timeout = 200;
+        const int timeout = 300;
 
         while (timer.elapsed() < timeout) {
-            if (serialPort->waitForReadyRead(100)) {
+            if (serialPort->waitForReadyRead(250)) {
                 responseData.append(serialPort->readAll());
             }
         }
@@ -402,7 +310,6 @@ void MainWindow::refreshPorts(){
     }
 }
 
-
 void MainWindow::rwConsole() {
     logMessageToGuiAndFile("rwConsole() called");
 
@@ -445,7 +352,6 @@ void MainWindow::rwConsole() {
     ui->consolePlainTextEdit->appendPlainText("root@linaro-alip:~# " + command);
     ui->consolePlainTextEdit->appendPlainText(cleanedResponse);
 
-    // Komut satırını temizle
     ui->consoleLineEdit->clear();
 
     // Text cursor'ı en son mesaja kaydır
@@ -453,11 +359,122 @@ void MainWindow::rwConsole() {
     cursor.movePosition(QTextCursor::End);
     ui->consolePlainTextEdit->setTextCursor(cursor);
 
-    //if yazılacak
-    //ui->consolePlainTextEdit->clear();
-
     // GUI güncellemelerinin hemen işlenmesini sağla
     QApplication::processEvents();
+}
+// Eklenen: JSON tamamlayıcı okuma fonksiyonu
+QString MainWindow::readUntilJsonComplete(int overallTimeoutMs) {
+    QByteArray buffer;
+    QElapsedTimer timer;
+    timer.start();
+
+    int openBraces = 0;
+    bool started = false;
+
+    while (timer.elapsed() < overallTimeoutMs) {
+        if (serialPort->waitForReadyRead(200)) {
+            buffer += serialPort->readAll();
+
+            for (char c : std::as_const(buffer)) {
+                if (c == '{') {
+                    openBraces++;
+                    started = true;
+                } else if (c == '}') {
+                    openBraces--;
+                }
+            }
+
+            if (started && openBraces == 0)
+                break;
+        }
+    }
+
+    return QString::fromUtf8(buffer).trimmed();
+}
+
+// Eklenen: JSON başarısızsa UI label'larına hata yazan yardımcı fonksiyon
+void MainWindow::setIpLabelsError() {
+    const QString err = "Unable to reach the IP adress.";
+    ui->utestSerialLabel->setText(err);
+    ui->utestProductLabel->setText(err);
+    ui->appVersionLabel->setText(err);
+    ui->chipseeSerialLabel->setText(err);
+    ui->chipseeProductLabel->setText(err);
+    ui->lastModifiedLabel->setText(err);
+}
+
+// Güncellenen: fetchIpData fonksiyonu
+void MainWindow::fetchIpData() {
+    logMessageToGuiAndFile("fetchIpData() called");
+
+    if (!serialPort || !serialPort->isOpen()) {
+        logMessageToGuiAndFile("Error: Serial port is not open.");
+        setIpLabelsError();
+        return;
+    }
+
+    QString commandFetch = "cat /etc/mte/system_config.json\n";
+    serialPort->write(commandFetch.toUtf8());
+
+    if (!serialPort->waitForBytesWritten(350)) {
+        logMessageToGuiAndFile("Error: Command write timeout.");
+        setIpLabelsError();
+        return;
+    }
+
+    QString jsonString = readUntilJsonComplete(3500);
+    logMessageToGuiAndFile("Raw JSON (maybe messy):\n" + jsonString);
+
+    int startIndex = jsonString.indexOf('{');
+    int endIndex = jsonString.lastIndexOf('}');
+    if (startIndex == -1 || endIndex == -1 || endIndex <= startIndex) {
+        logMessageToGuiAndFile("Error: JSON boundaries not found.");
+        setIpLabelsError();
+        return;
+    }
+
+    jsonString = jsonString.mid(startIndex, endIndex - startIndex + 1);
+    logMessageToGuiAndFile("Cleaned JSON:\n" + jsonString);
+
+    QJsonParseError parseError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8(), &parseError);
+
+    if (parseError.error != QJsonParseError::NoError) {
+        logMessageToGuiAndFile("JSON parse error: " + parseError.errorString());
+        setIpLabelsError();
+        return;
+    }
+
+    if (!jsonDoc.isObject()) {
+        logMessageToGuiAndFile("Error: JSON is not an object.");
+        setIpLabelsError();
+        return;
+    }
+
+    QJsonObject obj = jsonDoc.object();
+
+    QString utestSerial = obj.value("utest_serial_number").toString();
+    QString utestProduct = obj.value("utest_product_number").toString();
+    QString urepoVersion = obj.value("urepo_application_version").toString();
+    QString chipseeSerial = obj.value("chipsee_serial_number").toString();
+    QString chipseeProduct = obj.value("chipsee_product_number").toString();
+    qint64 lastModifiedUnix = obj.value("last_modified").toVariant().toLongLong();
+    QString lastModified = QDateTime::fromSecsSinceEpoch(lastModifiedUnix).toString("yyyy-MM-dd hh:mm:ss");
+
+    logMessageToGuiAndFile("Utest Serial: " + utestSerial);
+    logMessageToGuiAndFile("Utest Product: " + utestProduct);
+    logMessageToGuiAndFile("Urepo Version: " + urepoVersion);
+    logMessageToGuiAndFile("Chipsee Serial: " + chipseeSerial);
+    logMessageToGuiAndFile("Chipsee Product: " + chipseeProduct);
+    logMessageToGuiAndFile("Last Modified: " + lastModified);
+
+    ui->utestSerialLabel->setText(utestSerial);
+    ui->utestProductLabel->setText(utestProduct);
+    ui->appVersionLabel->setText(urepoVersion);
+    ui->chipseeSerialLabel->setText(chipseeSerial);
+    ui->chipseeProductLabel->setText(chipseeProduct);
+    ui->lastModifiedLabel->setText(lastModified);
+    logMessageToGuiAndFile("Received JSON:\n" + jsonString);
 }
 
 QString MainWindow::removeAnsi(const QString &input) {
@@ -516,6 +533,25 @@ void MainWindow::sdFormatButton_clicked(){
         logMessageToGuiAndFile("Reset: SD card format flag cleared after timeout.");
     });
 
+}
+
+void MainWindow::rotateLogFileIfNeeded() {
+    QFileInfo info("logfile.txt");
+    const qint64 maxSize = 10 * 1024 * 1024; // 5MB
+
+    if (!info.exists() || info.size() < maxSize) return;
+
+    QString backup2 = "logfile.txt.2";
+    QString backup1 = "logfile.txt.1";
+
+    if (QFile::exists(backup2)) QFile::remove(backup2);
+    if (QFile::exists(backup1)) QFile::rename(backup1, backup2);
+    if (QFile::exists("logfile.txt")) QFile::rename("logfile.txt", backup1);
+
+    logFile.close(); // Dosya açık olabilir, kapatıyoruz
+    logFile.setFileName("logfile.txt");
+    logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
+    logStream.setDevice(&logFile);
 }
 
 
