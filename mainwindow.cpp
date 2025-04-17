@@ -55,6 +55,15 @@ void MainWindow::showConnectionPage(){
 void MainWindow::showDeviceInfoPage() {
     logMessageToGuiAndFile("showDeviceInfoPage() called");
     qDebug() << "showDeviceInfoPage() called";
+
+    QProgressDialog progress("Fetching device information...", nullptr, 0, 0, this);
+    progress.setWindowModality(Qt::ApplicationModal);
+    progress.setCancelButton(nullptr);
+    progress.setWindowTitle("Please Wait");
+    progress.setMinimumDuration(0);
+    progress.show();
+    QApplication::processEvents(); //UI refresh
+
     ui->stackedWidget->setCurrentWidget(ui->DeviceInfoPage);
 
     if (!firstTimeDeviceInfoShown) {
@@ -163,7 +172,7 @@ void MainWindow::readData() {
     QString command = "cat /etc/os-release\n";
     serialPort->write(command.toUtf8());
 
-    if (!serialPort->waitForBytesWritten(250)) {
+    if (!serialPort->waitForBytesWritten(200)) {
         logMessageToGuiAndFile("Error: Command write timeout.");
         return;
     }
@@ -251,10 +260,10 @@ void MainWindow::fetchOSInfo() {
         QByteArray responseData;
         QElapsedTimer timer;
         timer.start();
-        const int timeout = 300;
+        const int timeout = 100;
 
         while (timer.elapsed() < timeout) {
-            if (serialPort->waitForReadyRead(250)) {
+            if (serialPort->waitForReadyRead(150)) {
                 responseData.append(serialPort->readAll());
             }
         }
@@ -416,7 +425,7 @@ void MainWindow::fetchIpData() {
     QString commandFetch = "cat /etc/mte/system_config.json\n";
     serialPort->write(commandFetch.toUtf8());
 
-    if (!serialPort->waitForBytesWritten(350)) {
+    if (!serialPort->waitForBytesWritten(150)) {
         logMessageToGuiAndFile("Error: Command write timeout.");
         setIpLabelsError();
         return;
