@@ -556,8 +556,8 @@
        <widget class="QPushButton" name="sdFormatButton">
         <property name="geometry">
          <rect>
-          <x>610</x>
-          <y>60</y>
+          <x>660</x>
+          <y>120</y>
           <width>161</width>
           <height>51</height>
          </rect>
