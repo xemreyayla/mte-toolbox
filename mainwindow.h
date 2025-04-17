@@ -25,6 +25,8 @@
 #include <QProcess>
 #include <QThread>
 #include <QTimer>
+#include <QDir>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -52,6 +54,8 @@ private slots:
     void fetchIpData();
     void rwConsole();
     void sdFormatButton_clicked();
+    void rotateLogFileIfNeeded();
+    void setIpLabelsError();
 
 private:
     Ui::MainWindow *ui;
@@ -62,6 +66,8 @@ private:
     QTextStream logStream;
     QString removeAnsi(const QString &input);
     QString cleanTerminalOutput(const QString &input);
+    QString readUntilJsonComplete(int overallTimeoutMs);
+
     void logMessageToGuiAndFile(const QString &msg);
     //void startUnmount();
 };
