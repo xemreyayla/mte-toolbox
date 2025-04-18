@@ -28,6 +28,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->sdFormatButton, &QPushButton::clicked, this, &MainWindow::sdFormatButton_clicked);
     connect(ui->connectportsButton, &QPushButton::clicked, this, &MainWindow::connectToDevice);
     connect(ui->refreshButton, &QPushButton::clicked, this, &MainWindow::refreshPorts);
+
+    //utilities lowButtons
+    connect(ui->out1LowButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    connect(ui->out2LowButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    connect(ui->out3LowButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    connect(ui->out4LowButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    //utilities highButtons
+    connect(ui->out1HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    connect(ui->out2HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    connect(ui->out3HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    connect(ui->out4HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
     logStream.setDevice(&logFile);
 
@@ -565,6 +577,35 @@ void MainWindow::rotateLogFileIfNeeded() {
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
     logStream.setDevice(&logFile);
 }
+// GÜNCELLENECEK
+void MainWindow::utilitiesButtons() {
+    QPushButton* button = qobject_cast<QPushButton*>(sender());
+    if (!button) return;
+
+    QString buttonName = button->objectName();  // örnek: "out1HighButton"
+    QString gpioNumber;
+    QString value;
+
+    // Hangi butona tıklandığını belirle
+    if (buttonName.contains("out1")) gpioNumber = "1";
+    else if (buttonName.contains("out2")) gpioNumber = "2";
+    else if (buttonName.contains("out3")) gpioNumber = "3";
+    else if (buttonName.contains("out4")) gpioNumber = "4";
+    else return;
+
+    if (buttonName.contains("High")) value = "1";
+    else if (buttonName.contains("Low")) value = "0";
+    else return;
+
+    // Terminaldeki gibi doğrudan komutu hazırlıyoruz
+    QString command = QString("echo %1 > /dev/chipsee-gpio%2").arg(value, gpioNumber);
+
+    // Bu şekilde '>' operatörü shell üzerinden çalışır
+    QProcess::execute("sh", QStringList() << "-c" << command);
+
+    qDebug() << "Terminale gönderilen komut:" << command;
+}
+
 
 
 MainWindow::~MainWindow() {
