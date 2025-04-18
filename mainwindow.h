@@ -57,6 +57,7 @@ private slots:
     void sdFormatButton_clicked();
     void rotateLogFileIfNeeded();
     void setIpLabelsError();
+    void utilitiesButtons();
 
 private:
     Ui::MainWindow *ui;
