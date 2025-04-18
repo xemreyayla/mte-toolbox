@@ -130,6 +130,8 @@ void MainWindow::connectToDevice() {
         logMessageToGuiAndFile("Error: Port not selected or unavailable");
         QMessageBox::warning(this, "Error", "Port not available or selected");
         return;
+    }else{
+        ui->connectionLabel->setText("Chipsee connection is not available.");
     }
 
     serialPort->setPortName(selectedPortName);
@@ -159,6 +161,7 @@ void MainWindow::connectToDevice() {
 
     logMessageToGuiAndFile("Connected to serial port successfully.");
     QMessageBox::information(this, "Connection Successful", "Connected to " + selectedPortName + " successfully.");
+    ui->connectionLabel->setText("Chipsee connection is active.");
 }
 
 void MainWindow::readData() {
@@ -501,17 +504,18 @@ void MainWindow::sdFormatButton_clicked(){
 
     // Eğer az önce formatlandıysa, kullanıcıyı uyar
     if (sdCardFormattedRecently) {
-        QMessageBox::information(this, "Info", "The SD card has already been formatted recently.\nThere is no need to format it again.");
+        ui->formatLabel->setText("The SD card has already been formatted recently.\nThere is no need to format it again.");
         logMessageToGuiAndFile("User attempted to format again, but it was already recently formatted.");
         return;
     }
 
     // Serial port kontrolü
     if (!serialPort || !serialPort->isOpen()){
+        ui->formatLabel->setText("Serial port is not open.");
         logMessageToGuiAndFile("Error: Serial port is not open.");
-        QMessageBox::critical(this, "Error", "Serial port is not open.");
         return;
     }
+
 
     QString umountCommand = "umount /dev/mmcblk1p1\r\n";
     QString formatCommand = "mkfs.vfat -F 32 -n FORMATTEDSD /dev/mmcblk1p1\r\n";
@@ -519,7 +523,7 @@ void MainWindow::sdFormatButton_clicked(){
     int bytesWritten = serialPort->write(umountCommand.toUtf8() + "\r\n");
     if (bytesWritten == -1) {
         logMessageToGuiAndFile("Error: Failed to write umount command.");
-        QMessageBox::critical(this, "Error", "Failed to send unmount command.");
+        ui->formatLabel->setText("Failed to send unmount command.");
         return;
     }
 
@@ -528,12 +532,12 @@ void MainWindow::sdFormatButton_clicked(){
     bytesWritten = serialPort->write(formatCommand.toUtf8() + "\r\n");
     if (bytesWritten == -1) {
         logMessageToGuiAndFile("Error: Failed to write format command.");
-        QMessageBox::critical(this, "Error", "Failed to send format command.");
+        ui->formatLabel->setText("Failed to send format command.");
         return;
     }
 
-    QMessageBox::information(this, "Information", "SD Card formatting successful.");
-    logMessageToGuiAndFile("Information: SD Card formatting successful");
+    ui->formatLabel->setText("SD Card formatted successfully at FAT32.");
+    logMessageToGuiAndFile("Information: SD Card formatted successfuly at FAT32.");
 
     // Durum değişkenini güncelle
     sdCardFormattedRecently = true;
@@ -541,7 +545,6 @@ void MainWindow::sdFormatButton_clicked(){
         sdCardFormattedRecently = false;
         logMessageToGuiAndFile("Reset: SD card format flag cleared after timeout.");
     });
-
 }
 
 void MainWindow::rotateLogFileIfNeeded() {
