@@ -58,20 +58,22 @@ private slots:
     void rotateLogFileIfNeeded();
     void setIpLabelsError();
     void utilitiesButtons();
+    void onSerialDataAvailable();
+    void checkGpioStates();
 
 private:
     Ui::MainWindow *ui;
     QSerialPort *serialPort = nullptr;
     bool firstTimeDeviceInfoShown = true;
     bool sdCardFormattedRecently = false;
-    QFile logFile; //logları yazmak için dosya nesnesi
+    QFile logFile;
     QTextStream logStream;
     QString removeAnsi(const QString &input);
     QString cleanTerminalOutput(const QString &input);
     QString readUntilJsonComplete(int overallTimeoutMs);
-
     void logMessageToGuiAndFile(const QString &msg);
-    //void startUnmount();
+    QTimer* gpioTimer;
+
 };
 
 #endif // MAINWINDOW_H
