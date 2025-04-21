@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , logFile("logfile.txt")
+    , gpioTimer(new QTimer(this))
 {
     ui->setupUi(this);
     resizecomboBox();
@@ -39,6 +40,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->out2HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
     connect(ui->out3HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
     connect(ui->out4HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+
+    connect(gpioTimer, &QTimer::timeout, this, &MainWindow::checkGpioStates);
+    gpioTimer->start(1000);
+    connect(serialPort, &QSerialPort::readyRead, this, &MainWindow::onSerialDataAvailable);
+
 
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
     logStream.setDevice(&logFile);
@@ -103,6 +109,7 @@ void MainWindow::showUtilitiesPage() {
     logMessageToGuiAndFile("showUtilitiesPage() called");
     qDebug() << "showUtilitiesPage() called";
     ui->stackedWidget->setCurrentWidget(ui->UtilitiesPage);
+    utilitiesButtons();
 
 }
 
@@ -336,6 +343,7 @@ void MainWindow::refreshPorts(){
 
 void MainWindow::rwConsole() {
     logMessageToGuiAndFile("rwConsole() called");
+    ui->consolePlainTextEdit->setReadOnly(true);
 
     if (!serialPort || !serialPort->isOpen()) {
         logMessageToGuiAndFile("Error: Serial port is not open.");
@@ -367,7 +375,7 @@ void MainWindow::rwConsole() {
         logMessageToGuiAndFile("Error: No data received.");
         return;
     }
-    ui->consolePlainTextEdit->setReadOnly(true);
+
     // Gelen yanıtı UTF-8 olarak çöz ve ANSI kaçış kodlarını temizle
     QString response = QString::fromUtf8(responseData);
     QString cleanedResponse = cleanTerminalOutput(response);  // Temizlenmiş çıktıyı al
@@ -395,9 +403,14 @@ QString MainWindow::readUntilJsonComplete(int overallTimeoutMs) {
     int openBraces = 0;
     bool started = false;
 
+    logMessageToGuiAndFile("readUntilJsonComplete() started. Timeout: " + QString::number(overallTimeoutMs) + "ms");
+
     while (timer.elapsed() < overallTimeoutMs) {
         if (serialPort->waitForReadyRead(200)) {
-            buffer += serialPort->readAll();
+            QByteArray chunk = serialPort->readAll();
+            buffer += chunk;
+
+            logMessageToGuiAndFile("Read chunk: " + QString::fromUtf8(chunk));
 
             for (char c : std::as_const(buffer)) {
                 if (c == '{') {
@@ -408,13 +421,20 @@ QString MainWindow::readUntilJsonComplete(int overallTimeoutMs) {
                 }
             }
 
-            if (started && openBraces == 0)
+            if (started && openBraces == 0) {
+                logMessageToGuiAndFile("Complete JSON received.");
                 break;
+            }
         }
+    }
+
+    if (!started || openBraces != 0) {
+        logMessageToGuiAndFile("Warning: JSON may be incomplete. Timeout or mismatched braces.");
     }
 
     return QString::fromUtf8(buffer).trimmed();
 }
+
 
 // Eklenen: JSON başarısızsa UI label'larına hata yazan yardımcı fonksiyon
 void MainWindow::setIpLabelsError() {
@@ -549,7 +569,15 @@ void MainWindow::sdFormatButton_clicked(){
     }
 
     ui->formatLabel->setText("SD Card formatted successfully at FAT32.");
+    serialPort->write("echo 1 > /dev/buzzer\r\n");
+    QTimer::singleShot(750, this, [this]() {
+        if (serialPort && serialPort->isOpen()) {
+            serialPort->write("echo 0 > /dev/buzzer\r\n");
+            logMessageToGuiAndFile("Buzzer closed (750ms later).");
+        }
+    });
     logMessageToGuiAndFile("Information: SD Card formatted successfuly at FAT32.");
+
 
     // Durum değişkenini güncelle
     sdCardFormattedRecently = true;
@@ -557,11 +585,12 @@ void MainWindow::sdFormatButton_clicked(){
         sdCardFormattedRecently = false;
         logMessageToGuiAndFile("Reset: SD card format flag cleared after timeout.");
     });
+
 }
 
 void MainWindow::rotateLogFileIfNeeded() {
     QFileInfo info("logfile.txt");
-    const qint64 maxSize = 10 * 1024 * 1024; // 5MB
+    const qint64 maxSize = 10 * 1024 * 1024; // 10MB
 
     if (!info.exists() || info.size() < maxSize) return;
 
@@ -577,35 +606,139 @@ void MainWindow::rotateLogFileIfNeeded() {
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
     logStream.setDevice(&logFile);
 }
-// GÜNCELLENECEK
 void MainWindow::utilitiesButtons() {
+    if (!serialPort || !serialPort->isOpen()) {
+        QMessageBox::warning(this, "Connection Required", "A serial port connection is required. Please connect the serial port.");
+        return;
+    }
     QPushButton* button = qobject_cast<QPushButton*>(sender());
     if (!button) return;
 
-    QString buttonName = button->objectName();  // örnek: "out1HighButton"
-    QString gpioNumber;
-    QString value;
+    QString name = button->objectName();
 
-    // Hangi butona tıklandığını belirle
-    if (buttonName.contains("out1")) gpioNumber = "1";
-    else if (buttonName.contains("out2")) gpioNumber = "2";
-    else if (buttonName.contains("out3")) gpioNumber = "3";
-    else if (buttonName.contains("out4")) gpioNumber = "4";
-    else return;
+    if (name == "out1LowButton") {
+        QString lowCommand1 = "echo 0 > /dev/chipsee-gpio1\r\n";
+        int bytesWritten = serialPort->write(lowCommand1.toUtf8());
+        if (bytesWritten == -1) {
+            qDebug() << "Failed to write data: out1LowButton";
+        } else {
+            qDebug() << name << "inactive";
+            ui->out1Label->setText("0");
+            ui->in1Label->setText("inactive");
+        }
 
-    if (buttonName.contains("High")) value = "1";
-    else if (buttonName.contains("Low")) value = "0";
-    else return;
+    }
+    else if (name == "out2LowButton") {
+        QString lowCommand2 = "echo 0 > /dev/chipsee-gpio2\r\n";
+        int bytesWritten = serialPort->write(lowCommand2.toUtf8());
+        if (bytesWritten == -1) {
+            qDebug() << "Failed to write data: out2LowButton";
+        } else {
+            qDebug() << name << "inactive";
+            ui->out2Label->setText("0");
+            ui->in2Label->setText("inactive");
+        }
+    }
+    else if (name == "out3LowButton") {
+        QString lowCommand3 = "echo 0 > /dev/chipsee-gpio3\r\n";
+        int bytesWritten = serialPort->write(lowCommand3.toUtf8());
+        if (bytesWritten == -1) {
+            qDebug() << "Failed to write data: out3LowButton";
+        } else {
+            qDebug() << name << "inactive";
+            ui->out3Label->setText("0");
+            ui->in3Label->setText("inactive");
+        }
+    }
+    else if (name == "out4LowButton") {
+        QString lowCommand4 = "echo 0 > /dev/chipsee-gpio4\r\n";
+        int bytesWritten = serialPort->write(lowCommand4.toUtf8());
+        if (bytesWritten == -1) {
+            qDebug() << "Failed to write data: out4LowButton";
+        } else {
+            qDebug() << name << "inactive";
+            ui->out4Label->setText("0");
+            ui->in4Label->setText("inactive");
+        }
+    }
 
-    // Terminaldeki gibi doğrudan komutu hazırlıyoruz
-    QString command = QString("echo %1 > /dev/chipsee-gpio%2").arg(value, gpioNumber);
 
-    // Bu şekilde '>' operatörü shell üzerinden çalışır
-    QProcess::execute("sh", QStringList() << "-c" << command);
-
-    qDebug() << "Terminale gönderilen komut:" << command;
+    if (name == "out1HighButton") {
+        QString highCommand1 = "echo 1 > /dev/chipsee-gpio1\r\n";
+        int bytesWritten = serialPort->write(highCommand1.toUtf8());
+        if (bytesWritten == -1) {
+            qDebug() << "Failed to write data: out1HighButton";
+        } else {
+            qDebug() << name << "active";
+            ui->out1Label->setText("1");
+            ui->in1Label->setText("active");
+        }
+    }
+    else if (name == "out2HighButton") {
+        QString highCommand2 = "echo 1 > /dev/chipsee-gpio2\r\n";
+        int bytesWritten = serialPort->write(highCommand2.toUtf8());
+        if (bytesWritten == -1) {
+            qDebug() << "Failed to write data: out2HighButton";
+        } else {
+            qDebug() << name << "active";
+            ui->out2Label->setText("1");
+            ui->in2Label->setText("active");
+        }
+    }
+    else if (name == "out3HighButton") {
+        QString highCommand3 = "echo 1 > /dev/chipsee-gpio3\r\n";
+        int bytesWritten = serialPort->write(highCommand3.toUtf8());
+        if (bytesWritten == -1) {
+            qDebug() << "Failed to write data: out3HighButton";
+        } else {
+            qDebug() << name << "active";
+            ui->out3Label->setText("1");
+            ui->in3Label->setText("active");
+        }
+    }
+    else if (name == "out4HighButton") {
+        QString highCommand4 = "echo 1 > /dev/chipsee-gpio4\r\n";
+        int bytesWritten = serialPort->write(highCommand4.toUtf8());
+        if (bytesWritten == -1) {
+            qDebug() << "Failed to write data: out4HighButton";
+        } else {
+            qDebug() << name << "active";
+            ui->out4Label->setText("1");
+            ui->in4Label->setText("active");
+        }
+    }
 }
+void MainWindow::onSerialDataAvailable() {
+    QByteArray data = serialPort->readAll();
+    qDebug() << "Gelen veri:" << data;
 
+    // Örneğin GPIO1 için:
+    if (data.contains("1")) {
+        ui->out1Label->setText("1");
+        ui->in1Label->setText("active");
+        logMessageToGuiAndFile("GPIO1: active");
+    } else if (data.contains("0")) {
+        ui->out1Label->setText("0");
+        ui->in1Label->setText("inactive");
+        logMessageToGuiAndFile("GPIO1: inactive");
+    }
+}
+void MainWindow::checkGpioStates(){
+    if (!serialPort || !serialPort->isOpen()){
+        QString errorMsg = "Serial port not available. Skipping GPIO check.";
+        qDebug() << errorMsg;
+        return;
+    }
+    QString readGpio1 = "cat /dev/chipsee-gpio1\r\n";
+    serialPort->write(readGpio1.toUtf8());
+    QString readGpio2 = "cat /dev/chipsee-gpio2\r\n";
+    serialPort->write(readGpio2.toUtf8());
+    QString readGpio3 = "cat /dev/chipsee-gpio3\r\n";
+    serialPort->write(readGpio3.toUtf8());
+    QString readGpio4 = "cat /dev/chipsee-gpio4\r\n";
+    serialPort->write(readGpio4.toUtf8());
+    qDebug() << ("GPIO states check started.");
+}
 
 
 MainWindow::~MainWindow() {
