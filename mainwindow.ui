@@ -349,7 +349,7 @@ QPushButton:pressed {
        <number>0</number>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="DeviceInfoPage">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -370,42 +370,42 @@ QPushButton:pressed {
             <item>
              <widget class="QLabel" name="osLabel">
               <property name="text">
-               <string>a</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="kernelnOLabel">
               <property name="text">
-               <string>b</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="nodenOLabel">
               <property name="text">
-               <string>c</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="kernelrOLabel">
               <property name="text">
-               <string>d</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="kernelvOLabel">
               <property name="text">
-               <string>e</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QLabel" name="machinehOLabel">
               <property name="text">
-               <string>f</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -418,7 +418,7 @@ QPushButton:pressed {
                </size>
               </property>
               <property name="text">
-               <string>g</string>
+               <string/>
               </property>
              </widget>
             </item>
@@ -579,14 +579,14 @@ QPushButton:pressed {
               <item>
                <widget class="QLabel" name="prettyNameLabel">
                 <property name="text">
-                 <string>x</string>
+                 <string/>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QLabel" name="versionLabel">
                 <property name="text">
-                 <string>y</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -637,35 +637,35 @@ QPushButton:pressed {
           <item>
            <widget class="QLabel" name="utestSerialLabel">
             <property name="text">
-             <string>1</string>
+             <string/>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="utestProductLabel">
             <property name="text">
-             <string>2</string>
+             <string/>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="appVersionLabel">
             <property name="text">
-             <string>3</string>
+             <string/>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="chipseeSerialLabel">
             <property name="text">
-             <string>4</string>
+             <string/>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="chipseeProductLabel">
             <property name="text">
-             <string>5</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -678,7 +678,7 @@ QPushButton:pressed {
              </size>
             </property>
             <property name="text">
-             <string>6</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -833,7 +833,7 @@ QPushButton:pressed {
                 <item>
                  <widget class="QLabel" name="connectionLabel">
                   <property name="text">
-                   <string>TextLabel</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>
@@ -863,7 +863,7 @@ QPushButton:pressed {
                 <item>
                  <widget class="QLabel" name="formatLabel">
                   <property name="text">
-                   <string>TextLabel</string>
+                   <string/>
                   </property>
                  </widget>
                 </item>
@@ -881,7 +881,7 @@ QPushButton:pressed {
               </property>
               <property name="minimumSize">
                <size>
-                <width>180</width>
+                <width>144</width>
                 <height>50</height>
                </size>
               </property>
@@ -946,7 +946,7 @@ QPushButton:pressed {
               <item>
                <widget class="QLabel" name="in1Label">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -978,7 +978,7 @@ QPushButton:pressed {
               <item>
                <widget class="QLabel" name="out1Label">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1007,7 +1007,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string>LOW</string>
+                 <string>SET LOW</string>
                 </property>
                </widget>
               </item>
@@ -1039,7 +1039,7 @@ QPushButton:pressed {
 </string>
                 </property>
                 <property name="text">
-                 <string>HIGH</string>
+                 <string>SET HIGH</string>
                 </property>
                </widget>
               </item>
@@ -1075,7 +1075,7 @@ QPushButton:pressed {
               <item>
                <widget class="QLabel" name="in2Label">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1107,7 +1107,7 @@ QPushButton:pressed {
               <item>
                <widget class="QLabel" name="out2Label">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1136,7 +1136,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string>LOW</string>
+                 <string>SET LOW</string>
                 </property>
                </widget>
               </item>
@@ -1168,7 +1168,7 @@ QPushButton:pressed {
 </string>
                 </property>
                 <property name="text">
-                 <string>HIGH</string>
+                 <string>SET HIGH</string>
                 </property>
                </widget>
               </item>
@@ -1204,7 +1204,7 @@ QPushButton:pressed {
               <item>
                <widget class="QLabel" name="in3Label">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1236,7 +1236,7 @@ QPushButton:pressed {
               <item>
                <widget class="QLabel" name="out3Label">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1265,7 +1265,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string>LOW</string>
+                 <string>SET LOW</string>
                 </property>
                </widget>
               </item>
@@ -1297,7 +1297,7 @@ QPushButton:pressed {
 </string>
                 </property>
                 <property name="text">
-                 <string>HIGH</string>
+                 <string>SET HIGH</string>
                 </property>
                </widget>
               </item>
@@ -1333,7 +1333,7 @@ QPushButton:pressed {
               <item>
                <widget class="QLabel" name="in4Label">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1365,7 +1365,7 @@ QPushButton:pressed {
               <item>
                <widget class="QLabel" name="out4Label">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1394,7 +1394,7 @@ QPushButton:pressed {
 }</string>
                 </property>
                 <property name="text">
-                 <string>LOW</string>
+                 <string>SET LOW</string>
                 </property>
                </widget>
               </item>
@@ -1426,7 +1426,7 @@ QPushButton:pressed {
 </string>
                 </property>
                 <property name="text">
-                 <string>HIGH</string>
+                 <string>SET HIGH</string>
                 </property>
                </widget>
               </item>
