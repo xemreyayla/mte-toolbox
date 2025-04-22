@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->deviceinfoButton, &QPushButton::clicked, this, &MainWindow::showDeviceInfoPage);
     connect(ui->utilitiesButton, &QPushButton::clicked, this, &MainWindow::showUtilitiesPage);
-    connect(ui->configurationButton, &QPushButton::clicked, this, &MainWindow::showConfigurationPage);
     connect(ui->connectionButton, &QPushButton::clicked, this, &MainWindow::showConnectionPage);
     connect(ui->consoleButton, &QPushButton::clicked, this, &MainWindow::showConsolePage);
 
@@ -29,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->sdFormatButton, &QPushButton::clicked, this, &MainWindow::sdFormatButton_clicked);
     connect(ui->connectportsButton, &QPushButton::clicked, this, &MainWindow::connectToDevice);
     connect(ui->refreshButton, &QPushButton::clicked, this, &MainWindow::refreshPorts);
+    connect(ui->disconnectButton, &QPushButton::clicked, this, &MainWindow::disconnectFromDevice);
 
     //utilities lowButtons
     connect(ui->out1LowButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
@@ -40,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->out2HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
     connect(ui->out3HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
     connect(ui->out4HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    //utilities get first status
+    connect(ui->getFirstStatusButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+
 
     connect(gpioTimer, &QTimer::timeout, this, &MainWindow::checkGpioStates);
     gpioTimer->start(1000);
@@ -110,20 +113,12 @@ void MainWindow::showUtilitiesPage() {
     qDebug() << "showUtilitiesPage() called";
     ui->stackedWidget->setCurrentWidget(ui->UtilitiesPage);
     utilitiesButtons();
-
+    checkGpioStates();
 }
-
-void MainWindow::showConfigurationPage() {
-    logMessageToGuiAndFile("showConfigurationPage() called");
-    qDebug() << "showConfigurationPage() called";
-    ui->stackedWidget->setCurrentWidget(ui->ConfigurationPage);
-}
-
 void MainWindow::showConsolePage(){
     logMessageToGuiAndFile("showConsolePage() called");
     qDebug() << "showConsolePage() called";
     ui->stackedWidget->setCurrentWidget(ui->ConsolePage);
-
     rwConsole();
 }
 void MainWindow::resizecomboBox(){
@@ -174,6 +169,7 @@ void MainWindow::connectToDevice() {
         default: errorMessage = "Unknown error."; break;
         }
         logMessageToGuiAndFile("Error message: " + errorMessage);
+        logMessageToGuiAndFile("Detailed error: " + serialPort->errorString());
         QMessageBox::critical(this, "Connection Error", "Failed to connect.\n" + errorMessage);
         return;
     }
@@ -181,6 +177,22 @@ void MainWindow::connectToDevice() {
     logMessageToGuiAndFile("Connected to serial port successfully.");
     QMessageBox::information(this, "Connection Successful", "Connected to " + selectedPortName + " successfully.");
     ui->connectionLabel->setText("Chipsee connection is active.");
+}
+
+void MainWindow::disconnectFromDevice(){
+    logMessageToGuiAndFile("disconnectFromDevice() called");
+
+    if (serialPort){
+        if (serialPort->isOpen()){
+            serialPort->close();
+            logMessageToGuiAndFile("Serial port closed.");
+        }
+        delete serialPort;
+        serialPort = nullptr;
+        logMessageToGuiAndFile("Serial port deleted");
+    }
+    ui->connectionLabel->setText("No device connected.");
+    QMessageBox::information(this, "Disconnected", "Serial port disconnected.");
 }
 
 void MainWindow::readData() {
@@ -384,6 +396,10 @@ void MainWindow::rwConsole() {
     ui->consolePlainTextEdit->appendPlainText("root@linaro-alip:~# " + command);
     ui->consolePlainTextEdit->appendPlainText(cleanedResponse);
 
+    if (command == "clear"){
+        ui->consolePlainTextEdit->clear();
+        logMessageToGuiAndFile("Console cleadred by user.");
+    }
     ui->consoleLineEdit->clear();
 
     // Text cursor'ı en son mesaja kaydır
@@ -740,7 +756,33 @@ void MainWindow::checkGpioStates(){
     qDebug() << ("GPIO states check started.");
 }
 
+void MainWindow::getFirstStatusButton_clicked(){
+    if (!serialPort || !serialPort->isOpen()){
+        QString errorMsg = "Serial port not available. Skipping GPIO check.";
+        qDebug() << errorMsg;
+        return;
+    }
+    QString readGpio5 = "cat /dev/chipsee-gpio5\r\n";
+    serialPort->write(readGpio5.toUtf8());
+    QString readGpio6 = "cat /dev/chipsee-gpio6\r\n";
+    serialPort->write(readGpio6.toUtf8());
+    QString readGpio7 = "cat /dev/chipsee-gpio7\r\n";
+    serialPort->write(readGpio7.toUtf8());
+    QString readGpio8 = "cat /dev/chipsee-gpio8\r\n";
+    serialPort->write(readGpio8.toUtf8());
+    qDebug() << ("GPIO states check started.");
 
+
+
+
+
+
+
+
+
+
+
+}
 MainWindow::~MainWindow() {
     logMessageToGuiAndFile("MainWindow destroyed.");
     delete ui;
