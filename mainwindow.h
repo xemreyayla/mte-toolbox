@@ -44,11 +44,11 @@ public:
 private slots:
     void showDeviceInfoPage();
     void showUtilitiesPage();
-    void showConfigurationPage();
     void showConnectionPage();
     void showConsolePage();
     void refreshPorts();
     void connectToDevice();
+    void disconnectFromDevice();
     void resizecomboBox();
     void fetchOSInfo();
     void readData();
@@ -60,6 +60,7 @@ private slots:
     void utilitiesButtons();
     void onSerialDataAvailable();
     void checkGpioStates();
+    void getFirstStatusButton_clicked();
 
 private:
     Ui::MainWindow *ui;
