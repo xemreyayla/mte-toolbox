@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>860</width>
-    <height>540</height>
+    <width>985</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,14 +21,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>0</width>
-    <height>0</height>
+    <width>900</width>
+    <height>600</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1024</width>
-    <height>600</height>
+    <width>1280</width>
+    <height>800</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -50,6 +50,12 @@
    <layout class="QGridLayout" name="gridLayout_4">
     <item row="1" column="0">
      <widget class="QGroupBox" name="groupBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -58,8 +64,8 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>1024</width>
-        <height>70</height>
+        <width>1280</width>
+        <height>80</height>
        </size>
       </property>
       <property name="styleSheet">
@@ -73,195 +79,6 @@ color: #ffffff;
        <string/>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="1">
-        <widget class="QPushButton" name="deviceinfoButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    /* Temel Stil */
-    background-color: #f57c00;
-    color: #212121;
-	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
-    
-    /* Kenar Yumuşatma */
-    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
-    
-    /* Metin &amp; Padding */
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 12pt;
-    font-weight: bold;
-    padding: 10px 20px;
-    
-}
-
-QPushButton:hover {
-    background-color: #ff9800;  /* Daha açık turuncu */
-}
-
-QPushButton:pressed {
-    background-color: #e65100;  /* Daha koyu turuncu */
-}</string>
-         </property>
-         <property name="text">
-          <string>Device Info</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QPushButton" name="configurationButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    /* Temel Stil */
-    background-color: #f57c00;
-    color: #212121;
-	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
-    
-    /* Kenar Yumuşatma */
-    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
-    
-    /* Metin &amp; Padding */
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 12pt;
-    font-weight: bold;
-    padding: 10px 20px;
-    
-}
-
-QPushButton:hover {
-    background-color: #ff9800;  /* Daha açık turuncu */
-}
-
-QPushButton:pressed {
-    background-color: #e65100;  /* Daha koyu turuncu */
-}</string>
-         </property>
-         <property name="text">
-          <string>Configuraiton</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="5">
-        <widget class="QPushButton" name="consoleButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    /* Temel Stil */
-    background-color: #f57c00;
-    color: #212121;
-	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
-    
-    /* Kenar Yumuşatma */
-    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
-    
-    /* Metin &amp; Padding */
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 12pt;
-    font-weight: bold;
-    padding: 10px 20px;
-    
-}
-
-QPushButton:hover {
-    background-color: #ff9800;  /* Daha açık turuncu */
-}
-
-QPushButton:pressed {
-    background-color: #e65100;  /* Daha koyu turuncu */
-}</string>
-         </property>
-         <property name="text">
-          <string>Console</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="connectionButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>150</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QPushButton {
-    /* Temel Stil */
-    background-color: #f57c00;
-    color: #212121;
-	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
-    
-    /* Kenar Yumuşatma */
-    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
-    
-    /* Metin &amp; Padding */
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 12pt;
-    font-weight: bold;
-    padding: 10px 20px;
-    
-}
-
-QPushButton:hover {
-    background-color: #ff9800;  /* Daha açık turuncu */
-}
-
-QPushButton:pressed {
-    background-color: #e65100;  /* Daha koyu turuncu */
-}</string>
-         </property>
-         <property name="text">
-          <string>Connection</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="2">
         <widget class="QPushButton" name="utilitiesButton">
          <property name="sizePolicy">
@@ -272,7 +89,7 @@ QPushButton:pressed {
          </property>
          <property name="minimumSize">
           <size>
-           <width>150</width>
+           <width>180</width>
            <height>50</height>
           </size>
          </property>
@@ -291,7 +108,7 @@ QPushButton:pressed {
     
     /* Metin &amp; Padding */
     font-family: 'Segoe UI', sans-serif;
-    font-size: 12pt;
+    font-size: 13pt;
     font-weight: bold;
     padding: 10px 20px;
     
@@ -310,6 +127,147 @@ QPushButton:pressed {
          </property>
         </widget>
        </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="deviceinfoButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>180</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    /* Temel Stil */
+    background-color: #f57c00;
+    color: #212121;
+	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
+    
+    /* Kenar Yumuşatma */
+    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
+    
+    /* Metin &amp; Padding */
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 13pt;
+    font-weight: bold;
+    padding: 10px 20px;
+    
+}
+
+QPushButton:hover {
+    background-color: #ff9800;  /* Daha açık turuncu */
+}
+
+QPushButton:pressed {
+    background-color: #e65100;  /* Daha koyu turuncu */
+}</string>
+         </property>
+         <property name="text">
+          <string>Device Info</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="connectionButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>180</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    /* Temel Stil */
+    background-color: #f57c00;
+    color: #212121;
+	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
+    
+    /* Kenar Yumuşatma */
+    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
+    
+    /* Metin &amp; Padding */
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 13pt;
+    font-weight: bold;
+    padding: 10px 20px;
+    
+}
+
+QPushButton:hover {
+    background-color: #ff9800;  /* Daha açık turuncu */
+}
+
+QPushButton:pressed {
+    background-color: #e65100;  /* Daha koyu turuncu */
+}</string>
+         </property>
+         <property name="text">
+          <string>Connection</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QPushButton" name="consoleButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>180</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+    /* Temel Stil */
+    background-color: #f57c00;
+    color: #212121;
+	border: 1px solid rgba(80, 80, 80, 0.6);  /* #505050'nin opak versiyonu */
+    
+    /* Kenar Yumuşatma */
+    border-radius: 8px;  /* Köşeleri belirgin şekilde yuvarlak */
+    
+    /* Metin &amp; Padding */
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 13pt;
+    font-weight: bold;
+    padding: 10px 20px;
+    
+}
+
+QPushButton:hover {
+    background-color: #ff9800;  /* Daha açık turuncu */
+}
+
+QPushButton:pressed {
+    background-color: #e65100;  /* Daha koyu turuncu */
+}</string>
+         </property>
+         <property name="text">
+          <string>Console</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -317,6 +275,12 @@ QPushButton:pressed {
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="enabled">
        <bool>true</bool>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="minimumSize">
        <size>
@@ -326,8 +290,8 @@ QPushButton:pressed {
       </property>
       <property name="maximumSize">
        <size>
-        <width>1024</width>
-        <height>470</height>
+        <width>1280</width>
+        <height>800</height>
        </size>
       </property>
       <property name="toolTip">
@@ -349,20 +313,10 @@ QPushButton:pressed {
        <number>0</number>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="DeviceInfoPage">
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="1" column="0">
-         <widget class="Line" name="line">
-          <property name="styleSheet">
-           <string notr="true">background-color: gray;</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="0" colspan="2">
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="1">
@@ -524,24 +478,8 @@ QPushButton:pressed {
           </item>
          </layout>
         </item>
-        <item row="1" column="2">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Policy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>85</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
         <item row="0" column="3" rowspan="3">
-         <layout class="QFormLayout" name="formLayout_2">
+         <layout class="QGridLayout" name="gridLayout_12">
           <item row="0" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
@@ -596,6 +534,12 @@ QPushButton:pressed {
           </item>
           <item row="1" column="0">
            <layout class="QFormLayout" name="formLayout_3">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+            </property>
+            <property name="labelAlignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
             <item row="0" column="0">
              <widget class="QLabel" name="label_7">
               <property name="maximumSize">
@@ -629,58 +573,6 @@ QPushButton:pressed {
              </widget>
             </item>
            </layout>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="1">
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <item>
-           <widget class="QLabel" name="utestSerialLabel">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="utestProductLabel">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="appVersionLabel">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="chipseeSerialLabel">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="chipseeProductLabel">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="lastModifiedLabel">
-            <property name="minimumSize">
-             <size>
-              <width>90</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
@@ -781,35 +673,95 @@ QPushButton:pressed {
           </item>
          </layout>
         </item>
+        <item row="0" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="utestSerialLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="utestProductLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="appVersionLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="chipseeSerialLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="chipseeProductLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="lastModifiedLabel">
+            <property name="minimumSize">
+             <size>
+              <width>90</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <widget class="Line" name="line">
+          <property name="styleSheet">
+           <string notr="true">background-color: gray;</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Policy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>60</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="ConfigurationPage">
-       <widget class="QLabel" name="configurationLabel">
-        <property name="geometry">
-         <rect>
-          <x>9</x>
-          <y>9</y>
-          <width>161</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color: white;</string>
-        </property>
-        <property name="text">
-         <string>Configuration Page</string>
-        </property>
-       </widget>
-      </widget>
       <widget class="QWidget" name="UtilitiesPage">
-       <layout class="QGridLayout" name="gridLayout_6">
+       <layout class="QGridLayout" name="gridLayout_35">
         <item row="0" column="0">
-         <layout class="QVBoxLayout" name="verticalLayout_11">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_9">
-              <item>
+         <layout class="QGridLayout" name="gridLayout_34">
+          <item row="0" column="0">
+           <layout class="QGridLayout" name="gridLayout_33">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_32">
+              <item row="0" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
                  <widget class="QLabel" name="label_13">
@@ -832,6 +784,18 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QLabel" name="connectionLabel">
+                  <property name="minimumSize">
+                   <size>
+                    <width>90</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>580</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -839,7 +803,7 @@ QPushButton:pressed {
                 </item>
                </layout>
               </item>
-              <item>
+              <item row="1" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
                  <widget class="QLabel" name="label_12">
@@ -862,6 +826,18 @@ QPushButton:pressed {
                 </item>
                 <item>
                  <widget class="QLabel" name="formatLabel">
+                  <property name="minimumSize">
+                   <size>
+                    <width>90</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>580</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
@@ -871,10 +847,10 @@ QPushButton:pressed {
               </item>
              </layout>
             </item>
-            <item>
-             <widget class="QPushButton" name="sdFormatButton">
+            <item row="0" column="1">
+             <widget class="QPushButton" name="getFirstStatusButton">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -883,6 +859,59 @@ QPushButton:pressed {
                <size>
                 <width>144</width>
                 <height>50</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>210</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    background-color: #F44336;  /* canlı kırmızı */
+    border: 2px solid #D32F2F;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #E53935;  /* biraz daha koyu kırmızı */
+    border: 2px solid #B71C1C;
+    color: white;
+}
+QPushButton:pressed {
+    background-color: #b71c1c;  /* Çok koyu kırmızı */
+}
+</string>
+              </property>
+              <property name="text">
+               <string>Get First Status</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QPushButton" name="sdFormatButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>144</width>
+                <height>50</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>210</width>
+                <height>16777215</height>
                </size>
               </property>
               <property name="styleSheet">
@@ -914,76 +943,94 @@ QPushButton:pressed {
             </item>
            </layout>
           </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_10">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
-              <item>
-               <widget class="QLabel" name="textLabel">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>25</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>IN1:</string>
-                </property>
-               </widget>
+          <item row="1" column="0">
+           <layout class="QGridLayout" name="gridLayout_31">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_30">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout_21">
+                <item row="0" column="0">
+                 <layout class="QGridLayout" name="gridLayout_13">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="textLabel">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>IN1:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="in1Label">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="1">
+                 <layout class="QGridLayout" name="gridLayout_17">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_18">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>40</width>
+                      <height>2</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>OUT1:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="out1Label">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </item>
-              <item>
-               <widget class="QLabel" name="in1Label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_18">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>40</width>
-                  <height>2</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>OUT1:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="out1Label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
+              <item row="0" column="1">
                <widget class="QPushButton" name="out1LowButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>210</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
     background-color: #F44336;  /* canlı kırmızı */
@@ -1011,8 +1058,14 @@ QPushButton:pressed {
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="0" column="2">
                <widget class="QPushButton" name="out1HighButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>210</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
     background-color: #4CAF50;  /* canlı yeşil */
@@ -1045,74 +1098,92 @@ QPushButton:pressed {
               </item>
              </layout>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
-              <item>
-               <widget class="QLabel" name="textLabel_2">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>25</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>IN2:</string>
-                </property>
-               </widget>
+            <item row="1" column="0">
+             <layout class="QGridLayout" name="gridLayout_29">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout_22">
+                <item row="0" column="0">
+                 <layout class="QGridLayout" name="gridLayout_14">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="textLabel_2">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>IN2:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="in2Label">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="1">
+                 <layout class="QGridLayout" name="gridLayout_18">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_19">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>40</width>
+                      <height>2</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>OUT2:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="out2Label">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </item>
-              <item>
-               <widget class="QLabel" name="in2Label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_19">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>40</width>
-                  <height>2</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>OUT2:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="out2Label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
+              <item row="0" column="1">
                <widget class="QPushButton" name="out2LowButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>210</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
     background-color: #F44336;  /* canlı kırmızı */
@@ -1140,8 +1211,14 @@ QPushButton:pressed {
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="0" column="2">
                <widget class="QPushButton" name="out2HighButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>210</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
     background-color: #4CAF50;  /* canlı yeşil */
@@ -1174,74 +1251,92 @@ QPushButton:pressed {
               </item>
              </layout>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_8">
-              <item>
-               <widget class="QLabel" name="textLabel_3">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>25</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>IN3:</string>
-                </property>
-               </widget>
+            <item row="2" column="0">
+             <layout class="QGridLayout" name="gridLayout_28">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout_23">
+                <item row="0" column="0">
+                 <layout class="QGridLayout" name="gridLayout_15">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="textLabel_3">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>IN3:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="in3Label">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="1">
+                 <layout class="QGridLayout" name="gridLayout_19">
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="out3Label">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_20">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>40</width>
+                      <height>2</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>OUT3:</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </item>
-              <item>
-               <widget class="QLabel" name="in3Label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_20">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>40</width>
-                  <height>2</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>OUT3:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="out3Label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
+              <item row="0" column="1">
                <widget class="QPushButton" name="out3LowButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>210</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
     background-color: #F44336;  /* canlı kırmızı */
@@ -1269,8 +1364,14 @@ QPushButton:pressed {
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="0" column="2">
                <widget class="QPushButton" name="out3HighButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>210</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
     background-color: #4CAF50;  /* canlı yeşil */
@@ -1303,74 +1404,92 @@ QPushButton:pressed {
               </item>
              </layout>
             </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_7">
-              <item>
-               <widget class="QLabel" name="textLabel_4">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>25</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>IN4:</string>
-                </property>
-               </widget>
+            <item row="3" column="0">
+             <layout class="QGridLayout" name="gridLayout_6">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout_24">
+                <item row="0" column="0">
+                 <layout class="QGridLayout" name="gridLayout_16">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="textLabel_4">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>IN4:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="in4Label">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="1">
+                 <layout class="QGridLayout" name="gridLayout_20">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_21">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>40</width>
+                      <height>2</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>OUT4:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLabel" name="out4Label">
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </item>
-              <item>
-               <widget class="QLabel" name="in4Label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_21">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>40</width>
-                  <height>2</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>OUT4:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="out4Label">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
+              <item row="0" column="1">
                <widget class="QPushButton" name="out4LowButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>210</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
     background-color: #F44336;  /* canlı kırmızı */
@@ -1398,8 +1517,14 @@ QPushButton:pressed {
                 </property>
                </widget>
               </item>
-              <item>
+              <item row="0" column="2">
                <widget class="QPushButton" name="out4HighButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>210</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton {
     background-color: #4CAF50;  /* canlı yeşil */
@@ -1441,13 +1566,6 @@ QPushButton:pressed {
       <widget class="QWidget" name="ConsolePage">
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QLabel" name="label_11">
-          <property name="text">
-           <string>console page</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
            <widget class="QPlainTextEdit" name="consolePlainTextEdit">
@@ -1476,29 +1594,30 @@ font-size: 11pt;
        </layout>
       </widget>
       <widget class="QWidget" name="ConnectionPage">
-       <layout class="QFormLayout" name="formLayout_6">
-        <item row="0" column="0" colspan="2">
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <layout class="QFormLayout" name="formLayout">
-              <property name="fieldGrowthPolicy">
-               <enum>QFormLayout::FieldGrowthPolicy::AllNonFixedFieldsGrow</enum>
-              </property>
-              <property name="topMargin">
-               <number>7</number>
-              </property>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_10">
+          <item row="0" column="0">
+           <layout class="QGridLayout" name="gridLayout_9">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_8">
               <item row="0" column="0">
                <widget class="QLabel" name="activeportsLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="maximumSize">
                  <size>
-                  <width>150</width>
+                  <width>80</width>
                   <height>50</height>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: white;</string>
+                 <string notr="true">color: white;
+font-size: 10pt;</string>
                 </property>
                 <property name="text">
                  <string>Active Ports:</string>
@@ -1508,7 +1627,7 @@ font-size: 11pt;
               <item row="0" column="1">
                <widget class="QComboBox" name="serialportscomboBox">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1521,7 +1640,7 @@ font-size: 11pt;
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>600</width>
+                  <width>620</width>
                   <height>60</height>
                  </size>
                 </property>
@@ -1542,6 +1661,7 @@ font-size: 11pt;
                 </property>
                 <property name="styleSheet">
                  <string notr="true">color: white;
+font-size: 10pt;
 </string>
                 </property>
                 <property name="maxVisibleItems">
@@ -1572,162 +1692,188 @@ font-size: 11pt;
               </item>
              </layout>
             </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_2">
+            <item row="1" column="0">
+             <widget class="QPlainTextEdit" name="plainTextEdit">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
               <property name="minimumSize">
                <size>
-                <width>150</width>
-                <height>40</height>
+                <width>600</width>
+                <height>150</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>150</width>
-                <height>40</height>
+                <width>750</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="sizeIncrement">
+               <size>
+                <width>1080</width>
+                <height>720</height>
+               </size>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: white;
+font-size: 10pt;
+</string>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContentsOnFirstShow</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <layout class="QGridLayout" name="gridLayout_11">
+            <property name="sizeConstraint">
+             <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+            </property>
+            <item row="0" column="0">
+             <widget class="QPushButton" name="connectportsButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>75</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>175</width>
+                <height>60</height>
                </size>
               </property>
               <property name="layoutDirection">
                <enum>Qt::LayoutDirection::LeftToRight</enum>
               </property>
               <property name="styleSheet">
-               <string notr="true">border-color: #2d2d2d;</string>
+               <string notr="true">#connectportsButton {
+    background-color: #3BC406; /* normal yeşil */
+    color: white;
+    border: 2px solid #388E3C;
+    border-radius: 6px;
+font-family: 'Segoe UI', sans-serif;
+font-size: 12pt;
+font-weight: bold;
+
+}
+
+#connectportsButton:hover {
+    background-color: #43A047; /* biraz koyu yeşil */
+    border: 2px solid #2E7D32;
+}
+
+
+</string>
               </property>
-              <property name="title">
-               <string/>
+              <property name="text">
+               <string>Connect</string>
               </property>
-              <property name="flat">
+              <property name="default">
                <bool>false</bool>
               </property>
-              <widget class="QPushButton" name="connectportsButton">
-               <property name="geometry">
-                <rect>
-                 <x>10</x>
-                 <y>10</y>
-                 <width>60</width>
-                 <height>20</height>
-                </rect>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>60</width>
-                 <height>20</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>60</width>
-                 <height>20</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color: green;
-border-radius: 10px;
-color: beige;
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QPushButton" name="refreshButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>75</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>175</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">#refreshButton {
+background-color: #FFA000;  /* kehribar sarısı, turuncuya yakın */
+    color: white;
+    border: 2px solid #EA9403;
+    border-radius: 6px;
 font-family: 'Segoe UI', sans-serif;
-font-size: 9pt;
+font-size: 12pt;
 font-weight: bold;
+}
 
+#refreshButton:hover {
+   background-color: #EAA503;  /* biraz koyusu */
+    border: 2px solid #FF8F00;
+}
 </string>
-               </property>
-               <property name="text">
-                <string>Connect</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="refreshButton">
-               <property name="geometry">
-                <rect>
-                 <x>80</x>
-                 <y>10</y>
-                 <width>60</width>
-                 <height>20</height>
-                </rect>
-               </property>
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>60</width>
-                 <height>20</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>60</width>
-                 <height>20</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">background-color: orange;
-border-radius: 10px;
-color: beige;
-border-radius: 10px;
+              </property>
+              <property name="text">
+               <string>Refresh</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QPushButton" name="disconnectButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>75</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>175</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">#disconnectButton {
+    background-color: #F44336;  /* canlı kırmızı */
+    color: white;
+    border: 2px solid #C62828;
+    border-radius: 6px;
 font-family: 'Segoe UI', sans-serif;
-font-size: 9pt;
+font-size: 12pt;
 font-weight: bold;
+}
 
+#disconnectButton:hover {
+    background-color: #E53935;  /* biraz daha koyu kırmızı */
+    border: 2px solid #B71C1C;
+}
 </string>
-               </property>
-               <property name="text">
-                <string>Refresh</string>
-               </property>
-              </widget>
+              </property>
+              <property name="text">
+               <string>Disconnect</string>
+              </property>
              </widget>
             </item>
            </layout>
-          </item>
-          <item>
-           <widget class="QPlainTextEdit" name="plainTextEdit">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>415</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>665</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="sizeIncrement">
-             <size>
-              <width>1080</width>
-              <height>720</height>
-             </size>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">color: white;
-</string>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContentsOnFirstShow</enum>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
@@ -1742,7 +1888,7 @@ font-weight: bold;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>860</width>
+     <width>985</width>
      <height>22</height>
     </rect>
    </property>
