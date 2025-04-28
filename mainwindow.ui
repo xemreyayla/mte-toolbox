@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>985</width>
+    <width>900</width>
     <height>600</height>
    </rect>
   </property>
@@ -754,810 +754,850 @@ QPushButton:pressed {
        </layout>
       </widget>
       <widget class="QWidget" name="UtilitiesPage">
-       <layout class="QGridLayout" name="gridLayout_35">
+       <layout class="QGridLayout" name="gridLayout_21">
         <item row="0" column="0">
-         <layout class="QGridLayout" name="gridLayout_34">
+         <layout class="QGridLayout" name="gridLayout_33">
           <item row="0" column="0">
-           <layout class="QGridLayout" name="gridLayout_33">
+           <layout class="QGridLayout" name="gridLayout_32">
             <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_32">
-              <item row="0" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <item>
-                 <widget class="QLabel" name="label_13">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>100</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Connection Info:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="connectionLabel">
-                  <property name="minimumSize">
-                   <size>
-                    <width>90</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>580</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="1" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_4">
-                <item>
-                 <widget class="QLabel" name="label_12">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>100</width>
-                    <height>100</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>Formatting Info:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="formatLabel">
-                  <property name="minimumSize">
-                   <size>
-                    <width>90</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>580</width>
-                    <height>16777215</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </item>
-            <item row="0" column="1">
-             <widget class="QPushButton" name="getFirstStatusButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>144</width>
-                <height>50</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>210</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
-    background-color: #F44336;  /* canlı kırmızı */
-    border: 2px solid #D32F2F;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #E53935;  /* biraz daha koyu kırmızı */
-    border: 2px solid #B71C1C;
-    color: white;
-}
-QPushButton:pressed {
-    background-color: #b71c1c;  /* Çok koyu kırmızı */
-}
-</string>
-              </property>
-              <property name="text">
-               <string>Get First Status</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QPushButton" name="sdFormatButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>144</width>
-                <height>50</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>210</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
-    background-color: #F44336;  /* canlı kırmızı */
-    border: 2px solid #D32F2F;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #E53935;  /* biraz daha koyu kırmızı */
-    border: 2px solid #B71C1C;
-    color: white;
-}
-QPushButton:pressed {
-    background-color: #b71c1c;  /* Çok koyu kırmızı */
-}
-</string>
-              </property>
-              <property name="text">
-               <string>SD Card Format</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
-           <layout class="QGridLayout" name="gridLayout_31">
-            <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_30">
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_21">
-                <item row="0" column="0">
-                 <layout class="QGridLayout" name="gridLayout_13">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="textLabel">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>25</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>IN1:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="in1Label">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="0" column="1">
-                 <layout class="QGridLayout" name="gridLayout_17">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_18">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>40</width>
-                      <height>2</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>OUT1:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="out1Label">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="out1LowButton">
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLabel" name="label_13">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="maximumSize">
                  <size>
-                  <width>210</width>
-                  <height>16777215</height>
+                  <width>100</width>
+                  <height>100</height>
                  </size>
                 </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-    background-color: #F44336;  /* canlı kırmızı */
-    border: 2px solid #D32F2F;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #E53935;  /* biraz daha koyu kırmızı */
-    border: 2px solid #B71C1C;
-    color: white;
-}
-
-QPushButton:pressed {
-    background-color: #b71c1c;  /* Çok koyu kırmızı */
-}</string>
-                </property>
                 <property name="text">
-                 <string>SET LOW</string>
+                 <string>Connection Info:</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="out1HighButton">
+              <item>
+               <widget class="QLabel" name="connectionLabel">
+                <property name="minimumSize">
+                 <size>
+                  <width>90</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
-                  <width>210</width>
+                  <width>580</width>
                   <height>16777215</height>
                  </size>
                 </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-    background-color: #4CAF50;  /* canlı yeşil */
-    border: 2px solid #388E3C;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #43A047;  /* hover: biraz koyu yeşil */
-    border: 2px solid #2E7D32;
-    color: white;
-}
-
-QPushButton:pressed {
-    background-color: #2E7D32;  /* basılıyken: daha da koyu yeşil */
-    border: 2px solid #1B5E20;
-    color: white;
-}
-</string>
-                </property>
                 <property name="text">
-                 <string>SET HIGH</string>
+                 <string/>
                 </property>
                </widget>
               </item>
              </layout>
             </item>
             <item row="1" column="0">
-             <layout class="QGridLayout" name="gridLayout_29">
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_22">
-                <item row="0" column="0">
-                 <layout class="QGridLayout" name="gridLayout_14">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="textLabel_2">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>25</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>IN2:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="in2Label">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="0" column="1">
-                 <layout class="QGridLayout" name="gridLayout_18">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_19">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>40</width>
-                      <height>2</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>OUT2:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="out2Label">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="out2LowButton">
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="label_12">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="maximumSize">
                  <size>
-                  <width>210</width>
-                  <height>16777215</height>
+                  <width>100</width>
+                  <height>100</height>
                  </size>
                 </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-    background-color: #F44336;  /* canlı kırmızı */
-    border: 2px solid #D32F2F;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #E53935;  /* biraz daha koyu kırmızı */
-    border: 2px solid #B71C1C;
-    color: white;
-}
-
-QPushButton:pressed {
-    background-color: #b71c1c;  /* Çok koyu kırmızı */
-}</string>
-                </property>
                 <property name="text">
-                 <string>SET LOW</string>
+                 <string>Formatting Info:</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="out2HighButton">
+              <item>
+               <widget class="QLabel" name="formatLabel">
+                <property name="minimumSize">
+                 <size>
+                  <width>90</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
-                  <width>210</width>
+                  <width>580</width>
                   <height>16777215</height>
                  </size>
                 </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-    background-color: #4CAF50;  /* canlı yeşil */
-    border: 2px solid #388E3C;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #43A047;  /* hover: biraz koyu yeşil */
-    border: 2px solid #2E7D32;
-    color: white;
-}
-
-QPushButton:pressed {
-    background-color: #2E7D32;  /* basılıyken: daha da koyu yeşil */
-    border: 2px solid #1B5E20;
-    color: white;
-}
-</string>
-                </property>
                 <property name="text">
-                 <string>SET HIGH</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="2" column="0">
-             <layout class="QGridLayout" name="gridLayout_28">
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_23">
-                <item row="0" column="0">
-                 <layout class="QGridLayout" name="gridLayout_15">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="textLabel_3">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>25</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>IN3:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="in3Label">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="0" column="1">
-                 <layout class="QGridLayout" name="gridLayout_19">
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="out3Label">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_20">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>40</width>
-                      <height>2</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>OUT3:</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="out3LowButton">
-                <property name="maximumSize">
-                 <size>
-                  <width>210</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-    background-color: #F44336;  /* canlı kırmızı */
-    border: 2px solid #D32F2F;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #E53935;  /* biraz daha koyu kırmızı */
-    border: 2px solid #B71C1C;
-    color: white;
-}
-
-QPushButton:pressed {
-    background-color: #b71c1c;  /* Çok koyu kırmızı */
-}</string>
-                </property>
-                <property name="text">
-                 <string>SET LOW</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="out3HighButton">
-                <property name="maximumSize">
-                 <size>
-                  <width>210</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-    background-color: #4CAF50;  /* canlı yeşil */
-    border: 2px solid #388E3C;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #43A047;  /* hover: biraz koyu yeşil */
-    border: 2px solid #2E7D32;
-    color: white;
-}
-
-QPushButton:pressed {
-    background-color: #2E7D32;  /* basılıyken: daha da koyu yeşil */
-    border: 2px solid #1B5E20;
-    color: white;
-}
-</string>
-                </property>
-                <property name="text">
-                 <string>SET HIGH</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="3" column="0">
-             <layout class="QGridLayout" name="gridLayout_6">
-              <item row="0" column="0">
-               <layout class="QGridLayout" name="gridLayout_24">
-                <item row="0" column="0">
-                 <layout class="QGridLayout" name="gridLayout_16">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="textLabel_4">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>25</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>20</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>IN4:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="in4Label">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item row="0" column="1">
-                 <layout class="QGridLayout" name="gridLayout_20">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_21">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>40</width>
-                      <height>2</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>OUT4:</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLabel" name="out4Label">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="out4LowButton">
-                <property name="maximumSize">
-                 <size>
-                  <width>210</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-    background-color: #F44336;  /* canlı kırmızı */
-    border: 2px solid #D32F2F;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #E53935;  /* biraz daha koyu kırmızı */
-    border: 2px solid #B71C1C;
-    color: white;
-}
-
-QPushButton:pressed {
-    background-color: #b71c1c;  /* Çok koyu kırmızı */
-}</string>
-                </property>
-                <property name="text">
-                 <string>SET LOW</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="out4HighButton">
-                <property name="maximumSize">
-                 <size>
-                  <width>210</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-    background-color: #4CAF50;  /* canlı yeşil */
-    border: 2px solid #388E3C;
-    border-radius: 10px;
-    padding: 10px 20px;
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    min-width: 100px;
-}
-
-QPushButton:hover {
-    background-color: #43A047;  /* hover: biraz koyu yeşil */
-    border: 2px solid #2E7D32;
-    color: white;
-}
-
-QPushButton:pressed {
-    background-color: #2E7D32;  /* basılıyken: daha da koyu yeşil */
-    border: 2px solid #1B5E20;
-    color: white;
-}
-</string>
-                </property>
-                <property name="text">
-                 <string>SET HIGH</string>
+                 <string/>
                 </property>
                </widget>
               </item>
              </layout>
             </item>
            </layout>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="getFirstStatusButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>144</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #0288D1;  /* canlı kırmızı */
+    border: 2px solid #0288D1;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #03A9F4;  /* biraz daha koyu kırmızı */
+    border: 2px solid #0288D1;
+    color: white;
+}
+QPushButton:pressed {
+    background-color: #01579B;  /* Çok koyu kırmızı */
+}
+</string>
+            </property>
+            <property name="text">
+             <string>Get First Status</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="sdFormatButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>144</width>
+              <height>50</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #01579B; /* Daha koyu mavi */
+    border: 2px solid #01579B;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #0288D1; /* Orta koyu mavi */
+    border: 2px solid #01579B;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: #002E63; /* En koyu mavi */
+}</string>
+            </property>
+            <property name="text">
+             <string>SD Card Format</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_13">
+              <item row="0" column="0">
+               <widget class="QLabel" name="textLabel">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>IN1:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="in1Label">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="1">
+             <layout class="QGridLayout" name="gridLayout_17">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_18">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>40</width>
+                  <height>2</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>OUT1:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="out1Label">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="out1LowButton">
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #F44336;  /* canlı kırmızı */
+    border: 2px solid #D32F2F;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #E53935;  /* biraz daha koyu kırmızı */
+    border: 2px solid #B71C1C;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: #b71c1c;  /* Çok koyu kırmızı */
+}</string>
+            </property>
+            <property name="text">
+             <string>SET LOW</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="out1HighButton">
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #4CAF50;  /* canlı yeşil */
+    border: 2px solid #388E3C;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #43A047;  /* hover: biraz koyu yeşil */
+    border: 2px solid #2E7D32;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: #2E7D32;  /* basılıyken: daha da koyu yeşil */
+    border: 2px solid #1B5E20;
+    color: white;
+}
+</string>
+            </property>
+            <property name="text">
+             <string>SET HIGH</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_22">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_14">
+              <item row="0" column="0">
+               <widget class="QLabel" name="textLabel_2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>IN2:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="in2Label">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="1">
+             <layout class="QGridLayout" name="gridLayout_18">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_19">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>40</width>
+                  <height>2</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>OUT2:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="out2Label">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="out2LowButton">
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #F44336;  /* canlı kırmızı */
+    border: 2px solid #D32F2F;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #E53935;  /* biraz daha koyu kırmızı */
+    border: 2px solid #B71C1C;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: #b71c1c;  /* Çok koyu kırmızı */
+}</string>
+            </property>
+            <property name="text">
+             <string>SET LOW</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="out2HighButton">
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #4CAF50;  /* canlı yeşil */
+    border: 2px solid #388E3C;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #43A047;  /* hover: biraz koyu yeşil */
+    border: 2px solid #2E7D32;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: #2E7D32;  /* basılıyken: daha da koyu yeşil */
+    border: 2px solid #1B5E20;
+    color: white;
+}
+</string>
+            </property>
+            <property name="text">
+             <string>SET HIGH</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_23">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_15">
+              <item row="0" column="0">
+               <widget class="QLabel" name="textLabel_3">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>IN3:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="in3Label">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="1">
+             <layout class="QGridLayout" name="gridLayout_19">
+              <item row="0" column="1">
+               <widget class="QLabel" name="out3Label">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_20">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>40</width>
+                  <height>2</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>OUT3:</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="out3LowButton">
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #F44336;  /* canlı kırmızı */
+    border: 2px solid #D32F2F;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #E53935;  /* biraz daha koyu kırmızı */
+    border: 2px solid #B71C1C;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: #b71c1c;  /* Çok koyu kırmızı */
+}</string>
+            </property>
+            <property name="text">
+             <string>SET LOW</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="out3HighButton">
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #4CAF50;  /* canlı yeşil */
+    border: 2px solid #388E3C;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #43A047;  /* hover: biraz koyu yeşil */
+    border: 2px solid #2E7D32;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: #2E7D32;  /* basılıyken: daha da koyu yeşil */
+    border: 2px solid #1B5E20;
+    color: white;
+}
+</string>
+            </property>
+            <property name="text">
+             <string>SET HIGH</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="4" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_24">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_16">
+              <item row="0" column="0">
+               <widget class="QLabel" name="textLabel_4">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>IN4:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="in4Label">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="0" column="1">
+             <layout class="QGridLayout" name="gridLayout_20">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_21">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>40</width>
+                  <height>2</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>OUT4:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="out4Label">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="out4LowButton">
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #F44336;  /* canlı kırmızı */
+    border: 2px solid #D32F2F;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #E53935;  /* biraz daha koyu kırmızı */
+    border: 2px solid #B71C1C;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: #b71c1c;  /* Çok koyu kırmızı */
+}</string>
+            </property>
+            <property name="text">
+             <string>SET LOW</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="out4HighButton">
+            <property name="maximumSize">
+             <size>
+              <width>210</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+    background-color: #4CAF50;  /* canlı yeşil */
+    border: 2px solid #388E3C;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 100px;
+}
+
+QPushButton:hover {
+    background-color: #43A047;  /* hover: biraz koyu yeşil */
+    border: 2px solid #2E7D32;
+    color: white;
+}
+
+QPushButton:pressed {
+    background-color: #2E7D32;  /* basılıyken: daha da koyu yeşil */
+    border: 2px solid #1B5E20;
+    color: white;
+}
+</string>
+            </property>
+            <property name="text">
+             <string>SET HIGH</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -1888,7 +1928,7 @@ font-weight: bold;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>985</width>
+     <width>900</width>
      <height>22</height>
     </rect>
    </property>
