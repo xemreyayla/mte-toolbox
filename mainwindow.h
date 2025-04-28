@@ -22,11 +22,13 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QRegularExpression>
+#include <QRegularExpressionMatch>
 #include <QProcess>
 #include <QThread>
 #include <QTimer>
 #include <QDir>
 #include <QProgressDialog>
+#include <QQueue>
 
 
 QT_BEGIN_NAMESPACE
@@ -40,6 +42,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void readGPIOStatus(int gpioNumber);
 
 private slots:
     void showDeviceInfoPage();
@@ -57,10 +60,9 @@ private slots:
     void sdFormatButton_clicked();
     void rotateLogFileIfNeeded();
     void setIpLabelsError();
-    void utilitiesButtons();
-    void onSerialDataAvailable();
-    void checkGpioStates();
+    void setOutputButtons();
     void getFirstStatusButton_clicked();
+    void handleReadyRead();
 
 private:
     Ui::MainWindow *ui;
@@ -74,6 +76,8 @@ private:
     QString readUntilJsonComplete(int overallTimeoutMs);
     void logMessageToGuiAndFile(const QString &msg);
     QTimer* gpioTimer;
+    QQueue<int> pendingGpioPins;
+    QByteArray serialBuffer;
 
 };
 
