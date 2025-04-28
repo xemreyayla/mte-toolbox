@@ -31,22 +31,21 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->disconnectButton, &QPushButton::clicked, this, &MainWindow::disconnectFromDevice);
 
     //utilities lowButtons
-    connect(ui->out1LowButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
-    connect(ui->out2LowButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
-    connect(ui->out3LowButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
-    connect(ui->out4LowButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    connect(ui->out1LowButton, &QPushButton::clicked, this, &MainWindow::setOutputButtons);
+    connect(ui->out2LowButton, &QPushButton::clicked, this, &MainWindow::setOutputButtons);
+    connect(ui->out3LowButton, &QPushButton::clicked, this, &MainWindow::setOutputButtons);
+    connect(ui->out4LowButton, &QPushButton::clicked, this, &MainWindow::setOutputButtons);
     //utilities highButtons
-    connect(ui->out1HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
-    connect(ui->out2HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
-    connect(ui->out3HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
-    connect(ui->out4HighButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    connect(ui->out1HighButton, &QPushButton::clicked, this, &MainWindow::setOutputButtons);
+    connect(ui->out2HighButton, &QPushButton::clicked, this, &MainWindow::setOutputButtons);
+    connect(ui->out3HighButton, &QPushButton::clicked, this, &MainWindow::setOutputButtons);
+    connect(ui->out4HighButton, &QPushButton::clicked, this, &MainWindow::setOutputButtons);
     //utilities get first status
-    connect(ui->getFirstStatusButton, &QPushButton::clicked, this, &MainWindow::utilitiesButtons);
+    connect(ui->getFirstStatusButton, &QPushButton::clicked, this, &MainWindow::getFirstStatusButton_clicked);
 
-
-    connect(gpioTimer, &QTimer::timeout, this, &MainWindow::checkGpioStates);
+    /*connect(gpioTimer, &QTimer::timeout, this, &MainWindow::checkGpioStates);
     gpioTimer->start(1000);
-    connect(serialPort, &QSerialPort::readyRead, this, &MainWindow::onSerialDataAvailable);
+    connect(serialPort, &QSerialPort::readyRead, this, &MainWindow::onSerialDataAvailable);*/
 
 
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
@@ -55,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     refreshPorts();
     logMessageToGuiAndFile("MainWindow initialized.");
 }
+
 
 void MainWindow::logMessageToGuiAndFile(const QString &msg){
     QString logMessage = QString("[DEBUG] [%1] %2").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"),msg);
@@ -112,8 +112,7 @@ void MainWindow::showUtilitiesPage() {
     logMessageToGuiAndFile("showUtilitiesPage() called");
     qDebug() << "showUtilitiesPage() called";
     ui->stackedWidget->setCurrentWidget(ui->UtilitiesPage);
-    utilitiesButtons();
-    checkGpioStates();
+    setOutputButtons();
 }
 void MainWindow::showConsolePage(){
     logMessageToGuiAndFile("showConsolePage() called");
@@ -622,7 +621,7 @@ void MainWindow::rotateLogFileIfNeeded() {
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
     logStream.setDevice(&logFile);
 }
-void MainWindow::utilitiesButtons() {
+void MainWindow::setOutputButtons() {
     if (!serialPort || !serialPort->isOpen()) {
         QMessageBox::warning(this, "Connection Required", "A serial port connection is required. Please connect the serial port.");
         return;
@@ -640,9 +639,7 @@ void MainWindow::utilitiesButtons() {
         } else {
             qDebug() << name << "inactive";
             ui->out1Label->setText("0");
-            ui->in1Label->setText("inactive");
         }
-
     }
     else if (name == "out2LowButton") {
         QString lowCommand2 = "echo 0 > /dev/chipsee-gpio2\r\n";
@@ -652,7 +649,6 @@ void MainWindow::utilitiesButtons() {
         } else {
             qDebug() << name << "inactive";
             ui->out2Label->setText("0");
-            ui->in2Label->setText("inactive");
         }
     }
     else if (name == "out3LowButton") {
@@ -663,7 +659,6 @@ void MainWindow::utilitiesButtons() {
         } else {
             qDebug() << name << "inactive";
             ui->out3Label->setText("0");
-            ui->in3Label->setText("inactive");
         }
     }
     else if (name == "out4LowButton") {
@@ -674,7 +669,6 @@ void MainWindow::utilitiesButtons() {
         } else {
             qDebug() << name << "inactive";
             ui->out4Label->setText("0");
-            ui->in4Label->setText("inactive");
         }
     }
 
@@ -687,7 +681,6 @@ void MainWindow::utilitiesButtons() {
         } else {
             qDebug() << name << "active";
             ui->out1Label->setText("1");
-            ui->in1Label->setText("active");
         }
     }
     else if (name == "out2HighButton") {
@@ -698,7 +691,6 @@ void MainWindow::utilitiesButtons() {
         } else {
             qDebug() << name << "active";
             ui->out2Label->setText("1");
-            ui->in2Label->setText("active");
         }
     }
     else if (name == "out3HighButton") {
@@ -709,7 +701,6 @@ void MainWindow::utilitiesButtons() {
         } else {
             qDebug() << name << "active";
             ui->out3Label->setText("1");
-            ui->in3Label->setText("active");
         }
     }
     else if (name == "out4HighButton") {
@@ -720,74 +711,141 @@ void MainWindow::utilitiesButtons() {
         } else {
             qDebug() << name << "active";
             ui->out4Label->setText("1");
-            ui->in4Label->setText("active");
         }
     }
 }
-void MainWindow::onSerialDataAvailable() {
-    QByteArray data = serialPort->readAll();
-    qDebug() << "Gelen veri:" << data;
-
-    // Örneğin GPIO1 için:
-    if (data.contains("1")) {
-        ui->out1Label->setText("1");
-        ui->in1Label->setText("active");
-        logMessageToGuiAndFile("GPIO1: active");
-    } else if (data.contains("0")) {
-        ui->out1Label->setText("0");
-        ui->in1Label->setText("inactive");
-        logMessageToGuiAndFile("GPIO1: inactive");
-    }
-}
-void MainWindow::checkGpioStates(){
-    if (!serialPort || !serialPort->isOpen()){
-        QString errorMsg = "Serial port not available. Skipping GPIO check.";
-        qDebug() << errorMsg;
+/////////////////////////////////////////////////////////
+void MainWindow::readGPIOStatus(int gpioNumber) {
+    if (!serialPort || !serialPort->isOpen()) {
+        logMessageToGuiAndFile("Error: Serial port not open.");
         return;
     }
-    QString readGpio1 = "cat /dev/chipsee-gpio1\r\n";
-    serialPort->write(readGpio1.toUtf8());
-    QString readGpio2 = "cat /dev/chipsee-gpio2\r\n";
-    serialPort->write(readGpio2.toUtf8());
-    QString readGpio3 = "cat /dev/chipsee-gpio3\r\n";
-    serialPort->write(readGpio3.toUtf8());
-    QString readGpio4 = "cat /dev/chipsee-gpio4\r\n";
-    serialPort->write(readGpio4.toUtf8());
-    qDebug() << ("GPIO states check started.");
+    QString command = QString("cat /dev/chipsee-gpio%1\n").arg(gpioNumber);
+    serialPort->write(command.toUtf8());
+    qDebug() << "Command sent:" << command.trimmed();
 }
 
-void MainWindow::getFirstStatusButton_clicked(){
-    if (!serialPort || !serialPort->isOpen()){
-        QString errorMsg = "Serial port not available. Skipping GPIO check.";
-        qDebug() << errorMsg;
-        return;
+
+void MainWindow::handleReadyRead() {
+    serialBuffer.append(serialPort->readAll());
+    qDebug() << "Current Buffer: " << QString::fromUtf8(serialBuffer);
+
+    while (serialBuffer.contains("root@linaro-alip:~#")) {
+        int promptIndex = serialBuffer.indexOf("root@linaro-alip:~#");
+        QByteArray segmentToProcess = serialBuffer.left(promptIndex + QString("root@linaro-alip:~#").length());
+
+        QString output = QString::fromUtf8(segmentToProcess);
+        qDebug() << "Processing segment: " << output;
+
+        QRegularExpression commandRegex("cat /dev/chipsee-gpio(\\d+)\\r\\n");
+        QRegularExpressionMatch commandMatch = commandRegex.match(output);
+
+        int processedGpioNumber = -1;
+
+        if (commandMatch.hasMatch()) {
+            processedGpioNumber = commandMatch.captured(1).toInt();
+            qDebug() << "Identified GPIO command for:" << processedGpioNumber;
+
+            // Regex to find the status (\r0\r\n or \r1\r\n) after the command echo
+            QRegularExpression statusRegex("\\r(0|1)\\r\\n");
+            // Search for the status starting from the end of the command echo in the full segment
+            QRegularExpressionMatch statusMatch = statusRegex.match(output, commandMatch.capturedEnd());
+
+            if (statusMatch.hasMatch()) {
+                QString status = statusMatch.captured(1);
+                QString statusText = (status == "0") ? "LOW" : "HIGH";
+
+                qDebug() << "Status found for GPIO " << processedGpioNumber << ": " << statusText;
+
+
+                switch (processedGpioNumber) {
+                case 5:
+                    if (ui->in1Label) {
+                        ui->in1Label->setText(statusText);
+                    }
+                    break;
+                case 6:
+                    if (ui->in2Label) {
+                        ui->in2Label->setText(statusText);
+                    }
+                    break;
+                case 7:
+                    if (ui->in3Label) {
+                        ui->in3Label->setText(statusText);
+                    }
+                    break;
+                case 8:
+                    if (ui->in4Label) {
+                        ui->in4Label->setText(statusText);
+                    }
+                    break;
+                default:
+                    qDebug() << "Received status for unexpected GPIO number:" << processedGpioNumber;
+                    break;
+                }
+                logMessageToGuiAndFile(QString("GPIO %1 Status: %2").arg(processedGpioNumber).arg(statusText));
+
+            } else {
+                qDebug() << "Status pattern (\\r0\\r\\n or \\r1\\r\\n) not found after command for GPIO" << processedGpioNumber;
+                logMessageToGuiAndFile(QString("Could not determine status for GPIO %1. Segment: %2").arg(processedGpioNumber).arg(output.trimmed()));
+
+                switch (processedGpioNumber) {
+                case 5:
+                    if (ui->in1Label) {
+                        ui->in1Label->setText("Status not found");
+                    }
+                    break;
+                case 6:
+                    if (ui->in2Label) {
+                        ui->in2Label->setText("Status not found");
+                    }
+                    break;
+                case 7:
+                    if (ui->in3Label) {
+                        ui->in3Label->setText("Status not found");
+                    }
+                    break;
+                case 8:
+                    if (ui->in4Label) {
+                        ui->in4Label->setText("Status not found");
+                    }
+                    break;
+                default:
+                    break;
+                }
+            }
+
+        } else {
+            qDebug() << "No identifiable GPIO command found in segment ending with prompt.";
+            logMessageToGuiAndFile(QString("Processed segment does not contain an expected GPIO command: %1").arg(output.trimmed()));
+        }
+
+        serialBuffer.remove(0, segmentToProcess.length());
+        qDebug() << "Buffer after processing segment: " << QString::fromUtf8(serialBuffer);
     }
-    QString readGpio5 = "cat /dev/chipsee-gpio5\r\n";
-    serialPort->write(readGpio5.toUtf8());
-    QString readGpio6 = "cat /dev/chipsee-gpio6\r\n";
-    serialPort->write(readGpio6.toUtf8());
-    QString readGpio7 = "cat /dev/chipsee-gpio7\r\n";
-    serialPort->write(readGpio7.toUtf8());
-    QString readGpio8 = "cat /dev/chipsee-gpio8\r\n";
-    serialPort->write(readGpio8.toUtf8());
-    qDebug() << ("GPIO states check started.");
-
-
-
-
-
-
-
-
-
-
-
 }
+
+void MainWindow::getFirstStatusButton_clicked() {
+    QThread::msleep(200);
+    readGPIOStatus(5);
+    QThread::msleep(200);
+    readGPIOStatus(6);
+    QThread::msleep(200);
+    readGPIOStatus(7);
+    QThread::msleep(200);
+    readGPIOStatus(8);
+}
+
+
 MainWindow::~MainWindow() {
     logMessageToGuiAndFile("MainWindow destroyed.");
     delete ui;
-    if (serialPort){
-        serialPort->close();
+    if (serialPort != nullptr){
+        if(serialPort->isOpen()){
+            serialPort->close();
+        }
         delete serialPort;
+        serialPort = nullptr;
     }
+    delete ui;
 }
