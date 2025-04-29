@@ -1,5 +1,5 @@
-[EN](mte-toolbox-user-manuel)
-[TR](mte-toolbox-kullanım-kılavuzu)
+[EN](mte-toolbox-user-manuel-[EN])
+[TR](mte-toolbox-kullanim-kilavuzu-[TR])
 
 ## mte-toolbox User Manuel [EN]
 
