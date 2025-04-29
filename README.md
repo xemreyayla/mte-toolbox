@@ -1,7 +1,7 @@
 [EN](mte-toolbox-user-manuel)
 [TR](mte-toolbox-kullanim-kilavuzu)
 
-## mte-toolbox User Manuel
+## mte-toolbox user manuel
 
 This section explains how to run the application.
 
@@ -48,7 +48,7 @@ Thanks to the embedded terminal on this page, necessary commands can be sent dir
 
 
 
-## mte-toolbox Kullanım Kılavuzu
+## mte-toolbox kullanım kılavuzu
 
 Bu bölümde uygulamanın nasıl çalıştırılacağı açıklanmıştır.
 
