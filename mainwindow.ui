@@ -867,7 +867,7 @@ QPushButton:pressed {
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton {
-    background-color: #0288D1;  /* canlı kırmızı */
+    background-color: #0288D1; 
     border: 2px solid #0288D1;
     border-radius: 10px;
     padding: 10px 20px;
@@ -878,17 +878,17 @@ QPushButton:pressed {
 }
 
 QPushButton:hover {
-    background-color: #03A9F4;  /* biraz daha koyu kırmızı */
+    background-color: #03A9F4;  
     border: 2px solid #0288D1;
     color: white;
 }
 QPushButton:pressed {
-    background-color: #01579B;  /* Çok koyu kırmızı */
+    background-color: #01579B;  
 }
 </string>
             </property>
             <property name="text">
-             <string>Get First Status</string>
+             <string>GET STATUS</string>
             </property>
            </widget>
           </item>
@@ -914,7 +914,7 @@ QPushButton:pressed {
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton {
-    background-color: #01579B; /* Daha koyu mavi */
+    background-color: #01579B; 
     border: 2px solid #01579B;
     border-radius: 10px;
     padding: 10px 20px;
@@ -925,17 +925,17 @@ QPushButton:pressed {
 }
 
 QPushButton:hover {
-    background-color: #0288D1; /* Orta koyu mavi */
+    background-color: #0288D1; 
     border: 2px solid #01579B;
     color: white;
 }
 
 QPushButton:pressed {
-    background-color: #002E63; /* En koyu mavi */
+    background-color: #002E63; 
 }</string>
             </property>
             <property name="text">
-             <string>SD Card Format</string>
+             <string>SD CARD FORMAT</string>
             </property>
            </widget>
           </item>
