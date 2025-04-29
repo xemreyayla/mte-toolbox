@@ -1,5 +1,6 @@
-[EN](mte-toolbox-user-manuel)
-[TR](mte-toolbox-kullanim-kilavuzu)
+[EN](#mte-toolbox-user-manuel)  
+[TR](#mte-toolbox-kullanim-kilavuzu)
+
 
 ## mte-toolbox user manuel
 
