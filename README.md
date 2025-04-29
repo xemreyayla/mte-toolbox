@@ -49,7 +49,7 @@ Thanks to the embedded terminal on this page, necessary commands can be sent dir
 
 
 
-## mte-toolbox kullanım kılavuzu
+## mte-toolbox kullanim kilavuzu
 
 Bu bölümde uygulamanın nasıl çalıştırılacağı açıklanmıştır.
 
