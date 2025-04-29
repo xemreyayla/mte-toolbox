@@ -43,11 +43,6 @@ MainWindow::MainWindow(QWidget *parent)
     //utilities get first status
     connect(ui->getFirstStatusButton, &QPushButton::clicked, this, &MainWindow::getFirstStatusButton_clicked);
 
-    /*connect(gpioTimer, &QTimer::timeout, this, &MainWindow::checkGpioStates);
-    gpioTimer->start(1000);
-    connect(serialPort, &QSerialPort::readyRead, this, &MainWindow::onSerialDataAvailable);*/
-
-
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
     logStream.setDevice(&logFile);
 
@@ -147,6 +142,7 @@ void MainWindow::connectToDevice() {
         ui->connectionLabel->setText("Chipsee connection is not available.");
     }
 
+    serialPort = new QSerialPort(this);
     serialPort->setPortName(selectedPortName);
     serialPort->setBaudRate(QSerialPort::Baud115200);
     serialPort->setDataBits(QSerialPort::Data8);
@@ -155,7 +151,10 @@ void MainWindow::connectToDevice() {
     serialPort->setFlowControl(QSerialPort::NoFlowControl);
     logMessageToGuiAndFile("Serial port settings configured");
 
+
+
     if (!serialPort->open(QIODevice::ReadWrite)) {
+
         QString errorMessage;
         switch (serialPort->error()) {
         case QSerialPort::DeviceNotFoundError: errorMessage = "Device not found."; break;
@@ -171,7 +170,9 @@ void MainWindow::connectToDevice() {
         logMessageToGuiAndFile("Detailed error: " + serialPort->errorString());
         QMessageBox::critical(this, "Connection Error", "Failed to connect.\n" + errorMessage);
         return;
+
     }
+
 
     logMessageToGuiAndFile("Connected to serial port successfully.");
     QMessageBox::information(this, "Connection Successful", "Connected to " + selectedPortName + " successfully.");
@@ -409,7 +410,7 @@ void MainWindow::rwConsole() {
     // GUI güncellemelerinin hemen işlenmesini sağla
     QApplication::processEvents();
 }
-// Eklenen: JSON tamamlayıcı okuma fonksiyonu
+
 QString MainWindow::readUntilJsonComplete(int overallTimeoutMs) {
     QByteArray buffer;
     QElapsedTimer timer;
@@ -450,10 +451,8 @@ QString MainWindow::readUntilJsonComplete(int overallTimeoutMs) {
     return QString::fromUtf8(buffer).trimmed();
 }
 
-
-// Eklenen: JSON başarısızsa UI label'larına hata yazan yardımcı fonksiyon
 void MainWindow::setIpLabelsError() {
-    const QString err = "Unable to reach the IP adress.";
+    const QString err = "Unable to access the files.";
     ui->utestSerialLabel->setText(err);
     ui->utestProductLabel->setText(err);
     ui->appVersionLabel->setText(err);
@@ -462,7 +461,6 @@ void MainWindow::setIpLabelsError() {
     ui->lastModifiedLabel->setText(err);
 }
 
-// Güncellenen: fetchIpData fonksiyonu
 void MainWindow::fetchIpData() {
     logMessageToGuiAndFile("fetchIpData() called");
 
@@ -542,12 +540,18 @@ QString MainWindow::removeAnsi(const QString &input) {
     cleaned.replace(ansiRegex, "");
     return cleaned;
 }
+
 QString MainWindow::cleanTerminalOutput(const QString &input) {
     return removeAnsi(input).trimmed();
 }
 
 void MainWindow::sdFormatButton_clicked(){
     logMessageToGuiAndFile("sdFormatButton_clicked() called");
+    if (!serialPort || !serialPort->isOpen()) {
+        logMessageToGuiAndFile("Error: Serial port is not open.");
+        QMessageBox::critical(this, "Error", "Serial port is not open. Please set up the serial port first. ");
+        return;
+    }
 
     // Eğer az önce formatlandıysa, kullanıcıyı uyar
     if (sdCardFormattedRecently) {
@@ -562,7 +566,6 @@ void MainWindow::sdFormatButton_clicked(){
         logMessageToGuiAndFile("Error: Serial port is not open.");
         return;
     }
-
 
     QString umountCommand = "umount /dev/mmcblk1p1\r\n";
     QString formatCommand = "mkfs.vfat -F 32 -n FORMATTEDSD /dev/mmcblk1p1\r\n";
@@ -600,7 +603,6 @@ void MainWindow::sdFormatButton_clicked(){
         sdCardFormattedRecently = false;
         logMessageToGuiAndFile("Reset: SD card format flag cleared after timeout.");
     });
-
 }
 
 void MainWindow::rotateLogFileIfNeeded() {
@@ -621,6 +623,7 @@ void MainWindow::rotateLogFileIfNeeded() {
     logFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append);
     logStream.setDevice(&logFile);
 }
+
 void MainWindow::setOutputButtons() {
     if (!serialPort || !serialPort->isOpen()) {
         QMessageBox::warning(this, "Connection Required", "A serial port connection is required. Please connect the serial port.");
@@ -672,7 +675,6 @@ void MainWindow::setOutputButtons() {
         }
     }
 
-
     if (name == "out1HighButton") {
         QString highCommand1 = "echo 1 > /dev/chipsee-gpio1\r\n";
         int bytesWritten = serialPort->write(highCommand1.toUtf8());
@@ -714,7 +716,9 @@ void MainWindow::setOutputButtons() {
         }
     }
 }
+
 /////////////////////////////////////////////////////////
+
 void MainWindow::readGPIOStatus(int gpioNumber) {
     if (!serialPort || !serialPort->isOpen()) {
         logMessageToGuiAndFile("Error: Serial port not open.");
@@ -724,7 +728,6 @@ void MainWindow::readGPIOStatus(int gpioNumber) {
     serialPort->write(command.toUtf8());
     qDebug() << "Command sent:" << command.trimmed();
 }
-
 
 void MainWindow::handleReadyRead() {
     serialBuffer.append(serialPort->readAll());
@@ -759,6 +762,26 @@ void MainWindow::handleReadyRead() {
 
 
                 switch (processedGpioNumber) {
+                case 1:
+                    if (ui->out1Label) {
+                        ui->out1Label->setText(statusText);
+                    }
+                    break;
+                case 2:
+                    if (ui->out2Label) {
+                        ui->out2Label->setText(statusText);
+                    }
+                    break;
+                case 3:
+                    if (ui->out3Label) {
+                        ui->out3Label->setText(statusText);
+                    }
+                    break;
+                case 4:
+                    if (ui->out4Label) {
+                        ui->out4Label->setText(statusText);
+                    }
+                    break;
                 case 5:
                     if (ui->in1Label) {
                         ui->in1Label->setText(statusText);
@@ -814,28 +837,31 @@ void MainWindow::handleReadyRead() {
                     break;
                 }
             }
-
         } else {
             qDebug() << "No identifiable GPIO command found in segment ending with prompt.";
             logMessageToGuiAndFile(QString("Processed segment does not contain an expected GPIO command: %1").arg(output.trimmed()));
         }
-
         serialBuffer.remove(0, segmentToProcess.length());
         qDebug() << "Buffer after processing segment: " << QString::fromUtf8(serialBuffer);
     }
 }
 
 void MainWindow::getFirstStatusButton_clicked() {
-    QThread::msleep(200);
-    readGPIOStatus(5);
-    QThread::msleep(200);
-    readGPIOStatus(6);
-    QThread::msleep(200);
-    readGPIOStatus(7);
-    QThread::msleep(200);
-    readGPIOStatus(8);
+    if (!serialPort || !serialPort->isOpen()) {
+        logMessageToGuiAndFile("Error: Serial port is not open.");
+        QMessageBox::critical(this, "Error", "Serial port is not open. Please set up the serial port first. ");
+        return;
+    }
+    connect(serialPort, &QSerialPort::readyRead, this, &MainWindow::handleReadyRead);
+    readGPIOStatus(1);
+    QTimer::singleShot(400, this, [=]() { readGPIOStatus(2); });
+    QTimer::singleShot(800, this, [=]() { readGPIOStatus(3); });
+    QTimer::singleShot(1200, this, [=]() { readGPIOStatus(4); });
+    QTimer::singleShot(1600, this, [=]() { readGPIOStatus(5); });
+    QTimer::singleShot(2000, this, [=]() { readGPIOStatus(6); });
+    QTimer::singleShot(2400, this, [=]() { readGPIOStatus(7); });
+    QTimer::singleShot(2800, this, [=]() { readGPIOStatus(8); });
 }
-
 
 MainWindow::~MainWindow() {
     logMessageToGuiAndFile("MainWindow destroyed.");
