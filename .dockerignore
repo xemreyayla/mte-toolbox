@@ -1,0 +1,8 @@
+build/
+.git/
+*.deb
+*.appimage
+*.zip
+*.tar.gz
+*.DS_Store
+*.swp
