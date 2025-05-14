@@ -9,7 +9,6 @@
 #include <QComboBox>
 #include <QPushButton>
 #include <QList>
-#include <QtLogging>
 #include <QAbstractItemView>
 #include <QMessageBox>
 #include <QPlainTextEdit>
