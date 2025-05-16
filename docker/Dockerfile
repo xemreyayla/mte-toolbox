@@ -15,18 +15,14 @@ RUN apt-get update && apt-get install -y \
     dpkg-dev \
     && apt-get clean
 
-
 WORKDIR /src
 
 COPY . .
-RUN mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 
-RUN cd build && make 
-
-RUN cd build && make install
-
-RUN cd build && cpack
-
-EXPOSE 8080
+RUN mkdir build && cd build && \
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local && \
+    make && \
+    make install && \
+    cpack
 
 CMD ["/usr/local/bin/mte-toolbox"]
