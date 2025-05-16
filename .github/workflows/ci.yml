@@ -20,8 +20,11 @@ jobs:
     - name: .deb dosyasını konteynerden çıkar
       run: |
         container_id=$(docker create mte-toolbox-builder)
-        docker cp $container_id:/src/build ./
+        docker cp $container_id:/src/build ./build
         docker rm $container_id
+
+    - name: Build çıktısını kontrol et
+      run: ls -l build/
 
     - name: Build çıktısını artifact olarak kaydet
       uses: actions/upload-artifact@v3
