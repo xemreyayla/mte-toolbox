@@ -4,7 +4,6 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     qt6-base-dev \
-    qt6-base-tools \
     qt6-tools-dev \
     qt6-tools-dev-tools \
     libqt6serialport6-dev \
