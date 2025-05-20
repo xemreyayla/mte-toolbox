@@ -6,7 +6,7 @@ on:
       - main
       - master
     tags:
-      - 'v*'
+      - 'v*' # 'v' ile başlayan herhangi bir etiketi yakalar
 
   pull_request:
     branches:
@@ -16,6 +16,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # YENİ: GitHub Actions'ın varsayılan GITHUB_TOKEN'ına yazma izni ver
+    permissions:
+      contents: write # Release oluşturmak için gerekli izin
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,18 +27,12 @@ jobs:
 
       - name: Build Docker image and extract .deb package
         run: |
-          # 1. Docker imajını DERLE ve 'latest' etiketiyle etiketle.
-          #    Bu imaj daha sonra Docker Hub'a yüklenecek olan imajdır.
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest .
-
-          # 2. .deb dosyasını çıkarmak için bu 'latest' etiketli imajdan geçici bir konteyner oluştur.
           docker create --name mte_temp_container ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest
 
-          # 3. .deb dosyasını durmuş konteynerden GitHub Actions ortamına kopyala.
-          #    Dosya adının 'mte-toolbox-1.0.0-Linux.deb' olduğundan emin olun.
+          # HATA DÜZELTME 1: .deb dosyasının adını '1.0.0' olarak güncelledik
           docker cp mte_temp_container:/src/build/mte-toolbox-1.0.0-Linux.deb .
 
-          # 4. Geçici konteyneri kaldır.
           docker rm mte_temp_container
         working-directory: ${{ github.workspace }}
 
@@ -49,14 +46,13 @@ jobs:
       - name: Push Docker image to Docker Hub
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
         run: |
-          # Burada 'latest' etiketli imajı push ediyoruz, çünkü yukarıda onu oluşturduk.
           docker push ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-           # Kopyalanan .deb dosyasının adını direkt olarak kullanıyoruz
-           files: ${{ github.workspace }}/mte-toolbox-0.1-Linux.deb
+           # HATA DÜZELTME 1: .deb dosyasının adını '1.0.0' olarak güncelledik
+           files: ${{ github.workspace }}/mte-toolbox-1.0.0-Linux.deb
            generate_release_notes: true
 
