@@ -15,7 +15,7 @@ jobs:
 
     - name: Docker ile Build et
       run: |
-        docker build -t mte-toolbox-builder .
+        docker build -f docker/Dockerfile -t mte-toolbox-builder .
 
     - name: .deb dosyasını konteynerden çıkar
       run: |
