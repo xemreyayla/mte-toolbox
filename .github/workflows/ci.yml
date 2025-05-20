@@ -6,7 +6,7 @@ on:
       - main
       - master
     tags:
-      - 'v.1.0.0'
+      - 'v*.*.*' # Etiket formatını 'v*.*.*' olarak güncelledim (v.1.0.0 yerine)
 
   pull_request:
     branches:
@@ -32,7 +32,7 @@ jobs:
           DEB_FILE=$(docker exec mte_temp_container find /src/build -name "*.deb" -print -quit)
           if [ -z "$DEB_FILE" ]; then
             echo "Error: .deb file not found in container."
-            exit "
+            exit 1 # Buradaki tırnak işaretini kaldırdım, sadece 'exit 1' olmalı
           fi
           docker cp mte_temp_container:$DEB_FILE .
 
@@ -40,7 +40,8 @@ jobs:
         working-directory: ${{ github.workspace }}
 
       - name: Log in to Docker Hub
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref 'refs/tags/')
+        # Hata buradaydı: startsWith(github.ref, 'refs/tags/') olmalıydı
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -50,9 +51,11 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest
-      - name: Create GitHbu Release
+
+      - name: Create GitHub Release # Adı 'Create GitHub Release' olarak düzelttim (Githbu -> GitHub)
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/actions-gh-release@v2
+        uses: softprops/action-gh-release@v2 # Action adını düzelttim (actions-gh-release -> action-gh-release)
         with:
            files: ${{ github.workspace }}/$(basename $DEB_FILE)
            generate_release_notes: true
+
