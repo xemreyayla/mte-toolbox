@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     rpm \
     ca-certificates \
     file \
+    libxkbcommon-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
@@ -25,3 +26,5 @@ RUN mkdir build && cd build && \
     make -j$(nproc) && \
     make install && \
     cpack -G DEB
+
+CMD ["/usr/local/bin/mte-toolbox"]
