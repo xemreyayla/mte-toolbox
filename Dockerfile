@@ -21,6 +21,11 @@ WORKDIR /src
 
 COPY . /src
 
+RUN echo "--- Listing contents of /src after COPY ---" && \
+    ls -la /src/ && \
+    echo "--- Verifying LICENSE.txt presence ---" && \
+    if [ -f "/src/LICENSE.txt" ]; then echo "SUCCESS: LICENSE.txt IS in /src"; else echo "FAILURE: LICENSE.txt IS NOT in /src"; exit 1; fi
+
 RUN mkdir build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) && \
