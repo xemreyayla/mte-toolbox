@@ -20,7 +20,7 @@ jobs:
 
       - name: Build Docker image # Docker imajını derle
         run: |
-          docker build -f docker/Dockerfile -t mte-toolbox-builder:latest .
+          docker build -t mte-toolbox-builder:latest .
         working-directory: ${{ github.workspace }}
 
       - name: Log in to Docker Hub # <-- Bu satırın hizalamasını düzelttim
