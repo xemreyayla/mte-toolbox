@@ -6,7 +6,7 @@ on:
       - main
       - master
     tags:
-      - 'v*.*.*'
+      - 'v*'
 
   pull_request:
     branches:
@@ -57,6 +57,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
            # Kopyalanan .deb dosyasının adını direkt olarak kullanıyoruz
-           files: ${{ github.workspace }}/mte-toolbox-1.0.0-Linux.deb
+           files: ${{ github.workspace }}/mte-toolbox-0.1-Linux.deb
            generate_release_notes: true
 
