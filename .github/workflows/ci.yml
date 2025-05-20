@@ -1,5 +1,5 @@
 name: Build .deb Package
--uses: actions/download-artifact@v4
+
 on:
   push:
     branches: [ main ]
@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Repo'yu klonla
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Docker ile Build et
       run: |
@@ -31,4 +31,16 @@ jobs:
       with:
         name: mte-toolbox-deb
         path: build/*.deb
+
+  test-artifact-download:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Artifact'ı indir
+      uses: actions/download-artifact@v4
+      with:
+        name: mte-toolbox-deb
+        path: downloaded-debs
+        merge-multiple: true  # Aynı klasöre indir
 
