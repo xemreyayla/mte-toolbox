@@ -13,16 +13,15 @@ RUN apt-get update && apt-get install -y \
     fakeroot \
     rpm \
     ca-certificates \
+    file \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
 
-COPY . .
+COPY . /src
 
 RUN mkdir build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) && \
     make install && \
     cpack -G DEB
-
-CMD ["ls", "-lh", "/src/build/"]
