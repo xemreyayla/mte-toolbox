@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,7 +6,8 @@ on:
       - main
       - master
     tags:
-      - 'v*.*.*' # Etiket formatını 'v*.*.*' olarak güncelledim (v.1.0.0 yerine)
+      - 'v*.*.*' # Etiket formatını esnek tutmak için 'v*.*.*' olarak ayarladım.
+                # Eğer sadece 'v.1.0.0' gibi spesifik bir etiketi yakalamak isterseniz değiştirebilirsiniz.
 
   pull_request:
     branches:
@@ -16,31 +17,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Build Docker image and create .deb package
+      - name: Build Docker image and extract .deb package # Adımı biraz daha netleştirdik
         run: |
+          # 1. Docker imajını derle. Bu adım, .deb dosyasını imajın içine yerleştirir.
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:build_temp .
 
-          docker run --name mte_temp_container ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:build_temp /bin/true
+          # 2. Derlenen imajdan geçici bir konteyner oluştur (ancak çalıştırma).
+          #    Bu, dosya sistemine erişim sağlamak için yeterlidir.
+          docker create --name mte_temp_container ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:build_temp
 
-          DEB_FILE=$(docker exec mte_temp_container find /src/build -name "*.deb" -print -quit)
-          if [ -z "$DEB_FILE" ]; then
-            echo "Error: .deb file not found in container."
-            exit 1 # Buradaki tırnak işaretini kaldırdım, sadece 'exit 1' olmalı
-          fi
-          docker cp mte_temp_container:$DEB_FILE .
+          # 3. .deb dosyasını durmuş konteynerden GitHub Actions ortamına kopyala.
+          #    CPack çıktınızda .deb dosyasının adı 'mte-toolbox-1.0.0-Linux.deb' idi.
+          #    Eğer versiyon numarası gelecekte değişirse, bu kısmı manuel olarak güncellemeniz gerekebilir
+          #    veya konteyner içinde find komutu yerine, .deb adını CMake ile bir değişkene atayabilirsiniz.
+          docker cp mte_temp_container:/src/build/mte-toolbox-1.0.0-Linux.deb .
 
+          # 4. Geçici konteyneri kaldır.
           docker rm mte_temp_container
         working-directory: ${{ github.workspace }}
 
       - name: Log in to Docker Hub
-        # Hata buradaydı: startsWith(github.ref, 'refs/tags/') olmalıydı
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
         uses: docker/login-action@v3
         with:
@@ -52,10 +54,10 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest
 
-      - name: Create GitHub Release # Adı 'Create GitHub Release' olarak düzelttim (Githbu -> GitHub)
+      - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2 # Action adını düzelttim (actions-gh-release -> action-gh-release)
+        uses: softprops/action-gh-release@v2
         with:
-           files: ${{ github.workspace }}/$(basename $DEB_FILE)
+           # Kopyalanan .deb dosyasının adını direkt olarak kullanıyoruz
+           files: ${{ github.workspace }}/mte-toolbox-1.0.0-Linux.deb
            generate_release_notes: true
-
