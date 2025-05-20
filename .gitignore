@@ -29,7 +29,6 @@ Makefile*
 /ui_*.h
 build/
 logs/
-*.txt
 
 
 # Derleme klasörleri
