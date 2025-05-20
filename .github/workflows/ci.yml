@@ -6,8 +6,7 @@ on:
       - main
       - master
     tags:
-      - 'v*.*.*' # Etiket formatını esnek tutmak için 'v*.*.*' olarak ayarladım.
-                # Eğer sadece 'v.1.0.0' gibi spesifik bir etiketi yakalamak isterseniz değiştirebilirsiniz.
+      - 'v*.*.*'
 
   pull_request:
     branches:
@@ -23,19 +22,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build Docker image and extract .deb package # Adımı biraz daha netleştirdik
+      - name: Build Docker image and extract .deb package
         run: |
-          # 1. Docker imajını derle. Bu adım, .deb dosyasını imajın içine yerleştirir.
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:build_temp .
+          # 1. Docker imajını DERLE ve 'latest' etiketiyle etiketle.
+          #    Bu imaj daha sonra Docker Hub'a yüklenecek olan imajdır.
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest .
 
-          # 2. Derlenen imajdan geçici bir konteyner oluştur (ancak çalıştırma).
-          #    Bu, dosya sistemine erişim sağlamak için yeterlidir.
-          docker create --name mte_temp_container ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:build_temp
+          # 2. .deb dosyasını çıkarmak için bu 'latest' etiketli imajdan geçici bir konteyner oluştur.
+          docker create --name mte_temp_container ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest
 
           # 3. .deb dosyasını durmuş konteynerden GitHub Actions ortamına kopyala.
-          #    CPack çıktınızda .deb dosyasının adı 'mte-toolbox-1.0.0-Linux.deb' idi.
-          #    Eğer versiyon numarası gelecekte değişirse, bu kısmı manuel olarak güncellemeniz gerekebilir
-          #    veya konteyner içinde find komutu yerine, .deb adını CMake ile bir değişkene atayabilirsiniz.
+          #    Dosya adının 'mte-toolbox-1.0.0-Linux.deb' olduğundan emin olun.
           docker cp mte_temp_container:/src/build/mte-toolbox-1.0.0-Linux.deb .
 
           # 4. Geçici konteyneri kaldır.
@@ -52,6 +49,7 @@ jobs:
       - name: Push Docker image to Docker Hub
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
         run: |
+          # Burada 'latest' etiketli imajı push ediyoruz, çünkü yukarıda onu oluşturduk.
           docker push ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest
 
       - name: Create GitHub Release
@@ -61,3 +59,4 @@ jobs:
            # Kopyalanan .deb dosyasının adını direkt olarak kullanıyoruz
            files: ${{ github.workspace }}/mte-toolbox-1.0.0-Linux.deb
            generate_release_notes: true
+
