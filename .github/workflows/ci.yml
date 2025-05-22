@@ -6,7 +6,7 @@ on:
       - main
       - master
     tags:
-      - 'v*' # 'v' ile başlayan herhangi bir etiketi yakalar
+      - 'v*'
 
   pull_request:
     branches:
@@ -16,8 +16,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # YENİ: GitHub Actions'ın varsayılan GITHUB_TOKEN'ına yazma izni ver
-    permissions:
+permissions:
       contents: write # Release oluşturmak için gerekli izin
     steps:
       - name: Checkout repository
@@ -31,7 +30,7 @@ jobs:
           docker create --name mte_temp_container ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest
 
           # HATA DÜZELTME 1: .deb dosyasının adını '1.0.0' olarak güncelledik
-          docker cp mte_temp_container:/src/build/mte-toolbox-1.0.0-Linux.deb .
+          docker cp mte_temp_container:/app/mte-toolbox-1.0.4-Linux.deb .
 
           docker rm mte_temp_container
         working-directory: ${{ github.workspace }}
