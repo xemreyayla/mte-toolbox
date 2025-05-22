@@ -31,28 +31,10 @@ RUN echo "--- Checking LICENSE.txt ---" && \
 
 # Build ve .deb üretimi
 RUN mkdir -p build && \
-        cd build && \
-        cmake .. -DCMAKE_BUILD_TYPE=Release && \
-        make -j$(nproc) && \
-        make install DESTDIR=install && \
-        cpack -G DEB && \
-        \
-        # --- HATA AYIKLAMA BAŞLANGICI ---
-        # CPack çalıştıktan sonra mevcut dizindeki dosyaları listele (burası /app/build olmalı)
-        echo "--- DEBUG: Files in current directory (/app/build) after cpack ---" && \
-        ls -l . && \
-        \
-        # CPack çıktısında belirtilen olası mutlak yolu kontrol et (/src/build)
-        echo "--- DEBUG: Files in /src/build (absolute path from CPack output) ---" && \
-        ls -l /src/build/ || true && \
-        \
-        # .deb dosyasını /app/ dizinine taşı (mevcut dizinden)
-        mv mte-toolbox-1.0.4-Linux.deb /app/ && \
-        \
-        # Taşıma işleminden sonra /app/ dizinindeki dosyanın varlığını doğrula
-        echo "--- DEBUG: Files in /app/ after mv ---" && \
-        ls -l /app/mte-toolbox-1.0.4-Linux.deb && \
-        # --- HATA AYIKLAMA SONU ---
-        \
-        true # Sadece son komutun her zaman başarılı olmasını sağlamak için
+    cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j$(nproc) && \
+    make install DESTDIR=install && \
+    cpack -G DEB && \
+    mv mte-toolbox-1.0.4-Linux.deb /app/
     
