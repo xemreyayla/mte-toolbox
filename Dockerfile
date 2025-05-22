@@ -8,12 +8,9 @@ RUN apt update && \
     cmake \
     qt6-base-dev \
     qt6-base-dev-tools \
-    qt6-base-plugins \
     qt6-serialport-dev \
     qt6-tools-dev \
-    qt6-qpa-plugins \
     qt6-image-formats-plugins \
-    libgl1-mesa-glx \
     libxkbcommon0 \
     libfontconfig1 \
     libx11-6 \
