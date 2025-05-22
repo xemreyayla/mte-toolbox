@@ -19,7 +19,7 @@ RUN apt update --fix-missing -y && \
     libgl1 \
     libglx-mesa0 \
     libopengl0 \
-    libegl1-mesa \
+    libegl1-mesa0 \
     libxkbcommon0 \
     libfontconfig1 \
     libx11-6 \
