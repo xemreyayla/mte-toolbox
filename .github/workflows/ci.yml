@@ -53,6 +53,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
            # HATA DÜZELTME 1: .deb dosyasının adını '1.0.0' olarak güncelledik
-           files: ${{ github.workspace }}/mte-toolbox-1.0.0-Linux.deb
+           files: ${{ github.workspace }}/mte-toolbox-1.0.4-Linux.deb
            generate_release_notes: true
 
