@@ -15,8 +15,8 @@ RUN apt update && \
     libqt6widgets6 \
     libqt6serialport6 \
     libqt6dbus6 \
-    qt6-qpa-plugins \ # <-- YENİ EKLENDİ
-    qt6-image-formats-plugins \ # <-- YENİ EKLENDİ
+    qt6-qpa-plugins \
+    qt6-image-formats-plugins \
     libgl1-mesa-glx \
     libxkbcommon0 \
     libfontconfig1 \
@@ -57,5 +57,3 @@ RUN mkdir -p build && \
     make install DESTDIR=install && \
     cpack -G DEB && \
     mv mte-toolbox-1.0.4-Linux.deb /app/
-
-    
