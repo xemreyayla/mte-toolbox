@@ -58,10 +58,6 @@ install(TARGETS mte-toolbox
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Qt kütüphaneleri ve eklentileri Dockerfile'da manuel olarak kopyalandığı için
-# burada ek bir install kuralına gerek yoktur.
-# CPack, bu kopyalanan dosyaları paketleme sırasında otomatik olarak algılayacaktır.
-
 qt_finalize_executable(mte-toolbox)
 
 include(InstallRequiredSystemLibraries)
@@ -81,6 +77,6 @@ set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Mehmet Emre Yayla")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS OFF) # Otomatik bağımlılık algılamayı kapatın, çünkü Qt'yi biz kopyalıyoruz
 # Sadece Qt dışındaki temel sistem bağımlılıklarını belirtin.
 # Bu liste, uygulamanızın çalışması için kesinlikle gerekli olan ve Qt tarafından sağlanmayan kütüphanelerdir.
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libstdc++6, libgl1, libglx-mesa0, libegl1-mesa, libxkbcommon0, libfontconfig1, libx11-6, libglib2.0-0, libdbus-1-3, libfreetype6, libzstd1, libexpat1, libxcb1, libpcre2-8-0, libbz2-1.0, libpng16-16, libbrotli1, libsystemd0, libbsd0, libcap2, libgcrypt20, liblz4-1, liblzma5, libmd0, libgpg-error0")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libstdc++6, libgl1, libglx-mesa0, libopengl0, libegl1-mesa, libxkbcommon0, libfontconfig1, libx11-6, libglib2.0-0, libdbus-1-3, libfreetype6, libzstd1, libexpat1, libxcb1, libpcre2-8-0, libbz2-1.0, libpng16-16, libbrotli1, libsystemd0, libbsd0, libcap2, libgcrypt20, liblz4-1, liblzma5, libmd0, libgpg-error0")
 
 include(CPack)
