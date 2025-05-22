@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && \
     apt install -y \
-    libicu74 libicu74-dev \
+    libicu74 libicu-dev \
     cmake \
     build-essential \
     qt6-base-dev \
