@@ -36,6 +36,6 @@ RUN mkdir -p build && \
     make -j$(nproc) && \
     make install DESTDIR=install && \
     cpack -G DEB && \
-    mv *.deb /src/mte-toolbox.deb
+    mv *.deb /src/mte-toolbox-1.0.4-Linux.deb
 
 CMD ["/usr/local/bin/mte-toolbox"]
