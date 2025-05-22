@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(mte-toolbox VERSION 1.0.0 LANGUAGES CXX)
+project(mte-toolbox VERSION 1.0.4 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -61,7 +61,9 @@ qt_finalize_executable(mte-toolbox)
 
 include(InstallRequiredSystemLibraries)
 
-# CPACK genel ayarları
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "/home/emreyayla/Qt/6.8.1/gcc_64/lib;/lib/x86_64-linux-gnu")
+
 set(CPACK_PACKAGE_NAME "mte-toolbox")
 set(CPACK_PACKAGE_VENDOR "Mehmet Emre Yayla")
 set(CPACK_PACKAGE_CONTACT "mehmetemreyayla@gmail.com")
@@ -70,7 +72,6 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "mte-toolbox - Qt Based Serial Port Connec
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 
-# DEB üretimi için gerekli
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Mehmet Emre Yayla")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
