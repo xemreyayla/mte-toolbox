@@ -2,25 +2,45 @@ FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
+RUN apt update && \
+    apt install -y \
     build-essential \
     cmake \
-    make \
     qt6-base-dev \
+    qt6-base-dev-tools \
+    qt6-serialport-dev \
     qt6-tools-dev \
-    qt6-tools-dev-tools \
-    libqt6serialport6-dev \
-    libdbus-1-dev \
-    curl \
-    git \
-    fakeroot \
-    rpm \
-    ca-certificates \
-    file \
-    libxkbcommon-dev \
-    lsb-release \
-    dpkg-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libqt6core6 \
+    libqt6gui6 \
+    libqt6widgets6 \
+    libqt6serialport6 \
+    libqt6dbus6 \
+    qt6-qpa-plugins \ # <-- YENİ EKLENDİ
+    qt6-image-formats-plugins \ # <-- YENİ EKLENDİ
+    libgl1-mesa-glx \
+    libxkbcommon0 \
+    libfontconfig1 \
+    libx11-6 \
+    libglib2.0-0 \
+    libdbus-1-3 \
+    libfreetype6 \
+    libzstd1 \
+    libexpat1 \
+    libxcb1 \
+    libpcre2-8-0 \
+    libbz2-1.0 \
+    libpng16-16 \
+    libbrotlidec1 \
+    libsystemd0 \
+    libbsd0 \
+    libcap2 \
+    libgcrypt20 \
+    liblz4-1 \
+    liblzma5 \
+    libmd0 \
+    libgpg-error0 \
+    libicu-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -37,4 +57,5 @@ RUN mkdir -p build && \
     make install DESTDIR=install && \
     cpack -G DEB && \
     mv mte-toolbox-1.0.4-Linux.deb /app/
+
     
