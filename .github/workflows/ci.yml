@@ -16,7 +16,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions: # <-- Bu satır runs-on ile aynı hizada olmalı
+    permissions:
       contents: write # Release oluşturmak için gerekli izin
     steps:
       - name: Checkout repository
@@ -28,13 +28,15 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest .
           docker create --name mte_temp_container ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest
-
-          # .deb dosyasını container'dan CI/CD runner'ının çalışma dizinine kopyala
-          # DİKKAT: Dockerfile'daki mv komutu paketi /app/ dizinine taşıdığı için yolu güncelledik.
           docker cp mte_temp_container:/app/mte-toolbox-1.0.4-Linux.deb .
-
           docker rm mte_temp_container
         working-directory: ${{ github.workspace }}
+
+      - name: Upload .deb package as artifact # <-- YENİ ADIM
+        uses: actions/upload-artifact@v4
+        with:
+          name: mte-toolbox-deb-package
+          path: mte-toolbox-1.0.4-Linux.deb # Runner'ın çalışma dizinindeki dosya
 
       - name: Log in to Docker Hub
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/')
@@ -52,5 +54,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ github.workspace }}/mte-toolbox-1.0.4-Linux.deb
+          files: mte-toolbox-1.0.4-Linux.deb # Dosyanın runner'ın çalışma dizininde olduğunu varsayarız
           generate_release_notes: true
