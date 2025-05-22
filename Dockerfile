@@ -5,20 +5,23 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Gerekli araçları ve Qt dışındaki sistem bağımlılıklarını kurun.
-# 'wget' ve 'p7zip-full' (7z komutu için) buraya eklendi.
+# Bu paketler, uygulamanızın veya Qt'nin kendisinin ihtiyaç duyduğu temel sistem kütüphaneleridir.
 RUN apt update --fix-missing -y && \
     apt upgrade -y && \
     apt install -y \
     build-essential \
     cmake \
     git \
-    wget \ # <-- Buraya eklendi
+    wget \
     tar \
     xz-utils \
-    p7zip-full \ # <-- Buraya eklendi
+    p7zip-full \
+    # OpenGL/Mesa kütüphaneleri
     libgl1 \
-    libglx-mesa0 \
-    libegl1-mesa \
+    libglx-mesa0 \ # libGLX.so.0 için
+    libopengl0 \    # libOpenGL.so.0 için
+    libegl1-mesa \  # libEGL.so.1 için
+    # Diğer sistem bağımlılıkları (ldd çıktısına göre)
     libxkbcommon0 \
     libfontconfig1 \
     libx11-6 \
@@ -31,7 +34,7 @@ RUN apt update --fix-missing -y && \
     libpcre2-8-0 \
     libbz2-1.0 \
     libpng16-16 \
-    libbrotli1 \
+    libbrotli1 \      # libbrotlidec.so.1 ve libbrotlicommon.so.1 için
     libsystemd0 \
     libbsd0 \
     libcap2 \
@@ -39,7 +42,8 @@ RUN apt update --fix-missing -y && \
     liblz4-1 \
     liblzma5 \
     libmd0 \
-    libgpg-error0 && \
+    libgpg-error0 \
+    libstdc++6 && \ # C++ uygulamaları için temel
     rm -rf /var/lib/apt/lists/*
 
 # Qt kurulumu için dizin oluşturun
@@ -48,7 +52,6 @@ RUN mkdir -p /opt/Qt/6.8.1/gcc_64
 # Qt 6.8.1 modüllerini indirin ve çıkarın.
 # Bu URL'ler, Qt 6.8.1'in (2024-05-09 tarihli gcc_64 anlık görüntüsü) doğrudan indirme bağlantılarıdır.
 # Farklı bir anlık görüntü veya mimari kullanıyorsanız bu URL'leri ayarlamanız gerekebilir.
-# '7z x -so -si -o' komutu, arşivi standart girdiden okuyup belirtilen dizine çıkarır.
 RUN wget -qO- https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_681/qt.qt6.681.gcc_64/qtbase-6.8.1-0-202405090740-gcc_64.7z | 7z x -so -si -o/opt/Qt/6.8.1/gcc_64 && \
     wget -qO- https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_681/qt.qt6.681.gcc_64/qtserialport-6.8.1-0-202405090740-gcc_64.7z | 7z x -so -si -o/opt/Qt/6.8.1/gcc_64 && \
     wget -qO- https://download.qt.io/online/qtsdkrepository/linux_x64/desktop/qt6_681/qt.qt6.681.gcc_64/qttools-6.8.1-0-202405090740-gcc_64.7z | 7z x -so -si -o/opt/Qt/6.8.1/gcc_64
@@ -74,8 +77,14 @@ RUN mkdir -p build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH && \
     make -j$(nproc) && \
     make install DESTDIR=install && \
+    \
+    # Qt çalışma zamanı kütüphanelerini ve eklentilerini .deb paketine dahil etmek için kopyalayın.
+    # Bu, .deb paketini Qt açısından kendi kendine yeterli hale getirir.
     cp -r $QT_INSTALL_DIR/lib/*.so* install/usr/local/lib/ && \
     mkdir -p install/usr/local/lib/qt6/plugins/platforms && \
     cp -r $QT_INSTALL_DIR/plugins/platforms/*.so install/usr/local/lib/qt6/plugins/platforms/ && \
+    \
+    # CPack'i çalıştırarak .deb paketini oluşturun. Kopyalanan Qt kütüphaneleri pakete dahil edilecektir.
     cpack -G DEB && \
+    # Oluşturulan .deb dosyasını /app dizinine taşıyın
     mv mte-toolbox-1.0.4-Linux.deb /app/
