@@ -6,9 +6,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Gerekli araçları ve Qt dışındaki sistem bağımlılıklarını kurun.
 # Bu paketler, uygulamanızın veya Qt'nin kendisinin ihtiyaç duyduğu temel sistem kütüphaneleridir.
+
 RUN apt update --fix-missing -y && \
     apt upgrade -y && \
     apt install -y \
+    # Temel derleme araçları
     build-essential \
     cmake \
     git \
@@ -16,32 +18,47 @@ RUN apt update --fix-missing -y && \
     tar \
     xz-utils \
     p7zip-full \
-    libgl1 \
-    libglx-mesa0 \
-    libopengl0 \
-    libegl1-mesa0 \
-    libxkbcommon0 \
-    libfontconfig1 \
-    libx11-6 \
-    libglib2.0-0 \
-    libdbus-1-3 \
-    libfreetype6 \
-    libzstd1 \
-    libexpat1 \
-    libxcb1 \
-    libpcre2-8-0 \
-    libbz2-1.0 \
-    libpng16-16 \
-    libbrotli1 \
-    libsystemd0 \
-    libbsd0 \
-    libcap2 \
-    libgcrypt20 \
-    liblz4-1 \
-    liblzma5 \
-    libmd0 \
-    libgpg-error0 \
-    libstdc++6 && \
+    qt6-base-dev \
+    qt6-serialport-dev \
+    libgl-dev \
+    libglx-dev \
+    libopengl-dev \
+    libegl-dev \
+    libglvnd-dev \
+    libxkbcommon-dev \
+    libxkbcommon-x11-dev \
+    libfontconfig-dev \
+    libx11-dev \
+    libglib2.0-dev \
+    zlib1g-dev \
+    libfreetype-dev \
+    libicu-dev \
+    libzstd-dev \
+    libexpat1-dev \
+    libxcb1-dev \
+    libxcb-icccm4-dev \
+    libxcb-image0-dev \
+    libxcb-keysyms1-dev \
+    libxcb-randr0-dev \
+    libxcb-render-util0-dev \
+    libxcb-shm0-dev \
+    libxcb-sync-dev \
+    libxcb-xfixes0-dev \
+    libxcb-xinerama0-dev \
+    libpcre2-dev \
+    libdbus-1-dev \
+    libbz2-dev \
+    libpng-dev \
+    libbrotli-dev \
+    libxau-dev \
+    libxdmcp-dev \
+    libsystemd-dev \
+    libbsd-dev \
+    libcap-dev \
+    libgcrypt20-dev \
+    liblz4-dev \
+    liblzma-dev \
+    libgpg-error-dev && \
     rm -rf /var/lib/apt/lists/*
 
 # Qt kurulumu için dizin oluşturun
