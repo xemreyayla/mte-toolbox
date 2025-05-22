@@ -15,9 +15,8 @@ RUN apt update && \
     file \
     dpkg-dev \
     fakeroot \
-    lintian
+    lintian \
     && rm -rf /var/lib/apt/lists/*
-
 
 WORKDIR /app
 
