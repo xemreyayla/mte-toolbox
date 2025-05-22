@@ -4,29 +4,18 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && \
     apt install -y \
-    build-essential \
     cmake \
+    build-essential \
     qt6-base-dev \
     qt6-base-dev-tools \
-    qt6-serialport-dev \
+    qt6-base-private-dev \
     qt6-tools-dev \
-    qt6-image-formats-plugins \
-    libxkbcommon0 \
-    libfontconfig1 \
-    libx11-6 \
-    libglib2.0-0 \
-    libdbus-1-3 \
-    libfreetype6 \
-    libpng16-16 \
-    libzstd1 \
-    libexpat1 \
-    libpcre2-8-0 \
-    libbz2-1.0 \
-    libbrotli1 \
-    libsystemd0 \
-    libgcrypt20 \
-    liblzma5 \
-    libicu-dev \
+    qt6-tools-dev-tools \
+    cpack \
+    file \
+    dpkg-dev \
+    fakeroot \
+    lintian
     && rm -rf /var/lib/apt/lists/*
 
 
