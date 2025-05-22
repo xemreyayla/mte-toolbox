@@ -5,19 +5,17 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Gerekli araçları ve Qt dışındaki sistem bağımlılıklarını kurun.
-# Bu paketler, uygulamanızın veya Qt'nin kendisinin ihtiyaç duyduğu temel sistem kütüphaneleridir.
-# 'p7zip-full' Qt arşivlerini açmak için gereklidir.
+# 'wget' ve 'p7zip-full' (7z komutu için) buraya eklendi.
 RUN apt update --fix-missing -y && \
     apt upgrade -y && \
-    # apt install komutunun çıktısını bir dosyaya yönlendiriyoruz
     apt install -y \
     build-essential \
     cmake \
     git \
-    wget \
+    wget \ # <-- Buraya eklendi
     tar \
     xz-utils \
-    p7zip-full \
+    p7zip-full \ # <-- Buraya eklendi
     libgl1 \
     libglx-mesa0 \
     libegl1-mesa \
@@ -41,9 +39,7 @@ RUN apt update --fix-missing -y && \
     liblz4-1 \
     liblzma5 \
     libmd0 \
-    libgpg-error0 2>&1 | tee /tmp/apt_install_log.txt || exit 1 && \
-    # Eğer apt install başarılı olursa, log dosyasını sileriz.
-    # Başarısız olursa, log dosyası kalır ve hatayı görebiliriz.
+    libgpg-error0 && \
     rm -rf /var/lib/apt/lists/*
 
 # Qt kurulumu için dizin oluşturun
