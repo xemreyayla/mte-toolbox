@@ -9,7 +9,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Qt6'yı bulur. Dockerfile'da ayarlanan CMAKE_PREFIX_PATH sayesinde doğru Qt 6.8.1 kurulumunu bulacaktır.
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets SerialPort DBus)
 
 set(PROJECT_SOURCES
@@ -62,7 +61,9 @@ qt_finalize_executable(mte-toolbox)
 
 include(InstallRequiredSystemLibraries)
 
-# CPack genel ayarları
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH "/home/emreyayla/Qt/6.8.1/gcc_64/lib;/lib/x86_64-linux-gnu")
+
 set(CPACK_PACKAGE_NAME "mte-toolbox")
 set(CPACK_PACKAGE_VENDOR "Mehmet Emre Yayla")
 set(CPACK_PACKAGE_CONTACT "mehmetemreyayla@gmail.com")
@@ -71,12 +72,9 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "mte-toolbox - Qt Based Serial Port Connec
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 
-# DEB üretimi için gerekli
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Mehmet Emre Yayla")
-set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS OFF) # Otomatik bağımlılık algılamayı kapatın, çünkü Qt'yi biz kopyalıyoruz
-# Sadece Qt dışındaki temel sistem bağımlılıklarını belirtin.
-# Bu liste, uygulamanızın çalışması için kesinlikle gerekli olan ve Qt tarafından sağlanmayan kütüphanelerdir.
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libstdc++6, libgl1, libglx-mesa0, libopengl0, libegl1-mesa, libxkbcommon0, libfontconfig1, libx11-6, libglib2.0-0, libdbus-1-3, libfreetype6, libzstd1, libexpat1, libxcb1, libpcre2-8-0, libbz2-1.0, libpng16-16, libbrotli1, libsystemd0, libbsd0, libcap2, libgcrypt20, liblz4-1, liblzma5, libmd0, libgpg-error0")
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6core6, libqt6gui6, libqt6widgets6, libqt6serialport6, libqt6dbus6, qt6-qpa-plugins, qt6-image-formats-plugins, libc6, libstdc++6, libgl1, libxkbcommon0, libfontconfig1, libx11-6, libglib2.0-0, libdbus-1-3, libfreetype6, libzstd1, libexpat1, libxcb1, libpcre2-8-0, libbz2-1.0, libpng16-16, libbrotlidec1, libsystemd0, libbsd0, libcap2, libgcrypt20, liblz4-1, liblzma5, libmd0, libgpg-error0, libicu-dev")
 
 include(CPack)
