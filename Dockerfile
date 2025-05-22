@@ -30,7 +30,7 @@ RUN apt update && \
     libpcre2-8-0 \
     libbz2-1.0 \
     libpng16-16 \
-    libbrotlidec1 \
+    libbrotli1 \
     libsystemd0 \
     libbsd0 \
     libcap2 \
