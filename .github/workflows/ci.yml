@@ -6,7 +6,7 @@ on:
       - main
       - master
     tags:
-      - 'v*'
+      - 'v*' # 'v' ile başlayan herhangi bir etiketi yakalar
 
   pull_request:
     branches:
@@ -16,7 +16,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-permissions:
+    permissions: # <-- Bu satır runs-on ile aynı hizada olmalı
       contents: write # Release oluşturmak için gerekli izin
     steps:
       - name: Checkout repository
@@ -29,7 +29,8 @@ permissions:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest .
           docker create --name mte_temp_container ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:latest
 
-          # HATA DÜZELTME 1: .deb dosyasının adını '1.0.0' olarak güncelledik
+          # .deb dosyasını container'dan CI/CD runner'ının çalışma dizinine kopyala
+          # DİKKAT: Dockerfile'daki mv komutu paketi /app/ dizinine taşıdığı için yolu güncelledik.
           docker cp mte_temp_container:/app/mte-toolbox-1.0.4-Linux.deb .
 
           docker rm mte_temp_container
@@ -51,7 +52,5 @@ permissions:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-           # HATA DÜZELTME 1: .deb dosyasının adını '1.0.0' olarak güncelledik
-           files: ${{ github.workspace }}/mte-toolbox-1.0.4-Linux.deb
-           generate_release_notes: true
-
+          files: ${{ github.workspace }}/mte-toolbox-1.0.4-Linux.deb
+          generate_release_notes: true
