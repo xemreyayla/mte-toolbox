@@ -35,7 +35,7 @@ RUN mkdir -p build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) && \
     make install DESTDIR=install && \
-    cpack -G DEB \
+    cpack -G DEB && \
     mv *.deb /src/mte-toolbox.deb
 
 CMD ["/usr/local/bin/mte-toolbox"]
