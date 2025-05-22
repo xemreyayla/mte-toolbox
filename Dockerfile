@@ -16,12 +16,10 @@ RUN apt update --fix-missing -y && \
     tar \
     xz-utils \
     p7zip-full \
-    # OpenGL/Mesa kütüphaneleri
     libgl1 \
-    libglx-mesa0 \ # libGLX.so.0 için
-    libopengl0 \    # libOpenGL.so.0 için
-    libegl1-mesa \  # libEGL.so.1 için
-    # Diğer sistem bağımlılıkları (ldd çıktısına göre)
+    libglx-mesa0 \
+    libopengl0 \
+    libegl1-mesa \
     libxkbcommon0 \
     libfontconfig1 \
     libx11-6 \
@@ -34,7 +32,7 @@ RUN apt update --fix-missing -y && \
     libpcre2-8-0 \
     libbz2-1.0 \
     libpng16-16 \
-    libbrotli1 \      # libbrotlidec.so.1 ve libbrotlicommon.so.1 için
+    libbrotli1 \
     libsystemd0 \
     libbsd0 \
     libcap2 \
@@ -43,7 +41,7 @@ RUN apt update --fix-missing -y && \
     liblzma5 \
     libmd0 \
     libgpg-error0 \
-    libstdc++6 && \ # C++ uygulamaları için temel
+    libstdc++6 && \
     rm -rf /var/lib/apt/lists/*
 
 # Qt kurulumu için dizin oluşturun
