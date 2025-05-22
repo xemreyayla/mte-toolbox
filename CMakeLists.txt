@@ -62,7 +62,7 @@ qt_finalize_executable(mte-toolbox)
 include(InstallRequiredSystemLibraries)
 
 set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-set(CMAKE_INSTALL_RPATH "/home/emreyayla/Qt/6.8.1/gcc_64/lib;/lib/x86_64-linux-gnu")
+#set(CMAKE_INSTALL_RPATH "/home/emreyayla/Qt/6.8.1/gcc_64/lib;/lib/x86_64-linux-gnu")
 
 set(CPACK_PACKAGE_NAME "mte-toolbox")
 set(CPACK_PACKAGE_VENDOR "Mehmet Emre Yayla")
