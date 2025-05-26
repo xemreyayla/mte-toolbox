@@ -2,6 +2,24 @@ cmake_minimum_required(VERSION 3.16)
 
 project(mte-toolbox VERSION 1.0.4 LANGUAGES CXX)
 
+execute_process(
+    COMMAND git describe --tags --abbrev=0
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_TAG
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+
+if(GIT_TAG)
+    message(STATUS "Git tag found: ${GIT_TAG}")
+    string(REGEX REPLACE "^v" "" PROJECT_VERSION_STRING ${GIT_TAG})
+else()
+    message(STATUS "No git tag found, using default version 1.0.4")
+    set(PROJECT_VERSION_STRING "1.0.4")
+endif()
+
+project(mte-toolbox VERSION ${PROJECT_VERSION_STRING} LANGUAGES CXX)
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -61,8 +79,15 @@ qt_finalize_executable(mte-toolbox)
 
 include(InstallRequiredSystemLibraries)
 
-set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-#set(CMAKE_INSTALL_RPATH "/home/emreyayla/Qt/6.8.1/gcc_64/lib;/lib/x86_64-linux-gnu")
+# --- version.h dosyası oluştur ---
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/version.h
+  @ONLY
+)
+
+target_include_directories(mte-toolbox PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+
 
 set(CPACK_PACKAGE_NAME "mte-toolbox")
 set(CPACK_PACKAGE_VENDOR "Mehmet Emre Yayla")
