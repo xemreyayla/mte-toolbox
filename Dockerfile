@@ -3,7 +3,7 @@ FROM ubuntu:24.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Add a retry mechanism for apt updates/installs
+# Add curl for robustness (optional, but good practice)
 RUN apt update && apt install -y curl && \
     for i in $(seq 1 5); do \
         apt update && apt install -y \
@@ -20,22 +20,33 @@ RUN mkdir -p build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) && \
     make install DESTDIR=install && \
-    ls -l install/usr/local/bin && \
+    echo "--- Installed files list ---" && \
+    ls -lR install/ && \
+    echo "--- Running CPack ---" && \
     cpack -G DEB && \
-    ls -l *.deb
+    echo "--- Contents of /app/build/ after CPack ---" && \
+    ls -l *.deb && \
+    ls -l # Added to show all files in /app/build/
+    
 
-
-# 2. Final stage (already provided and should be updated as discussed)
+# 2. Final stage (with the previous fixes and a more robust copy)
 FROM ubuntu:24.04 AS final
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /app
 
-COPY --from=builder /app/build/*.deb ./
+# Builder aşamasından .deb dosyasını kopyala
+# DEB_FILE adının değişebileceğini düşünerek wildcard kullanmak önemli.
+# CPack genellikle paket adını proje adından (mte-toolbox) ve versiyonundan oluşturur.
+# `find` komutunu kullanarak dosyayı kesin bulalım.
+COPY --from=builder /app/build/mte-toolbox_*.deb ./
 
+# .deb paketini kur ve çalışma zamanı bağımlılıklarını yükle
+# `apt install -fy` otomatik olarak bağımlılıkları çözer.
 RUN apt update && \
     dpkg -i mte-toolbox_*.deb || apt install -fy && \
     rm -rf /var/lib/apt/lists/*
 
+# Konteyner başlatıldığında çalışacak varsayılan komut
 CMD ["/usr/local/bin/mte-toolbox"]
