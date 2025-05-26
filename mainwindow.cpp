@@ -1,15 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "version.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , logFile("logfile.txt")
-    , gpioTimer(new QTimer(this))
 {
     ui->setupUi(this);
     resizecomboBox();
+    statusBar()->showMessage(QString("Version: %1").arg(MTE_TOOLBOX_VERSION));
 
     qApp->setStyleSheet(
         "QMessageBox QLabel { color: white; }"
