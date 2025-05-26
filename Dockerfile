@@ -3,43 +3,44 @@ FROM ubuntu:24.04 AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# `curl`'ı ekledim, bu genellikle işe yarar
-RUN apt update && apt install -y curl && \
-    for i in $(seq 1 5); do \
-        apt update && apt install -y \
-        libicu74 libicu-dev cmake build-essential qt6-base-dev qt6-base-dev-tools qt6-base-private-dev qt6-tools-dev qt6-tools-dev-tools qt6-serialport-dev file dpkg-dev fakeroot lintian \
-        && break || sleep 5; \
-    done && \
+RUN apt update && \
+    apt install -y curl libicu74 libicu-dev cmake build-essential \
+    qt6-base-dev qt6-base-dev-tools qt6-base-private-dev \
+    qt6-tools-dev qt6-tools-dev-tools qt6-serialport-dev \
+    file dpkg-dev fakeroot lintian && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-
 COPY . .
 
+# CMake yapılandırma ve derleme
 RUN mkdir -p build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make -j$(nproc) && \
     make install DESTDIR=install && \
-    echo "--- make install sonrası 'install/' dizininin içeriği ---" && \
-    ls -lR install/ || echo "install/ dizini boş veya hata var" && \
+    echo "--- make install tamamlandı. 'install/' dizininin içeriği:" && \
+    ls -lR install/ || echo "make install sonrası 'install/' dizini listelenemedi veya boş."
+
+# CPack ile .deb paketi oluşturma
+# Bu adım, bir önceki adımdan ayrıldı ki çıktıyı daha net görelim
+RUN cd build && \
     echo "--- CPack DEB paketini oluşturuyor ---" && \
-    cpack -G DEB || echo "CPack hata verdi, paket oluşturulamadı" && \
+    cpack -G DEB && \
     echo "--- CPack sonrası /app/build/ dizininin içeriği (mevcut dizin) ---" && \
-    ls -l || echo "/app/build/ dizini listelenemedi" && \
-    echo "--- CPack sonrası /app/ dizininin içeriği (üst dizin) ---" && \
-    ls -l ../ || echo "/app/ dizini listelenemedi" && \
+    ls -l || echo "CPack sonrası /app/build/ dizini listelenemedi veya boş." && \
     echo "--- TÜM SİSTEMDE '.deb' DOSYASI ARAMASI BAŞLIYOR ---" && \
-    find / -name "*.deb" 2>/dev/null || echo "find komutu hata verdi veya .deb dosyası bulunamadı" && \
+    find / -name "mte-toolbox_*.deb" 2>/dev/null || echo "find komutu hata verdi veya .deb dosyası bulunamadı." && \
     echo "--- BUILD AŞAMASI HATA AYIKLAMA SONU ---"
 
-# 2. Final stage (şimdilik olduğu gibi kalsın, .deb dosyasının yolunu bulduktan sonra düzeltiriz)
+# 2. Final stage (bu kısımda değişiklik yok, .deb dosyasının yolunu bulduktan sonra burayı düzelteceğiz)
 FROM ubuntu:24.04 AS final
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /app
 
-COPY --from=builder /app/build/*.deb ./
+# .deb dosyasının yolunu bulduktan sonra burayı güncelleyeceğiz
+COPY --from=builder /app/build/mte-toolbox_*.deb ./
 
 RUN apt update && \
     dpkg -i mte-toolbox_*.deb || apt install -fy && \
