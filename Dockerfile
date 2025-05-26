@@ -45,4 +45,4 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/*
 
 # Uygulamanın giriş noktası
-CMD ["/usr/local/bin/mte-toolbox"]
+CMD ["/usr/bin/mte-toolbox"]
