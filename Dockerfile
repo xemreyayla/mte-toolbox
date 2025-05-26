@@ -21,15 +21,15 @@ RUN mkdir -p build && cd build && \
     make -j$(nproc) && \
     make install DESTDIR=install && \
     echo "--- make install sonrası 'install/' dizininin içeriği ---" && \
-    ls -lR install/ && \
+    ls -lR install/ || echo "install/ dizini boş veya hata var" && \
     echo "--- CPack DEB paketini oluşturuyor ---" && \
-    cpack -G DEB && \
+    cpack -G DEB || echo "CPack hata verdi, paket oluşturulamadı" && \
     echo "--- CPack sonrası /app/build/ dizininin içeriği (mevcut dizin) ---" && \
-    ls -l && \
+    ls -l || echo "/app/build/ dizini listelenemedi" && \
     echo "--- CPack sonrası /app/ dizininin içeriği (üst dizin) ---" && \
-    ls -l ../ && \
-    echo "--- TÜM SİSTEMDE '.deb' DOSYASI ARAMASI ---" && \
-    find / -name "*.deb" 2>/dev/null || true && \
+    ls -l ../ || echo "/app/ dizini listelenemedi" && \
+    echo "--- TÜM SİSTEMDE '.deb' DOSYASI ARAMASI BAŞLIYOR ---" && \
+    find / -name "*.deb" 2>/dev/null || echo "find komutu hata verdi veya .deb dosyası bulunamadı" && \
     echo "--- BUILD AŞAMASI HATA AYIKLAMA SONU ---"
 
 # 2. Final stage (şimdilik olduğu gibi kalsın, .deb dosyasının yolunu bulduktan sonra düzeltiriz)
