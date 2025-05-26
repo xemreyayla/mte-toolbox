@@ -74,7 +74,6 @@ private:
     QString cleanTerminalOutput(const QString &input);
     QString readUntilJsonComplete(int overallTimeoutMs);
     void logMessageToGuiAndFile(const QString &msg);
-    QTimer* gpioTimer;
     QQueue<int> pendingGpioPins;
     QByteArray serialBuffer;
 
