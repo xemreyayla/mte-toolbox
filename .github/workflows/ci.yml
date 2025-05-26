@@ -15,66 +15,59 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Git tag'lerini görmek için tam geçmişi çek
+          fetch-depth: 0 # Git tag'lerini görebilmek için tam geçmiş gerekir
 
       - name: Extract version from Git tag
         id: extract_version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/v} # 'v' önekini kaldır
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV # Diğer adımlar için ortam değişkeni ayarla
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT # Bu adımın çıktısı olarak da ayarla
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
-      - name: Build Docker images and extract .deb package
+      - name: Build Docker image and extract .deb package
         run: |
           echo "🔧 Versiyon: ${VERSION}"
 
-          # Dockerfile'daki builder aşamasını kullanarak derleme imajını oluştur.
-          # Bu imaj, .deb paketini oluşturmak için kullanılır.
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:${VERSION} .
+          # Build Docker image
+          docker build -t mte-toolbox-builder:${VERSION} .
 
-          # .deb paketini builder imajından runner ortamına kopyala
-          docker create --name mte_temp_container ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:${VERSION}
-          docker cp mte_temp_container:/app/build/*.deb .
-          docker rm mte_temp_container
+          # Create a temporary container to extract .deb
+          docker create --name mte_temp mte-toolbox-builder:${VERSION}
 
-          # Kopyalanan .deb dosyasının adını bul ve ortam değişkenine kaydet
-          DEB_FILE=$(ls *.deb | head -n1)
-          echo "DEB_FILE=${DEB_FILE}" >> $GITHUB_ENV
+          # Copy the .deb file to the runner
+          docker cp mte_temp:/app/build/mte-toolbox-${VERSION}-Linux.deb .
 
-          # Dockerfile'daki final aşamasını kullanarak uygulamanın çalışma zamanı imajını oluştur.
-          # Bu imaj, uygulamanın çalıştırılması için minimal bağımlılıkları içerir.
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:${VERSION} --target final .
+          docker rm mte_temp
 
-          # Çalışma zamanı imajını 'latest' etiketiyle de etiketle
-          docker tag ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:${VERSION} ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:latest
+          # Export the .deb file name for later steps
+          echo "DEB_FILE=mte-toolbox-${VERSION}-Linux.deb" >> $GITHUB_ENV
 
       - name: Upload .deb package as artifact
         uses: actions/upload-artifact@v4
         with:
           name: mte-toolbox-deb-package
-          path: ${{ env.DEB_FILE }} # Bulunan .deb dosyasını yükle
+          path: ${{ env.DEB_FILE }}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }} # Docker Hub API token'ı kullanıyorsanız DOCKER_TOKEN
-                                                # veya Docker Hub şifreniz ise DOCKER_PASSWORD
+          password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Push Docker images to Docker Hub
+      - name: Tag and push runtime Docker image
         run: |
-          # İsteğe bağlı: Builder imajını da Docker Hub'a push et
-          docker push ${{ secrets.DOCKER_USERNAME }}/mte-toolbox-builder:${VERSION}
-          
-          # Çalışma zamanı imajını sürümlü etiketiyle push et
+          # Build runtime (final stage) Docker image
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:${VERSION} --target final .
+
+          # Tag as latest too
+          docker tag ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:${VERSION} ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:latest
+
+          # Push both tags
           docker push ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:${VERSION}
-          
-          # Çalışma zamanı imajını 'latest' etiketiyle push et
           docker push ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:latest
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.DEB_FILE }} # .deb paketini release'e ekle
-          generate_release_notes: true # Otomatik release notları oluştur
-
+          files: ${{ env.DEB_FILE }}
+          generate_release_notes: true
