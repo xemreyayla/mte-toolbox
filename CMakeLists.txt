@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
+# Git tag'den versiyon çekme bloğu buraya taşındı
 execute_process(
     COMMAND git describe --tags --abbrev=0
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -16,8 +17,8 @@ else()
     set(PROJECT_VERSION_STRING "1.0.4")
 endif()
 
-cmake_minimum_required(VERSION 3.16)
-project(mte-toolbox VERSION ${PROJECT_VERSION_STRING} LANGUAGES CXX) # Tek bir project() tanımı
+# Proje tanımı tek bir kez ve dinamik versiyonla
+project(mte-toolbox VERSION ${PROJECT_VERSION_STRING} LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
