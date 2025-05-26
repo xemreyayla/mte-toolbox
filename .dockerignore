@@ -1,5 +1,4 @@
 build/
-.git/
 *.deb
 *.appimage
 *.zip
