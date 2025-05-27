@@ -35,12 +35,17 @@ jobs:
           docker create --name mte_temp mte-toolbox-builder:${VERSION}
 
           # Copy the .deb file to the runner
-          docker cp mte_temp:/app/build/mte-toolbox-${VERSION}-Linux.deb .
+          docker cp mte_temp:/tmp/debfile.txt ./debfile.txt
 
-          docker rm mte_temp
+          DEB_FILE=$(cat debfile.txt)
+          echo "Found .deb file: $DEB_FILE"
 
           # Export the .deb file name for later steps
-          echo "DEB_FILE=mte-toolbox-${VERSION}-Linux.deb" >> $GITHUB_ENV
+          echo "DEB_FILE=$DEB_FILE" >> $GITHUB_ENV
+
+          docker cp mte_temp: /app/build/$DEB_FILE ./
+
+          docker rom mte_temp
 
       - name: Upload .deb package as artifact
         uses: actions/upload-artifact@v4
