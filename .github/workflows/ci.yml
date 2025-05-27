@@ -146,4 +146,3 @@ jobs:
             echo "--- Eski Docker Kaynakları Temizleniyor (isteğe bağlı) ---"
             # Sunucuda disk alanı yönetimi için faydalıdır.
             docker system prune --filter "until=24h" --force
-
