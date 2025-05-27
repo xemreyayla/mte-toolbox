@@ -64,8 +64,7 @@ jobs:
         run: echo "Test Docker imajı derleme adımı (uygulamanızın test kurulumuna göre özelleştirin)"
 
       - name: ccache Hacmini Oluştur
-        run: docker volume create ccache |
-| true
+        run: docker volume create ccache || true
 
       - name: Qt Otomatik Testlerini Çalıştır
         run: |
@@ -100,12 +99,10 @@ jobs:
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
 
             echo "--- Mevcut Konteyner Durduruluyor (varsa) ---"
-            docker stop mte-toolbox-app |
-| true
+            docker stop mte-toolbox-app || true
 
             echo "--- Mevcut Konteyner Kaldırılıyor ---"
-            docker rm mte-toolbox-app |
-| true
+            docker rm mte-toolbox-app || true
 
             echo "--- Yeni Konteyner Başlatılıyor ---"
             docker run -d --name mte-toolbox-app -p 8080:80 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
