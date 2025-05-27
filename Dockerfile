@@ -3,6 +3,8 @@ FROM ubuntu:24.04 AS builder
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
+    libdbus-1-dev \
+    libxkbcommon-dev \
     libglu1-mesa-dev \
     libx11-dev \
     libxext-dev \
@@ -18,8 +20,6 @@ RUN apt-get update && apt-get install -y \
     cmake \
     build-essential
 
-
-# Sanal ortam oluştur ve aktif et
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
