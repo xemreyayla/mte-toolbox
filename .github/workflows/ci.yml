@@ -35,7 +35,8 @@ jobs:
           docker create --name mte_temp mte-toolbox-builder:${VERSION}
 
           # Copy debfile.txt from container
-          docker cp mte_temp:/tmp/debfile.txt ./debfile.txt
+          # Düzeltildi: debfile.txt artık /build dizininde
+          docker cp mte_temp:/build/debfile.txt ./debfile.txt
 
           # Read actual .deb filename
           DEB_FILE=$(cat debfile.txt)
@@ -45,7 +46,8 @@ jobs:
           echo "DEB_FILE=$DEB_FILE" >> $GITHUB_ENV
 
           # Copy actual .deb file from container to host
-          docker cp mte_temp:/app/build/$DEB_FILE ./
+          # Düzeltildi: .deb dosyası da /build dizininde
+          docker cp mte_temp:/build/$DEB_FILE ./
 
           docker rm mte_temp
 
