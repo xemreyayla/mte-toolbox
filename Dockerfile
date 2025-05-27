@@ -1,6 +1,10 @@
 FROM ubuntu:24.04
 
-# Gerekli temel paketler
+ENV DEBIAN_FRONTEND=noninteractive
+ENV QT_VERSION=6.8.3
+ENV QT_DIR=/home/emre/Qt
+
+# Gerekli paketler
 RUN apt update && apt install -y \
     build-essential \
     cmake \
@@ -11,45 +15,28 @@ RUN apt update && apt install -y \
     libxkbcommon-x11-0 \
     libdbus-1-dev \
     libx11-dev \
-    libxcb1-dev \
-    libxcb-xkb-dev \
-    libfontconfig1 \
-    libfreetype6 \
-    libxext6 \
-    libxrender1 \
-    libxrandr2 \
-    libxi6 \
-    libxcursor1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxtst6 \
-    libxfixes3 \
-    unzip \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    p7zip-full \
+    qt6-base-dev \
+    qt6-tools-dev \
+    qt6-tools-dev-tools \
+    qt6-base-dev-tools \
+    qt6-declarative-dev \
+    qt6-serialport-dev
 
-# Qt kurulumu için klasör
-ENV QT_VERSION=6.8.3
-ENV QT_DIR=/opt/Qt
-
-# Qt Online Installer indir
+# Qt 6.8.3'i indir ve aç
 WORKDIR /tmp
-RUN wget https://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run \
-    && chmod +x qt-unified-linux-x64-online.run
+RUN wget https://download.qt.io/development_releases/qt/6.8/6.8.3/qt6.8.3-linux-x64.7z \
+    && 7z x qt6.8.3-linux-x64.7z -o${QT_DIR} \
+    && rm qt6.8.3-linux-x64.7z
 
-# Sessiz kurulum scripti
-COPY install-qt-noninteractive.qs /tmp/install-qt-noninteractive.qs
+ENV PATH="${QT_DIR}/6.8.3/gcc_64/bin:$PATH"
+ENV CMAKE_PREFIX_PATH="${QT_DIR}/6.8.3/gcc_64/lib/cmake"
 
-# Sessiz Qt kurulumu
-RUN ./qt-unified-linux-x64-online.run --platform minimal --script install-qt-noninteractive.qs
-
-ENV PATH="${QT_DIR}/${QT_VERSION}/gcc_64/bin:$PATH"
-ENV LD_LIBRARY_PATH="${QT_DIR}/${QT_VERSION}/gcc_64/lib:$LD_LIBRARY_PATH"
-
-# Projenin bulunduğu dizine geç
-WORKDIR /project
+# Projeyi kopyala ve build et
+WORKDIR /app
 COPY . .
 
-# Qt ile derleme
-RUN cmake -B build -S . -DCMAKE_PREFIX_PATH=${QT_DIR}/${QT_VERSION}/gcc_64
-RUN cmake --build build
+RUN cmake -B build -S . -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build build --parallel $(nproc)
+
+CMD ["/bin/bash"]
