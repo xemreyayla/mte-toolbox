@@ -3,146 +3,112 @@ name: Qt C++ CI/CD Pipeline
 on:
   push:
     branches:
-      - main # main dalına yapılan her push işlemi
+      - main
   pull_request:
     branches:
-      - main # main dalına açılan her çekme isteği
-  workflow_dispatch: # İş akışını GitHub arayüzünden manuel olarak tetikleme imkanı
+      - main
+  workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io # GitHub Container Registry kullanılıyorsa. Docker Hub için 'docker.io'
-  IMAGE_NAME: ${{ github.repository }} # Depo adı otomatik olarak alınır (örn: kullanici-adiniz/depo-adiniz)
+  REGISTRY: docker.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build:
-    runs-on: ubuntu-latest # İşin çalışacağı koşucu (runner) ortamı
+    runs-on: ubuntu-latest
     permissions:
-      contents: read # Depo içeriğini okuma izni
-      packages: write # GitHub Packages'a (GHCR) yazma izni
-      id-token: write # Cosign gibi araçlar için kimlik doğrulama token'ı yazma izni (isteğe bağlı, güvenlik için)
+      contents: read
+      packages: write
+      id-token: write
 
     steps:
       - name: Depoyu Çek
-        uses: actions/checkout@v4 # GitHub deposundaki kodu koşucuya çeker
+        uses: actions/checkout@v4
 
       - name: Docker Buildx Kurulumu
-        uses: docker/setup-buildx-action@v3 # Daha verimli ve çoklu platform derlemeleri için Buildx'i kurar
+        uses: docker/setup-buildx-action@v3
 
       - name: Docker İmajı Metadatasını Çıkar
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} # Dinamik etiketler ve açıklamalar oluşturur
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Registry'ye Giriş Yap (${{ env.REGISTRY }})
-        # Çekme isteklerinde (pull_request) imaj push edilmediği için giriş yapmaya gerek yok.
         if: github.event_name!= 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }} # GHCR için otomatik kullanıcı adı
-          password: ${{ secrets.GITHUB_TOKEN }} # GHCR için otomatik token
-          # Docker Hub kullanılıyorsa:
-          # username: ${{ vars.DOCKER_USERNAME }} # GitHub değişkeni olarak tanımlanmalı
-          # password: ${{ secrets.DOCKERHUB_TOKEN }} # GitHub secret olarak tanımlanmalı
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Docker İmajını Derle ve Gönder
         id: build-and-push
         uses: docker/build-push-action@v5
         with:
-          context:. # Dockerfile'ın bulunduğu dizin (depo kökü)
-          push: ${{ github.event_name!= 'pull_request' }} # Çekme isteklerinde imajı gönderme
-          tags: ${{ steps.meta.outputs.tags }} # Dinamik etiketleri kullan
-          labels: ${{ steps.meta.outputs.labels }} # Dinamik açıklamaları kullan
-          cache-from: type=gha # GitHub Actions önbelleğinden yararlan
-          cache-to: type=gha,mode=max # GitHub Actions önbelleğine yaz
+          context:.
+          push: ${{ github.event_name!= 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-  test: # İsteğe bağlı: Uygulamanız için otomatik testler
-    needs: build # Build işinin tamamlanmasını bekler
+  test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Depoyu Çek
         uses: actions/checkout@v4
 
-      # Qt otomatik testleri için özel bir Docker imajı kullanılıyorsa (örn: johanhelsing/docker-qt-tests)
-      # Bu kısım, testlerinizi nasıl yapılandırdığınıza bağlı olarak değişecektir.
-      # Eğer testleriniz ana Dockerfile içinde derleniyorsa, o imajı kullanabilirsiniz.
-      - name: Qt Test Docker İmajını Derle (İsteğe Bağlı)
-        # Eğer testleriniz için ayrı bir Dockerfile.test varsa:
-        # run: docker build -t docker-qt-tests -f Dockerfile.test.
-        # Aksi takdirde, ana imajı kullanın veya bu adımı atlayın.
+      - name: Qt Test Docker İmajını Derle
         run: echo "Test Docker imajı derleme adımı (uygulamanızın test kurulumuna göre özelleştirin)"
 
-      - name: ccache Hacmini Oluştur (İsteğe Bağlı, Önbellekleme için)
-        # Bu adım, test derlemelerini hızlandırmak için ccache kullanıyorsanız faydalıdır.
+      - name: ccache Hacmini Oluştur
         run: docker volume create ccache |
-| true # Hacim zaten varsa hata vermez
+| true
 
       - name: Qt Otomatik Testlerini Çalıştır
-        # Bu komutları kendi test çalıştırma komutlarınızla değiştirin.
-        # Örneğin, eğer johanhelsing/docker-qt-tests kullanıyorsanız:
-        # run: |
-        #   docker run \
-        #     -v ccache:/home/build/.ccache \
-        #     -e QT_DOCKERTEST_QTWAYLAND_REV=dev \
-        #     -e QT_DOCKERTEST_QT5_REV=dev \
-        #     your_test_docker_image_name \
-        #     /path/to/your/test_runner_executable --output-format junitxml --output-file /app/test_results.xml
         run: |
           echo "Otomatik testler çalıştırılıyor..."
-          # Örneğin: /app/build/tests/mte-toolbox_test_executable --output-format junitxml --output-file test_results.xml
-          # Testlerinizin JUnit XML çıktısı verdiğinden emin olun.
-          mkdir -p build # Test sonuçları için dizin oluştur
-          echo "<testsuites><testsuite name='ExampleTest' tests='1' failures='0'><testcase classname='Example' name='testSuccess'/></testsuite></testsuites>" > build/test_results.xml # Örnek bir XML çıktısı
+          mkdir -p build
+          echo "<testsuites><testsuite name='ExampleTest' tests='1' failures='0'><testcase classname='Example' name='testSuccess'/></testsuite></testsuites>" > build/test_results.xml
 
       - name: Test Sonuçlarını Artefakt Olarak Yükle
-        # Test sonuçlarını GitHub Actions artefaktı olarak kaydeder.
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: build/test_results.xml # Test sonuçlarınızın yolu
-          if-no-files-found: warn # Dosya bulunamazsa uyarı ver, hata verme
+          path: build/test_results.xml
+          if-no-files-found: warn
 
   deploy:
-    needs: build # Build işinin tamamlanmasını bekler
-    runs-on: ubuntu-latest # Dağıtımın yapılacağı koşucu ortamı
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Sadece main dalına push yapıldığında dağıtımı tetikle
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: SSH ile Sunucuya Bağlan ve Dağıt
-        uses: appleboy/ssh-action@v1 # SSH bağlantısı ve komut çalıştırma için popüler bir aksiyon
+        uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SERVER_IP }} # GitHub secret olarak tanımlanmalı
-          username: ${{ secrets.SERVER_USER }} # GitHub secret olarak tanımlanmalı
-          key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }} # GitHub secret olarak tanımlanmalı (genellikle 22)
-          port: ${{ secrets.SERVER_PORT }} # GitHub secret olarak tanımlanmalı (genellikle 22)
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
           script: |
-            # Registry'ye sunucu üzerinden giriş yap (GHCR için)
-            # Eğer Docker Hub kullanıyorsanız, DOCKERHUB_TOKEN secret'ını kullanın.
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
             echo "--- En Son Docker İmajını Çekiliyor ---"
-            # İmaj adı ve tag'i güncellenmeli. 'main' yerine dinamik tag kullanabilirsiniz (örn: ${{ steps.build-and-push.outputs.tag }}).
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
 
             echo "--- Mevcut Konteyner Durduruluyor (varsa) ---"
-            # 'mte-toolbox-app' yerine konteynerinizin adını yazın.
             docker stop mte-toolbox-app |
-| true # Konteyner yoksa hata vermemesi için |
-| true eklendi
+| true
 
             echo "--- Mevcut Konteyner Kaldırılıyor ---"
-            # 'mte-toolbox-app' yerine konteynerinizin adını yazın.
             docker rm mte-toolbox-app |
-| true # Konteyner yoksa hata vermemesi için |
-| true eklendi
+| true
 
             echo "--- Yeni Konteyner Başlatılıyor ---"
-            # 'mte-toolbox-app' yerine konteynerinizin adını yazın.
-            # Portları ve imaj adını güncelleyin (örn: -p host_port:container_port).
-            # Gerekirse ortam değişkenleri ekleyin: -e ENV_VAR=value
             docker run -d --name mte-toolbox-app -p 8080:80 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
 
             echo "--- Eski Docker Kaynakları Temizleniyor (isteğe bağlı) ---"
-            # Sunucuda disk alanı yönetimi için faydalıdır.
             docker system prune --filter "until=24h" --force
