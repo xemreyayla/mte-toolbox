@@ -1,21 +1,31 @@
-name: Build mte-toolbox (Docker)
+name: Build and Package
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Build Docker Image
-        run: docker build -t mte-toolbox .
-
-      - name: Run Build
-        run: docker run --rm mte-toolbox
+      - uses: actions/checkout@v3
+      - name: Set up Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: 6.8.3
+          host: linux
+          arch: gcc_64
+      - name: Build and package
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_PREFIX_PATH=$HOME/Qt/6.8.3/gcc_64/lib/cmake/Qt6 ..
+          make
+          cpack -G DEB
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: mte-toolbox-deb
+          path: build/*.deb
