@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-# Git tag'den versiyon çekme bloğu buraya taşındı
+# Git tag'den versiyon çekme bloğu
 execute_process(
     COMMAND git describe --tags --abbrev=0
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -17,7 +17,6 @@ else()
     set(PROJECT_VERSION_STRING "1.0.4")
 endif()
 
-# Proje tanımı tek bir kez ve dinamik versiyonla
 project(mte-toolbox VERSION ${PROJECT_VERSION_STRING} LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
@@ -80,7 +79,7 @@ qt_finalize_executable(mte-toolbox)
 
 include(InstallRequiredSystemLibraries)
 
-# --- version.h dosyası oluştur ---
+# version.h dosyası oluşturuluyor
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/version.h
@@ -89,8 +88,7 @@ configure_file(
 
 target_include_directories(mte-toolbox PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-
-# CPack ile .deb paketi ayarları
+# CPack .deb paketi ayarları
 set(CPACK_PACKAGE_NAME "mte-toolbox")
 set(CPACK_PACKAGE_VENDOR "Mehmet Emre Yayla")
 set(CPACK_PACKAGE_CONTACT "mehmetemreyayla@gmail.com")
@@ -101,9 +99,8 @@ set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Mehmet Emre Yayla")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6core6, libqt6gui6, libqt6widgets6, libqt6serialport6")
 
-include(InstallRequiredSystemLibraries)
+# Qt 6.7 uyumlu Debian paket bağımlılıkları (depo kontrolü önerilir)
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6core6, libqt6gui6, libqt6widgets6, libqt6serialport6, libqt6dbus6")
+
 include(CPack)
-
-qt_finalize_executable(mte-toolbox)
