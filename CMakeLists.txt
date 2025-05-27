@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-# Git tag'den versiyon çekme bloğu
+# Git tag'den versiyon çekme
 execute_process(
     COMMAND git describe --tags --abbrev=0
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -19,16 +19,23 @@ endif()
 
 project(mte-toolbox VERSION ${PROJECT_VERSION_STRING} LANGUAGES CXX)
 
+# Temel Qt ve C++ ayarları
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_INSTALL_PREFIX /usr)
 
+# Eğer dışarıdan CMAKE_PREFIX_PATH belirtilmediyse uyarı ver
+if(NOT DEFINED CMAKE_PREFIX_PATH)
+    message(WARNING "CMAKE_PREFIX_PATH is not set! Qt 6.8.3 bulunamayabilir.")
+endif()
+
+# Qt modüllerini bul
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets SerialPort DBus)
 
+# Proje kaynak dosyaları
 set(PROJECT_SOURCES
     main.cpp
     mainwindow.cpp
@@ -47,6 +54,7 @@ set(PROJECT_SOURCES
 
 qt_add_executable(mte-toolbox ${PROJECT_SOURCES} MANUAL_FINALIZATION)
 
+# Kütüphaneler bağlanıyor
 target_link_libraries(mte-toolbox PRIVATE
     Qt6::Core
     Qt6::Gui
@@ -55,52 +63,45 @@ target_link_libraries(mte-toolbox PRIVATE
     Qt6::DBus
 )
 
-set_target_properties(mte-toolbox PROPERTIES WIN32_EXECUTABLE TRUE)
-
-if(APPLE AND Qt6Core_VERSION VERSION_LESS "6.1.0")
-    set_target_properties(mte-toolbox PROPERTIES
-        MACOSX_BUNDLE_GUI_IDENTIFIER com.example.mte-toolbox
-    )
-endif()
-
-set_target_properties(mte-toolbox PROPERTIES
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
+# version.h dosyasını oluştur ve dahil et
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/version.h
+  @ONLY
 )
+target_include_directories(mte-toolbox PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
+# Kurulum yolları
+set(CMAKE_INSTALL_PREFIX /usr)
 include(GNUInstallDirs)
 
 install(TARGETS mte-toolbox
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-qt_finalize_executable(mte-toolbox)
-
-include(InstallRequiredSystemLibraries)
-
-# version.h dosyası oluşturuluyor
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
-  ${CMAKE_CURRENT_BINARY_DIR}/version.h
-  @ONLY
+# MacOS için özel ayarlar (Linux’ta etkisiz)
+set_target_properties(mte-toolbox PROPERTIES
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE TRUE
 )
 
-target_include_directories(mte-toolbox PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+# CPack .deb yapılandırması
+include(InstallRequiredSystemLibraries)
 
-# CPack .deb paketi ayarları
 set(CPACK_PACKAGE_NAME "mte-toolbox")
 set(CPACK_PACKAGE_VENDOR "Mehmet Emre Yayla")
 set(CPACK_PACKAGE_CONTACT "mehmetemreyayla@gmail.com")
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "mte-toolbox - Qt Based Serial Port Connection App")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Mehmet Emre Yayla")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 
-# Qt 6.7 uyumlu Debian paket bağımlılıkları (depo kontrolü önerilir)
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6core6, libqt6gui6, libqt6widgets6, libqt6serialport6, libqt6dbus6")
 
 include(CPack)
+
+qt_finalize_executable(mte-toolbox)
