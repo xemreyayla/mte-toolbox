@@ -32,7 +32,7 @@ ENV LD_LIBRARY_PATH="${QT_INSTALL_DIR}/6.8.0/gcc_64/lib:$LD_LIBRARY_PATH"
 # Uygulama kaynak kodunu kopyalayın ve derleyin.
 # Projenizin kök dizininde bir CMakeLists.txt dosyası olduğunu varsayıyoruz.
 WORKDIR /app
-COPY. /app
+COPY . /app
 
 # CMake ile derleme dizinini oluşturun ve uygulamayı derleyin.
 # -DCMAKE_PREFIX_PATH, CMake'in Qt'yi bulmasını sağlar.
