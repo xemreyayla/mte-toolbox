@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-# Git tag'den versiyon çekme
+# Proje ve versiyon ayarları (git tag’den çekme)
 execute_process(
     COMMAND git describe --tags --abbrev=0
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -19,23 +19,23 @@ endif()
 
 project(mte-toolbox VERSION ${PROJECT_VERSION_STRING} LANGUAGES CXX)
 
-# Temel Qt ve C++ ayarları
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
+# C++ standart ve Qt otomatik işlemler
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Eğer dışarıdan CMAKE_PREFIX_PATH belirtilmediyse uyarı ver
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+# Eğer dışarıdan Qt'nin kurulu olduğu yol verilmezse uyarı ver
 if(NOT DEFINED CMAKE_PREFIX_PATH)
-    message(WARNING "CMAKE_PREFIX_PATH is not set! Qt 6.8.3 bulunamayabilir.")
+    message(WARNING "CMAKE_PREFIX_PATH tanımlı değil! Qt 6.8 kütüphaneleri bulunamayabilir.")
 endif()
 
 # Qt modüllerini bul
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets SerialPort DBus)
 
-# Proje kaynak dosyaları
+# Kaynak dosyalar
 set(PROJECT_SOURCES
     main.cpp
     mainwindow.cpp
@@ -52,9 +52,9 @@ set(PROJECT_SOURCES
     deviceinfo.ui
 )
 
-qt_add_executable(mte-toolbox ${PROJECT_SOURCES} MANUAL_FINALIZATION)
+qt_add_executable(mte-toolbox MANUAL_FINALIZATION ${PROJECT_SOURCES})
 
-# Kütüphaneler bağlanıyor
+# Kütüphaneler bağla
 target_link_libraries(mte-toolbox PRIVATE
     Qt6::Core
     Qt6::Gui
@@ -63,15 +63,33 @@ target_link_libraries(mte-toolbox PRIVATE
     Qt6::DBus
 )
 
-# version.h dosyasını oluştur ve dahil et
+# version.h dosyasını oluştur ve include et
 configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
-  ${CMAKE_CURRENT_BINARY_DIR}/version.h
-  @ONLY
+    ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/version.h
+    @ONLY
 )
 target_include_directories(mte-toolbox PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-# Kurulum yolları
+# --- RPATH AYARLARI ---
+
+# Qt'nin lib dizinine göre çalışma zamanı kütüphane arama yolunu ayarla
+if(DEFINED Qt6_DIR)
+    get_filename_component(QtLibDir "${Qt6_DIR}" DIRECTORY)  # bir üst dizin (cmake)
+    get_filename_component(QtLibDir "${QtLibDir}" DIRECTORY) # iki üst dizin (lib)
+
+    message(STATUS "RPATH olarak Qt lib dizini ayarlanıyor: ${QtLibDir}")
+
+    set_target_properties(mte-toolbox PROPERTIES
+        BUILD_WITH_INSTALL_RPATH TRUE
+        INSTALL_RPATH "${QtLibDir}"
+        INSTALL_RPATH_USE_LINK_PATH TRUE
+    )
+else()
+    message(WARNING "Qt6_DIR tanımlı değil, RPATH ayarı yapılmadı!")
+endif()
+
+# Kurulum yolu
 set(CMAKE_INSTALL_PREFIX /usr)
 include(GNUInstallDirs)
 
@@ -79,14 +97,14 @@ install(TARGETS mte-toolbox
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# MacOS için özel ayarlar (Linux’ta etkisiz)
+# MacOS özel ayarları (Linux için etkisiz)
 set_target_properties(mte-toolbox PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
 )
 
-# CPack .deb yapılandırması
+# CPack ayarları (DEB paketi için)
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_NAME "mte-toolbox")
@@ -99,7 +117,6 @@ set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Mehmet Emre Yayla")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6core6, libqt6gui6, libqt6widgets6, libqt6serialport6, libqt6dbus6")
 
 include(CPack)
