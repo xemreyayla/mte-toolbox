@@ -425,3 +425,75 @@
 [DEBUG] [2025-05-14 13:29:08] Available ports loaded
 [DEBUG] [2025-05-14 13:29:08] MainWindow initialized.
 [DEBUG] [2025-05-14 13:29:09] MainWindow destroyed.
+[DEBUG] [2025-05-27 17:18:06] refreshPorts() called
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS4
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS0
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS1
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS10
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS11
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS12
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS13
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS14
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS15
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS16
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS17
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS18
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS19
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS2
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS20
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS21
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS22
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS23
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS24
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS25
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS26
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS27
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS28
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS29
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS3
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS30
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS31
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS5
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS6
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS7
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS8
+[DEBUG] [2025-05-27 17:18:06] Port added to comboBox: ttyS9
+[DEBUG] [2025-05-27 17:18:06] Available ports loaded
+[DEBUG] [2025-05-27 17:18:06] MainWindow initialized.
+[DEBUG] [2025-05-27 17:18:09] MainWindow destroyed.
+[DEBUG] [2025-05-27 17:33:56] refreshPorts() called
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS4
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS0
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS1
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS10
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS11
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS12
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS13
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS14
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS15
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS16
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS17
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS18
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS19
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS2
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS20
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS21
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS22
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS23
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS24
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS25
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS26
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS27
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS28
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS29
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS3
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS30
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS31
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS5
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS6
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS7
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS8
+[DEBUG] [2025-05-27 17:33:56] Port added to comboBox: ttyS9
+[DEBUG] [2025-05-27 17:33:56] Available ports loaded
+[DEBUG] [2025-05-27 17:33:56] MainWindow initialized.
+[DEBUG] [2025-05-27 17:34:00] MainWindow destroyed.
