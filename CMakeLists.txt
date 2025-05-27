@@ -26,6 +26,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_INSTALL_PREFIX /usr)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets SerialPort DBus)
 
@@ -89,6 +90,7 @@ configure_file(
 target_include_directories(mte-toolbox PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 
+# CPack ile .deb paketi ayarları
 set(CPACK_PACKAGE_NAME "mte-toolbox")
 set(CPACK_PACKAGE_VENDOR "Mehmet Emre Yayla")
 set(CPACK_PACKAGE_CONTACT "mehmetemreyayla@gmail.com")
@@ -96,9 +98,12 @@ set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "mte-toolbox - Qt Based Serial Port Connection App")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
-
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Mehmet Emre Yayla")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6core6, libqt6gui6, libqt6widgets6, libqt6serialport6")
 
+include(InstallRequiredSystemLibraries)
 include(CPack)
+
+qt_finalize_executable(mte-toolbox)
