@@ -28,24 +28,26 @@ jobs:
         run: |
           echo "🔧 Versiyon: ${VERSION}"
 
-          # Build Docker image
+          # Build Docker image (builder stage)
           docker build -t mte-toolbox-builder:${VERSION} .
 
-          # Create a temporary container to extract .deb
+          # Create a temporary container
           docker create --name mte_temp mte-toolbox-builder:${VERSION}
 
-          # Copy the .deb file to the runner
+          # Copy debfile.txt from container
           docker cp mte_temp:/tmp/debfile.txt ./debfile.txt
 
+          # Read actual .deb filename
           DEB_FILE=$(cat debfile.txt)
           echo "Found .deb file: $DEB_FILE"
 
-          # Export the .deb file name for later steps
+          # Export to env for later steps
           echo "DEB_FILE=$DEB_FILE" >> $GITHUB_ENV
 
-          docker cp mte_temp: /app/build/$DEB_FILE ./
+          # Copy actual .deb file from container to host
+          docker cp mte_temp:/app/build/$DEB_FILE ./
 
-          docker rom mte_temp
+          docker rm mte_temp
 
       - name: Upload .deb package as artifact
         uses: actions/upload-artifact@v4
