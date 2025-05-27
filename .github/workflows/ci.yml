@@ -1,82 +1,149 @@
-name: CI/CD Pipeline
+name: Qt C++ CI/CD Pipeline
 
 on:
   push:
-    tags:
-      - 'v*' # Sadece 'v1.2.3' gibi versiyon tag'leriyle çalışır
+    branches:
+      - main # main dalına yapılan her push işlemi
+  pull_request:
+    branches:
+      - main # main dalına açılan her çekme isteği
+  workflow_dispatch: # İş akışını GitHub arayüzünden manuel olarak tetikleme imkanı
+
+env:
+  REGISTRY: ghcr.io # GitHub Container Registry kullanılıyorsa. Docker Hub için 'docker.io'
+  IMAGE_NAME: ${{ github.repository }} # Depo adı otomatik olarak alınır (örn: kullanici-adiniz/depo-adiniz)
 
 jobs:
-  build-and-release:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest # İşin çalışacağı koşucu (runner) ortamı
     permissions:
-      contents: write # GitHub Release oluşturmak için gerekli
+      contents: read # Depo içeriğini okuma izni
+      packages: write # GitHub Packages'a (GHCR) yazma izni
+      id-token: write # Cosign gibi araçlar için kimlik doğrulama token'ı yazma izni (isteğe bağlı, güvenlik için)
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Depoyu Çek
+        uses: actions/checkout@v4 # GitHub deposundaki kodu koşucuya çeker
+
+      - name: Docker Buildx Kurulumu
+        uses: docker/setup-buildx-action@v3 # Daha verimli ve çoklu platform derlemeleri için Buildx'i kurar
+
+      - name: Docker İmajı Metadatasını Çıkar
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          fetch-depth: 0 # Git tag'lerini görebilmek için tam geçmiş gerekir
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} # Dinamik etiketler ve açıklamalar oluşturur
 
-      - name: Extract version from Git tag
-        id: extract_version
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-
-      - name: Build Docker image and extract .deb package
-        run: |
-          echo "🔧 Versiyon: ${VERSION}"
-
-          # Build Docker image (builder stage)
-          docker build -t mte-toolbox-builder:${VERSION} .
-
-          # Create a temporary container
-          docker create --name mte_temp mte-toolbox-builder:${VERSION}
-
-          # Copy debfile.txt from container
-          # Düzeltildi: debfile.txt artık /build dizininde
-          docker cp mte_temp:/build/debfile.txt ./debfile.txt
-
-          # Read actual .deb filename
-          DEB_FILE=$(cat debfile.txt)
-          echo "Found .deb file: $DEB_FILE"
-
-          # Export to env for later steps
-          echo "DEB_FILE=$DEB_FILE" >> $GITHUB_ENV
-
-          # Copy actual .deb file from container to host
-          # Düzeltildi: .deb dosyası da /build dizininde
-          docker cp mte_temp:/build/$DEB_FILE ./
-
-          docker rm mte_temp
-
-      - name: Upload .deb package as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: mte-toolbox-deb-package
-          path: ${{ env.DEB_FILE }}
-
-      - name: Log in to Docker Hub
+      - name: Registry'ye Giriş Yap (${{ env.REGISTRY }})
+        # Çekme isteklerinde (pull_request) imaj push edilmediği için giriş yapmaya gerek yok.
+        if: github.event_name!= 'pull_request'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }} # GHCR için otomatik kullanıcı adı
+          password: ${{ secrets.GITHUB_TOKEN }} # GHCR için otomatik token
+          # Docker Hub kullanılıyorsa:
+          # username: ${{ vars.DOCKER_USERNAME }} # GitHub değişkeni olarak tanımlanmalı
+          # password: ${{ secrets.DOCKERHUB_TOKEN }} # GitHub secret olarak tanımlanmalı
 
-      - name: Tag and push runtime Docker image
-        run: |
-          # Build runtime (final stage) Docker image
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:${VERSION} --target final .
-
-          # Tag as latest too
-          docker tag ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:${VERSION} ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:latest
-
-          # Push both tags
-          docker push ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:${VERSION}
-          docker push ${{ secrets.DOCKER_USERNAME }}/mte-toolbox:latest
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Docker İmajını Derle ve Gönder
+        id: build-and-push
+        uses: docker/build-push-action@v5
         with:
-          files: ${{ env.DEB_FILE }}
-          generate_release_notes: true
+          context:. # Dockerfile'ın bulunduğu dizin (depo kökü)
+          push: ${{ github.event_name!= 'pull_request' }} # Çekme isteklerinde imajı gönderme
+          tags: ${{ steps.meta.outputs.tags }} # Dinamik etiketleri kullan
+          labels: ${{ steps.meta.outputs.labels }} # Dinamik açıklamaları kullan
+          cache-from: type=gha # GitHub Actions önbelleğinden yararlan
+          cache-to: type=gha,mode=max # GitHub Actions önbelleğine yaz
+
+  test: # İsteğe bağlı: Uygulamanız için otomatik testler
+    needs: build # Build işinin tamamlanmasını bekler
+    runs-on: ubuntu-latest
+    steps:
+      - name: Depoyu Çek
+        uses: actions/checkout@v4
+
+      # Qt otomatik testleri için özel bir Docker imajı kullanılıyorsa (örn: johanhelsing/docker-qt-tests)
+      # Bu kısım, testlerinizi nasıl yapılandırdığınıza bağlı olarak değişecektir.
+      # Eğer testleriniz ana Dockerfile içinde derleniyorsa, o imajı kullanabilirsiniz.
+      - name: Qt Test Docker İmajını Derle (İsteğe Bağlı)
+        # Eğer testleriniz için ayrı bir Dockerfile.test varsa:
+        # run: docker build -t docker-qt-tests -f Dockerfile.test.
+        # Aksi takdirde, ana imajı kullanın veya bu adımı atlayın.
+        run: echo "Test Docker imajı derleme adımı (uygulamanızın test kurulumuna göre özelleştirin)"
+
+      - name: ccache Hacmini Oluştur (İsteğe Bağlı, Önbellekleme için)
+        # Bu adım, test derlemelerini hızlandırmak için ccache kullanıyorsanız faydalıdır.
+        run: docker volume create ccache |
+| true # Hacim zaten varsa hata vermez
+
+      - name: Qt Otomatik Testlerini Çalıştır
+        # Bu komutları kendi test çalıştırma komutlarınızla değiştirin.
+        # Örneğin, eğer johanhelsing/docker-qt-tests kullanıyorsanız:
+        # run: |
+        #   docker run \
+        #     -v ccache:/home/build/.ccache \
+        #     -e QT_DOCKERTEST_QTWAYLAND_REV=dev \
+        #     -e QT_DOCKERTEST_QT5_REV=dev \
+        #     your_test_docker_image_name \
+        #     /path/to/your/test_runner_executable --output-format junitxml --output-file /app/test_results.xml
+        run: |
+          echo "Otomatik testler çalıştırılıyor..."
+          # Örneğin: /app/build/tests/mte-toolbox_test_executable --output-format junitxml --output-file test_results.xml
+          # Testlerinizin JUnit XML çıktısı verdiğinden emin olun.
+          mkdir -p build # Test sonuçları için dizin oluştur
+          echo "<testsuites><testsuite name='ExampleTest' tests='1' failures='0'><testcase classname='Example' name='testSuccess'/></testsuite></testsuites>" > build/test_results.xml # Örnek bir XML çıktısı
+
+      - name: Test Sonuçlarını Artefakt Olarak Yükle
+        # Test sonuçlarını GitHub Actions artefaktı olarak kaydeder.
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: build/test_results.xml # Test sonuçlarınızın yolu
+          if-no-files-found: warn # Dosya bulunamazsa uyarı ver, hata verme
+
+  deploy:
+    needs: build # Build işinin tamamlanmasını bekler
+    runs-on: ubuntu-latest # Dağıtımın yapılacağı koşucu ortamı
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Sadece main dalına push yapıldığında dağıtımı tetikle
+
+    steps:
+      - name: SSH ile Sunucuya Bağlan ve Dağıt
+        uses: appleboy/ssh-action@v1 # SSH bağlantısı ve komut çalıştırma için popüler bir aksiyon
+        with:
+          host: ${{ secrets.SERVER_IP }} # GitHub secret olarak tanımlanmalı
+          username: ${{ secrets.SERVER_USER }} # GitHub secret olarak tanımlanmalı
+          key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }} # GitHub secret olarak tanımlanmalı (genellikle 22)
+          port: ${{ secrets.SERVER_PORT }} # GitHub secret olarak tanımlanmalı (genellikle 22)
+          script: |
+            # Registry'ye sunucu üzerinden giriş yap (GHCR için)
+            # Eğer Docker Hub kullanıyorsanız, DOCKERHUB_TOKEN secret'ını kullanın.
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+
+            echo "--- En Son Docker İmajını Çekiliyor ---"
+            # İmaj adı ve tag'i güncellenmeli. 'main' yerine dinamik tag kullanabilirsiniz (örn: ${{ steps.build-and-push.outputs.tag }}).
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
+
+            echo "--- Mevcut Konteyner Durduruluyor (varsa) ---"
+            # 'mte-toolbox-app' yerine konteynerinizin adını yazın.
+            docker stop mte-toolbox-app |
+| true # Konteyner yoksa hata vermemesi için |
+| true eklendi
+
+            echo "--- Mevcut Konteyner Kaldırılıyor ---"
+            # 'mte-toolbox-app' yerine konteynerinizin adını yazın.
+            docker rm mte-toolbox-app |
+| true # Konteyner yoksa hata vermemesi için |
+| true eklendi
+
+            echo "--- Yeni Konteyner Başlatılıyor ---"
+            # 'mte-toolbox-app' yerine konteynerinizin adını yazın.
+            # Portları ve imaj adını güncelleyin (örn: -p host_port:container_port).
+            # Gerekirse ortam değişkenleri ekleyin: -e ENV_VAR=value
+            docker run -d --name mte-toolbox-app -p 8080:80 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
+
+            echo "--- Eski Docker Kaynakları Temizleniyor (isteğe bağlı) ---"
+            # Sunucuda disk alanı yönetimi için faydalıdır.
+            docker system prune --filter "until=24h" --force
+
