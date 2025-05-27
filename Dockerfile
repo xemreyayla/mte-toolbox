@@ -1,42 +1,53 @@
+# Dockerfile
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV QT_VERSION=6.8.3
-ENV QT_DIR=/home/emre/Qt
 
-# Gerekli paketler
-RUN apt update && apt install -y \
+# Gerekli sistem bağımlılıkları
+RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
+    g++ \
     git \
     wget \
-    curl \
+    unzip \
     libgl1-mesa-dev \
-    libxkbcommon-x11-0 \
-    libdbus-1-dev \
     libx11-dev \
-    p7zip-full \
+    libudev-dev \
+    libxcb1-dev \
+    libxkbcommon-dev \
+    libdbus-1-dev \
+    libfreetype6-dev \
+    libfontconfig1-dev \
+    libxext-dev \
+    libxrender-dev \
+    libxrandr-dev \
+    zlib1g-dev \
     qt6-base-dev \
+    qt6-base-dev-tools \
     qt6-tools-dev \
     qt6-tools-dev-tools \
-    qt6-base-dev-tools \
+    qt6-l10n-tools \
     qt6-declarative-dev \
     qt6-serialport-dev
 
-# Qt 6.8.3'i indir ve aç
-WORKDIR /tmp
-RUN wget https://download.qt.io/development_releases/qt/6.8/6.8.3/qt6.8.3-linux-x64.7z \
-    && 7z x qt6.8.3-linux-x64.7z -o${QT_DIR} \
-    && rm qt6.8.3-linux-x64.7z
+# Qt 6.8 yüklenecek dizin
+ENV QT_VERSION=6.8.0
+ENV QT_INSTALL_DIR=/opt/Qt/${QT_VERSION}/gcc_64
 
-ENV PATH="${QT_DIR}/6.8.3/gcc_64/bin:$PATH"
-ENV CMAKE_PREFIX_PATH="${QT_DIR}/6.8.3/gcc_64/lib/cmake"
+# Qt 6.8 indir ve kur
+RUN wget -O qt.run https://download.qt.io/official_releases/qt/6.8/6.8.0/qt-opensource-linux-x64-6.8.0.run && \
+    chmod +x qt.run && \
+    ./qt.run --platform minimal --script install-qt-noninteractive.qs && \
+    rm qt.run
 
-# Projeyi kopyala ve build et
+# Qt yolunu sistem PATH'e ekle
+ENV PATH="${QT_INSTALL_DIR}/bin:${PATH}"
+ENV LD_LIBRARY_PATH="${QT_INSTALL_DIR}/lib:${LD_LIBRARY_PATH}"
+
 WORKDIR /app
 COPY . .
 
-RUN cmake -B build -S . -DCMAKE_BUILD_TYPE=Release \
-    && cmake --build build --parallel $(nproc)
+RUN mkdir -p build && cd build && cmake .. && make
 
-CMD ["/bin/bash"]
+CMD ["./build/mte-toolbox"]
