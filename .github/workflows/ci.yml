@@ -1,111 +1,21 @@
-name: Qt C++ CI/CD Pipeline
+name: Build mte-toolbox (Docker)
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
-  workflow_dispatch:
-
-env:
-  REGISTRY: docker.io
-  IMAGE_NAME: ${{ github.repository }}
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
 
     steps:
-      - name: Depoyu Çek
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Docker Buildx Kurulumu
-        uses: docker/setup-buildx-action@v3
+      - name: Build Docker Image
+        run: docker build -t mte-toolbox .
 
-      - name: Docker İmajı Metadatasını Çıkar
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      - name: Registry'ye Giriş Yap (${{ env.REGISTRY }})
-        if: github.event_name!= 'pull_request'
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Docker İmajını Derle ve Gönder
-        id: build-and-push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Depoyu Çek
-        uses: actions/checkout@v4
-
-      - name: Qt Test Docker İmajını Derle
-        run: echo "Test Docker imajı derleme adımı (uygulamanızın test kurulumuna göre özelleştirin)"
-
-      - name: ccache Hacmini Oluştur
-        run: docker volume create ccache || true
-
-      - name: Qt Otomatik Testlerini Çalıştır
-        run: |
-          echo "Otomatik testler çalıştırılıyor..."
-          mkdir -p build
-          echo "<testsuites><testsuite name='ExampleTest' tests='1' failures='0'><testcase classname='Example' name='testSuccess'/></testsuite></testsuites>" > build/test_results.xml
-
-      - name: Test Sonuçlarını Artefakt Olarak Yükle
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: build/test_results.xml
-          if-no-files-found: warn
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    steps:
-      - name: SSH ile Sunucuya Bağlan ve Dağıt
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
-          script: |
-            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-
-            echo "--- En Son Docker İmajını Çekiliyor ---"
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
-
-            echo "--- Mevcut Konteyner Durduruluyor (varsa) ---"
-            docker stop mte-toolbox-app || true
-
-            echo "--- Mevcut Konteyner Kaldırılıyor ---"
-            docker rm mte-toolbox-app || true
-
-            echo "--- Yeni Konteyner Başlatılıyor ---"
-            docker run -d --name mte-toolbox-app -p 8080:80 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
-
-            echo "--- Eski Docker Kaynakları Temizleniyor (isteğe bağlı) ---"
-            docker system prune --filter "until=24h" --force
+      - name: Run Build
+        run: docker run --rm mte-toolbox
