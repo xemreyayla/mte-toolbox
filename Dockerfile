@@ -1,7 +1,7 @@
 FROM ubuntu:24.04 AS builder
 
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+    libgl1 \
     libglu1-mesa-dev \
     libx11-dev \
     libxext-dev \
