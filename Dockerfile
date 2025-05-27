@@ -33,7 +33,6 @@ FROM ubuntu:24.04
 
 # Çalışma zamanı bağımlılıkları
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1-mesa-glx \
     libxcb-xinerama0 \
     libxkbcommon-x11-0 \
     libfontconfig1 \
@@ -75,8 +74,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libexpat1 \
     libgraphite2-3 \
     libbz2-1.0 \
-    libbrotlidec1 \
-    libbrotlicommon1 \
     libgomp1 \
     libsystemd0 \
     libbsd0 \
