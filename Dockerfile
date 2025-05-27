@@ -69,15 +69,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g \
     libicu74 \
     libdouble-conversion3 \
-    libb2-1 \
     libpcre2-16-0 \
     libzstd1 \
     libcap2 \
     libexpat1 \
-    libpcre2-8-0 \
     libgraphite2-3 \
     libbz2-1.0 \
-    libbrotli1 \
+    libbrotlidec1 \
+    libbrotlicommon1 \
     libgomp1 \
     libsystemd0 \
     libbsd0 \
@@ -87,6 +86,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libmd0 \
     libgpg-error0 \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Ortam değişkenleri
 ENV QT_RUNTIME_DIR=/opt/Qt/6.8.0/gcc_64
