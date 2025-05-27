@@ -26,7 +26,8 @@ RUN mkdir /build && \
     echo "--- Paketleme tamamlandı, mevcut .deb dosyaları:" && ls -lh /build/*.deb
 
 # Paket adını dışa aktaran bir dosya oluştur (CI için)
-RUN cd build && ls *.deb > debfile.txt
+# 'build' dizini /build'da olduğu için mutlak yol kullanıldı.
+RUN ls /build/*.deb > /build/debfile.txt
 
 # 2. Final stage - sadece runtime
 FROM ubuntu:24.04 AS final
@@ -35,6 +36,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
 
 # .deb paketini kopyala
+# debfile.txt dosyasını da kopyalamak isterseniz, buraya ekleyebilirsiniz:
+# COPY --from=builder /build/debfile.txt ./
 COPY --from=builder /build/*.deb ./
 
 # Uygulamayı kur
