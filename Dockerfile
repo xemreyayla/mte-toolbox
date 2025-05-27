@@ -17,29 +17,27 @@ WORKDIR /app
 # Proje dosyalarını konteynıra kopyala
 COPY . .
 
-# Build ve .deb paket üretimi
-RUN mkdir -p build && cd build && \
-    cmake .. -DCMAKE_BUILD_TYPE=Release && \
-    make -j$(nproc) && \
-    make install DESTDIR=install && \
-    cpack -G DEB && \
-    echo "--- Paketleme tamamlandı, mevcut .deb dosyaları:" && \
-    ls -lh *.deb
+# Build ve .deb üretimi
+RUN mkdir /build && \
+    cmake -S /app -B /build -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build /build --parallel && \
+    cmake --install /build --prefix /build/install && \
+    cd /build && cpack -G DEB && \
+    echo "--- Paketleme tamamlandı, mevcut .deb dosyaları:" && ls -lh /build/*.deb
 
 # Paket adını dışa aktaran bir dosya oluştur (CI için)
-RUN cd build && \
-    ls *.deb > /tmp/debfile.txt
+RUN cd build && ls *.deb > debfile.txt
 
-# 2. Final stage - sadece runtime için (isteğe bağlı)
+# 2. Final stage - sadece runtime
 FROM ubuntu:24.04 AS final
 
 ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
 
-# Build aşamasında üretilen .deb paketini kopyala
-COPY --from=builder /app/build/*.deb ./
+# .deb paketini kopyala
+COPY --from=builder /build/*.deb ./
 
-# Uygulamayı sisteme kur
+# Uygulamayı kur
 RUN apt update && \
     dpkg -i ./*.deb || apt install -fy && \
     rm -rf /var/lib/apt/lists/*
