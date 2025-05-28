@@ -25,7 +25,12 @@ jobs:
         run: docker build -t mte-toolbox-build .
 
       - name: Run Docker container
-        run: docker run --rm -v ${{ github.workspace }}:/build mte-toolbox-build
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/build mte-toolbox-build /bin/bash -c "
+            cd /build/build && \
+            cpack -G DEB && \
+            cp mte-toolbox-*.deb /build/
+          "
 
       - name: List build output (debugging)
         run: ls -al ./build
