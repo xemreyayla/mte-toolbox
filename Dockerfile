@@ -36,3 +36,5 @@ RUN mkdir build && cd build && \
 
 # DEB dosyasını dışarı kopyala
 RUN find . -name "*.deb" -exec cp {} /build/ \;
+
+CMD cp /build/build/*.deb /build/
