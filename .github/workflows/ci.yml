@@ -27,8 +27,12 @@ jobs:
       - name: Run Docker container
         run: docker run --rm -v ${{ github.workspace }}:/build mte-toolbox-build
 
+      - name: List build output (debugging)
+        run: ls -al ./build
+
       - name: Upload DEB package
         uses: actions/upload-artifact@v4
         with:
           name: mte-toolbox
-          path: ./build/*.deb
+          path: ./build/mte-toolbox-*.deb
+          if-no-files-found: warn
