@@ -1,6 +1,5 @@
 FROM ubuntu:22.04
 
-# Temel bağımlılıkları kur
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -25,18 +24,15 @@ RUN apt-get update && apt-get install -y \
     dh-make \
     && apt-get clean
 
-
-
-# Qt 6.8 kurulumu için kendi yolunu buraya ekleyebilirsin
-# Eğer Qt 6.8 sistemde yoksa, alternatif olarak
-# Qt'yi elle indirip kurman gerekebilir.
-
 WORKDIR /build
-
-# Proje dosyalarını kopyala
-COPY . /build
+COPY . .
 
 RUN mkdir build && cd build && \
     cmake -DCMAKE_PREFIX_PATH=/usr/lib/x86_64-linux-gnu/cmake/Qt6 .. && \
     make && \
+    make install DESTDIR=package && \
     cpack -G DEB
+
+
+# DEB dosyasını dışarı kopyala
+RUN find . -name "*.deb" -exec cp {} /build/ \;
