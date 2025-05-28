@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2
+        uses: jurplel/install-qt-action@v4
         with:
           version: '6.8.3'
           host: 'linux'
@@ -28,7 +28,7 @@ jobs:
         run: docker run --rm -v ${{ github.workspace }}:/build mte-toolbox-build
 
       - name: Upload DEB package
-        uses: actions/upload-artifact@v3.1.3
+        uses: actions/upload-artifact@v4
         with:
           name: mte-toolbox
           path: ./build/*.deb
