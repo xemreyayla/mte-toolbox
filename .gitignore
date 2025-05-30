@@ -29,7 +29,8 @@ Makefile*
 /ui_*.h
 build/
 logs/
-
+/mte-toolbox_autogen
+*.mte-toolbox
 
 # Derleme klasörleri
 /debug/
@@ -37,6 +38,7 @@ logs/
 */debug_shared/
 */release/
 */release_shared/
+*git-log.txt
 
 # Geçici dosyalar
 *.log
